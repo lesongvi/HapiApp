@@ -75,9 +75,9 @@ public class browserHelper {
     public String conAuth(boolean isSaved) throws MalformedURLException {
         Gson gson = new Gson();
         WebClient init = this.getLoginVS();
-        authSuccess response = new authSuccess("FAILED", "", "");
+        authSuccess response = new authSuccess(true, "", "");
 
-        if (init == null)
+        if ((this.studentId + "").length() != 10)
             return gson.toJson(new errorResponse(true, "Tài khoản sinh viên không hợp lệ", 404));
 
         ArrayList<String> studntMP = this.getMailAndPhoneNum();
@@ -92,7 +92,7 @@ public class browserHelper {
                 stdnt.setSdt(2, studntMP.get(2));
                 Students stdunt = studentService.saveAndGetStudent(stdnt);
 
-                response = new authSuccess("SUCCESS", stdunt.getName(), stdunt.getToken());
+                response = new authSuccess(false, stdunt.getName(), stdunt.getToken());
             } else {
                 String genToken = this.generateStdntToken();
                 Students stdnt = new Students();
@@ -105,7 +105,7 @@ public class browserHelper {
                 stdnt.setToken(genToken);
                 studentRepository.save(stdnt);
 
-                response = new authSuccess("SUCCESS", this.getSName(), genToken);
+                response = new authSuccess(false, this.getSName(), genToken);
             }
         } catch (Exception e) {
             //Silent is Golden

@@ -1,18 +1,18 @@
 package com.hapi.hapiservice.models;
 
 public class authSuccess {
-    final private String status;
+    final private boolean error;
 
     final private String tensv;
 
     final private String token;
 
     public authSuccess(
-            String status,
+            boolean error,
             String tensv,
             String token
     ) {
-        this.status = status;
+        this.error = error;
         this.tensv = tensv;
         this.token = token;
     }
