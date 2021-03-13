@@ -51,4 +51,25 @@ public class ScheduleController {
 
         return studentBasicTest.getScheduleDetail(semesterId, weekId);
     }
+
+    @RequestMapping(value = {routeHelper.getCurrentPoint}, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public String getCurrentPoint (@RequestParam(value = "token", defaultValue = "") String token) throws IOException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+        browserHelper studentBasicTest = new browserHelper(token, this.studentRepository, this.studentService);
+
+        return studentBasicTest.getCurrentPoint();
+    }
+
+    @RequestMapping(value = {routeHelper.getPSemeterList}, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public String getPSemeterList (@RequestParam(value = "token", defaultValue = "") String token) throws IOException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+        browserHelper studentBasicTest = new browserHelper(token, this.studentRepository, this.studentService);
+
+        return studentBasicTest.getPointListSemester("");
+    }
+
+    @RequestMapping(value = {routeHelper.getPSemeterDetail}, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public String getSemesterPoint (@RequestParam(value = "token", defaultValue = "") String token, @RequestParam(value = "semesterId", defaultValue = "") String semesterId) throws IOException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+        browserHelper studentBasicTest = new browserHelper(token, this.studentRepository, this.studentService);
+
+        return studentBasicTest.getPointListSemester(semesterId);
+    }
 }

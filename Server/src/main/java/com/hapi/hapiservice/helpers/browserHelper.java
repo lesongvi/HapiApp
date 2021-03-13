@@ -159,8 +159,8 @@ public class browserHelper {
         }
     }
 
-    public String getVS() throws MalformedURLException {
-        URL actionUrl = new URL(this.definedStr.schedulePage_PRODUCTION());
+    public String getVS(String initialUrl) throws MalformedURLException {
+        URL actionUrl = new URL(initialUrl);
         WebRequest defaultPage = new WebRequest(actionUrl);
         String _viewState = null;
 
@@ -286,12 +286,15 @@ public class browserHelper {
 
     public String getWeekList(String currSemester) throws MalformedURLException, InterruptedException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
         WebClient webClient = this.verifyToken();
+        WebRequest defaultPage;
 
         if (currSemester != null)
-            webClient = this.selectSemesterOpt(currSemester);
+            defaultPage = this.selectSemesterOpt(currSemester);
+        else {
+            URL actionUrl = new URL(this.definedStr.schedulePage_PRODUCTION());
+            defaultPage = new WebRequest(actionUrl);
+        }
 
-        URL actionUrl = new URL(this.definedStr.schedulePage_PRODUCTION());
-        WebRequest defaultPage = new WebRequest(actionUrl);
         ArrayList<weekResponse> allSWeek = new ArrayList<>();
 
         Gson gson = new Gson();
@@ -329,14 +332,16 @@ public class browserHelper {
 
     public String getScheduleDetail(String currSemester, String currWeek) throws MalformedURLException, InterruptedException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
         WebClient webClient = this.verifyToken();
+        WebRequest defaultPage;
 
         if (currSemester != null && currWeek != null)
-            webClient = this.selectWeekOpt(currSemester, currWeek);
+            defaultPage = this.selectWeekOpt(currSemester, currWeek);
+        else {
+            URL actionUrl = new URL(this.definedStr.schedulePage_PRODUCTION());
+            defaultPage = new WebRequest(actionUrl);
+        }
 
-        URL actionUrl = new URL(this.definedStr.schedulePage_PRODUCTION());
-        WebRequest defaultPage = new WebRequest(actionUrl);
         ArrayList<scheduleReponse> fullWSchedule = new ArrayList<>();
-
         Gson gson = new Gson();
 
         defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
@@ -370,6 +375,105 @@ public class browserHelper {
         }
     }
 
+    public String getCurrentPoint() throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, MalformedURLException {
+        WebClient webClient = this.verifyToken();
+
+        URL actionUrl = new URL(this.definedStr.studentPointUrl_PRODUCTION());
+        WebRequest defaultPage = new WebRequest(actionUrl);
+        String _result = "";
+
+        defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
+
+        try {
+            HtmlPage page = (HtmlPage) webClient
+                    .getPage(defaultPage);
+
+            DomElement stdntPointTbl = page.getElementById(definedStr.studentCPointTblId_PRODUCTION());
+
+            if(stdntPointTbl.getTagName().toLowerCase().equals("div")) {
+                String _xmlPTbl = this.removeTheDEGap(stdntPointTbl);
+
+                _result = this.showSemesterPoint(_xmlPTbl);
+            }
+        } catch (Exception e) {
+            //Silent is Golden
+        } finally {
+            webClient.close();
+            return _result;
+        }
+    }
+
+    public String showSemesterPoint(String _xmlPTbl) {
+        ArrayList<pointResponse> fullPointView = new ArrayList<>();
+        ArrayList<String> temp = new ArrayList<>();
+        int count = 0;
+        Gson gson = new Gson();
+        Matcher pointView = this.patternSearch(this.definedStr.studentPointPattern_PRODUCTION(), _xmlPTbl);
+
+        if (!pointView.find())
+            return null;
+        else
+            while (pointView.find()) {
+                temp.add(pointView.group(1).trim());
+                if (!!(count == 10))
+                {
+                    fullPointView.add(new pointResponse(temp.get(0),temp.get(1), temp.get(2), temp.get(3), temp.get(4), temp.get(5), temp.get(6), temp.get(7), temp.get(8), temp.get(9)));
+                    count = -1;
+                    temp.clear();
+                }
+                count++;
+            }
+        return gson.toJson(fullPointView);
+    }
+
+    public String getPointListSemester(String semesterId) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, MalformedURLException {
+        WebClient webClient = this.verifyToken();
+        Matcher pointView;
+
+        WebRequest defaultPage = this.viewAllPoint();
+        String _last = null;
+
+        ArrayList<PSListResponse> fullPointView = new ArrayList<>();
+        Gson gson = new Gson();
+
+        defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
+
+        try {
+            HtmlPage page = (HtmlPage) webClient
+                    .getPage(defaultPage);
+
+            DomElement stdntPointTbl = page.getElementById(definedStr.studentPSemesterId_PRODUCTION());
+
+            if(stdntPointTbl.getTagName().toLowerCase().equals("div")) {
+                String _xmlPTbl = this.removeTheDEGap(stdntPointTbl);
+                if (semesterId == "")
+                    pointView = this.patternSearch(this.definedStr.studentPListPattern_PRODUCTION(), _xmlPTbl);
+                else {
+                    String myPattern = semesterId.trim().concat(this.definedStr.studentPRangeSelectPattern_PRODUCTION());
+                    pointView = this.patternSearch(myPattern, _xmlPTbl);
+                }
+
+                if (!pointView.find())
+                    return null;
+                else if (semesterId == "")
+                {
+                    while (pointView.find()) {
+                        fullPointView.add(new PSListResponse(pointView.group(5).trim()));
+                    }
+                    _last = gson.toJson(fullPointView);
+                }
+                else {
+                    _last = this.showSemesterPoint(pointView.group(7));
+                }
+            }
+        } catch (Exception e) {
+            //Silent is Golden
+        } finally {
+            webClient.close();
+            return _last;
+        }
+    }
+
     public Matcher patternSearch(String regex, String _test) {
         Pattern pattern = Pattern.compile(regex);
         return pattern.matcher(_test);
@@ -379,25 +483,36 @@ public class browserHelper {
         return theGap.asXml().replaceAll("\r\n", "");
     }
 
-    public WebClient selectSemesterOpt(String selectedOpt) throws MalformedURLException, InterruptedException {
+    public WebRequest selectSemesterOpt(String selectedOpt) throws MalformedURLException {
         URL actionUrl = new URL(this.definedStr.schedulePage_PRODUCTION());
         WebRequest schedulePage = new WebRequest(actionUrl, HttpMethod.POST);
 
         schedulePage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
 
-        schedulePage.setRequestBody("__EVENTTARGET=ctl00\\$ContentPlaceHolder1\\$ctl00\\$ddlChonNHHK&__EVENTARGUMENT=&__LASTFOCUS=&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&__VIEWSTATE=" + URLEncoder.encode(this.getVS()) + "&ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK=" + URLEncoder.encode(selectedOpt) + "&ctl00$ContentPlaceHolder1$ctl00$rad_MonHoc=rad_MonHoc");
+        schedulePage.setRequestBody("__EVENTTARGET=ctl00\\$ContentPlaceHolder1\\$ctl00\\$ddlChonNHHK&__EVENTARGUMENT=&__LASTFOCUS=&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&__VIEWSTATE=" + URLEncoder.encode(this.getVS(this.definedStr.schedulePage_PRODUCTION())) + "&ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK=" + URLEncoder.encode(selectedOpt) + "&ctl00$ContentPlaceHolder1$ctl00$rad_MonHoc=rad_MonHoc");
 
-        return webClient;
+        return schedulePage;
     }
 
-    public WebClient selectWeekOpt(String selectedSemester, String selectedWeek) throws MalformedURLException, InterruptedException {
+    public WebRequest selectWeekOpt(String selectedSemester, String selectedWeek) throws MalformedURLException {
         URL actionUrl = new URL(this.definedStr.schedulePage_PRODUCTION());
         WebRequest schedulePage = new WebRequest(actionUrl, HttpMethod.POST);
 
         schedulePage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
 
-        schedulePage.setRequestBody("__EVENTTARGET=ctl00$ContentPlaceHolder1$ctl00$ddlTuan&__EVENTARGUMENT=&__LASTFOCUS=&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&__VIEWSTATE=" + URLEncoder.encode(this.getVS()) + "&ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK=" + URLEncoder.encode(selectedSemester) + "&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&ctl00$ContentPlaceHolder1$ctl00$ddlTuan=" + URLEncoder.encode(selectedWeek));
+        schedulePage.setRequestBody("__EVENTTARGET=ctl00$ContentPlaceHolder1$ctl00$ddlTuan&__EVENTARGUMENT=&__LASTFOCUS=&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&__VIEWSTATE=" + URLEncoder.encode(this.getVS(this.definedStr.schedulePage_PRODUCTION())) + "&ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK=" + URLEncoder.encode(selectedSemester) + "&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&ctl00$ContentPlaceHolder1$ctl00$ddlTuan=" + URLEncoder.encode(selectedWeek));
 
-        return webClient;
+        return schedulePage;
+    }
+
+    public WebRequest viewAllPoint() throws MalformedURLException {
+        URL actionUrl = new URL(this.definedStr.studentPointUrl_PRODUCTION());
+        WebRequest schedulePage = new WebRequest(actionUrl, HttpMethod.POST);
+
+        schedulePage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
+
+        schedulePage.setRequestBody("__EVENTTARGET=ctl00$ContentPlaceHolder1$ctl00$lnkChangeview2&__EVENTARGUMENT=&__LASTFOCUS=&ctl00$ContentPlaceHolder1$ctl00$txtChonHK=&__VIEWSTATE=" + URLEncoder.encode(this.getVS(this.definedStr.studentPointUrl_PRODUCTION())));
+
+        return schedulePage;
     }
 }

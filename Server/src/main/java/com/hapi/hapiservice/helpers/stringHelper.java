@@ -1,33 +1,39 @@
 package com.hapi.hapiservice.helpers;
 
 public class stringHelper {
-    final String defaultPage = "http://daotao.hutech.edu.vn/default.aspx";
-    final String defaultPageWithUppercaseD = "http://daotao.hutech.edu.vn/Default.aspx";
-    final String loginId = "ctl00_ContentPlaceHolder1_ctl00_ucDangNhap_txtTaiKhoa";
-    final String loginPwdId = "ctl00_ContentPlaceHolder1_ctl00_ucDangNhap_txtMatKhau";
-    final String loginPwdName = "ctl00$ContentPlaceHolder1$ctl00$ucDangNhap$txtMatKhau";
-    final String loginBtnId = "ctl00_ContentPlaceHolder1_ctl00_ucDangNhap_btnDangNhap";
-    final String userAgentDefault =
+    final private String defaultPage = "http://daotao.hutech.edu.vn/default.aspx";
+    final private String defaultPageWithUppercaseD = "http://daotao.hutech.edu.vn/Default.aspx";
+    final private String loginId = "ctl00_ContentPlaceHolder1_ctl00_ucDangNhap_txtTaiKhoa";
+    final private String loginPwdId = "ctl00_ContentPlaceHolder1_ctl00_ucDangNhap_txtMatKhau";
+    final private String loginPwdName = "ctl00$ContentPlaceHolder1$ctl00$ucDangNhap$txtMatKhau";
+    final private String loginBtnId = "ctl00_ContentPlaceHolder1_ctl00_ucDangNhap_btnDangNhap";
+    final private String userAgentDefault =
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36";
-    final String viewStatePattern = "\"__VIEWSTATE\" value=\"(.*)\"";
-    final String invalidCredentialsPattern = "Sai thông tin đăng nhập";
-    final String schedulePageUrl = this.defaultPage + "?page=thoikhoabieu&sta=0";
-    final String semesterOptId = "ctl00_ContentPlaceHolder1_ctl00_ddlChonNHHK";
-    final String weekOptId = "ctl00_ContentPlaceHolder1_ctl00_ddlTuan";
-    final String selectOptPattern = "<([\\w]+)[^>]*>(.*?)<\\/\\1>";
-    final String miniOptPattern = "<option value=\"(.*?)\">";
-    final String weekNumOptPattern = "Tuần (.*) \\[";
-    final String startDateOptPattern = "Từ (.*) --";
-    final String endDateOptPattern = "Đến (.*)\\]";
-    final String schedulePattern = "\"ddrivetip\\((.*?)\\)\\\"";
-    final String scheduleDescRemove = ",'Mã Môn Học-Tên Môn Học-Phòng Học-Thứ-Tiết Bắt Đầu-Số Tiết-Giảng Viên-Bắt Đầu Từ: - Đến -Lớp'";
-    final String scheduleTableId = "ctl00_ContentPlaceHolder1_ctl00_Table1";
-    final String helloStudentId = "ctl00_Header1_Logout1_lblNguoiDung";
-    final String studentNamePattern = "Chào bạn (.*?) \\(";
-    final String userInfoChangerUrl = this.defaultPageWithUppercaseD + "?page=thaydoittcn";
-    final String studentEmailId = "ctl00_ContentPlaceHolder1_ctl00_txtEmail1";
-    final String studentSdt1Id = "ctl00_ContentPlaceHolder1_ctl00_txtDT1";
-    final String studentSdt2Id = "ctl00_ContentPlaceHolder1_ctl00_txtDT2";
+    final private String viewStatePattern = "\"__VIEWSTATE\" value=\"(.*)\"";
+    final private String invalidCredentialsPattern = "Sai thông tin đăng nhập";
+    final private String schedulePageUrl = this.defaultPage + "?page=thoikhoabieu&sta=0";
+    final private String semesterOptId = "ctl00_ContentPlaceHolder1_ctl00_ddlChonNHHK";
+    final private String weekOptId = "ctl00_ContentPlaceHolder1_ctl00_ddlTuan";
+    final private String selectOptPattern = "<([\\w]+)[^>]*>(.*?)<\\/\\1>";
+    final private String miniOptPattern = "<option value=\"(.*?)\">";
+    final private String weekNumOptPattern = "Tuần (.*) \\[";
+    final private String startDateOptPattern = "Từ (.*) --";
+    final private String endDateOptPattern = "Đến (.*)\\]";
+    final private String schedulePattern = "\"ddrivetip\\((.*?)\\)\\\"";
+    final private String scheduleDescRemove = ",'Mã Môn Học-Tên Môn Học-Phòng Học-Thứ-Tiết Bắt Đầu-Số Tiết-Giảng Viên-Bắt Đầu Từ: - Đến -Lớp'";
+    final private String scheduleTableId = "ctl00_ContentPlaceHolder1_ctl00_Table1";
+    final private String helloStudentId = "ctl00_Header1_Logout1_lblNguoiDung";
+    final private String studentNamePattern = "Chào bạn (.*?) \\(";
+    final private String userInfoChangerUrl = this.defaultPageWithUppercaseD + "?page=thaydoittcn";
+    final private String studentPointUrl = this.defaultPageWithUppercaseD + "?page=xemdiemthi";
+    final private String studentEmailId = "ctl00_ContentPlaceHolder1_ctl00_txtEmail1";
+    final private String studentSdt1Id = "ctl00_ContentPlaceHolder1_ctl00_txtDT1";
+    final private String studentSdt2Id = "ctl00_ContentPlaceHolder1_ctl00_txtDT2";
+    final private String studentCPointTblId = "ctl00_ContentPlaceHolder1_ctl00_div1";
+    final private String studentPointPattern = "<span[^>]*>(?! *STT| *Học kỳ| *Thi L1| *Điểm | *Mã Môn| *Tên Môn| *TC| *\\% | *TK\\(*)(.*?)<\\/s";
+    final private String studentPSemesterId = "ctl00_ContentPlaceHolder1_ctl00_div1";
+    final private String studentPListPattern = "title-hk-diem[^>]*>\\s*<((?!<)(.|\\n))*?\\>\\s*<((?!<)(.|\\n))*?\\>(.*?)<\\/";
+    final private String studentPRangeSelectPattern = "\\s*<\\/((?!<)(.|\\n))*?\\>\\s*<((?!<)(.|\\n))*?\\>\\s*<((?!<)(.|\\n))*?\\>(.*?)<((?!<)(.|\\n))*class=\"row-diemTK\"";
 
     public String defaultPage_PRODUCTION() {
         return this.defaultPage;
@@ -131,5 +137,29 @@ public class stringHelper {
 
     public String studentSdt2Id_PRODUCTION() {
         return this.studentSdt2Id;
+    }
+
+    public String studentPointUrl_PRODUCTION() {
+        return this.studentPointUrl;
+    }
+
+    public String studentCPointTblId_PRODUCTION() {
+        return this.studentCPointTblId;
+    }
+
+    public String studentPointPattern_PRODUCTION() {
+        return this.studentPointPattern;
+    }
+
+    public String studentPSemesterId_PRODUCTION() {
+        return this.studentPSemesterId;
+    }
+
+    public String studentPListPattern_PRODUCTION() {
+        return this.studentPListPattern;
+    }
+
+    public String studentPRangeSelectPattern_PRODUCTION() {
+        return this.studentPRangeSelectPattern;
     }
 }

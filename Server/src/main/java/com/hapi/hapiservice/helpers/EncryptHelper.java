@@ -10,6 +10,7 @@ import java.util.Random;
 import javax.crypto.*;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
 
 public class EncryptHelper {
     private static final Random RANDOM = new SecureRandom();
@@ -45,7 +46,7 @@ public class EncryptHelper {
         cipher.init(Cipher.ENCRYPT_MODE, aesKey);
         byte[] encrypted = cipher.doFinal(password.getBytes());
 
-        return new String(encrypted);
+        return DatatypeConverter.printBase64Binary(encrypted);
     }
 
     public static String pleaseHelpViHackThis(String encryptedPassword) throws InvalidKeyException, BadPaddingException, IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException {
@@ -53,6 +54,6 @@ public class EncryptHelper {
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.DECRYPT_MODE, aesKey);
 
-        return new String(cipher.doFinal(encryptedPassword.getBytes()));
+        return new String(cipher.doFinal(DatatypeConverter.parseBase64Binary(encryptedPassword)));
     }
 }
