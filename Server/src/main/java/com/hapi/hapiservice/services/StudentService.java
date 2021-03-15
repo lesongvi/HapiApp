@@ -1,7 +1,7 @@
 package com.hapi.hapiservice.services;
 
-import com.hapi.hapiservice.helpers.StudentRepository;
-import com.hapi.hapiservice.models.Students;
+import com.hapi.hapiservice.helpers.respository.StudentRepository;
+import com.hapi.hapiservice.models.schedule.Students;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,12 +1,12 @@
 package com.hapi.hapiservice.controllers;
 
-import com.hapi.hapiservice.helpers.StudentRepository;
-import com.hapi.hapiservice.helpers.browserHelper;
+import com.hapi.hapiservice.helpers.respository.StudentRepository;
+import com.hapi.hapiservice.helpers.common.browserHelper;
 import com.hapi.hapiservice.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import com.hapi.hapiservice.helpers.routeHelper;
+import com.hapi.hapiservice.helpers.common.routeHelper;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -39,14 +39,14 @@ public class ScheduleController {
     }
 
     @RequestMapping(value = {routeHelper.getWeek}, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getWeek (@RequestParam(value = "token", defaultValue = "") String token, @RequestParam(value = "semesterId", defaultValue = "") String semesterId) throws IOException, InterruptedException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+    public String getWeek (@RequestParam(value = "token", defaultValue = "") String token, @RequestParam(value = "semesterId", defaultValue = "") String semesterId) throws IOException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         browserHelper studentBasicTest = new browserHelper(token, this.studentRepository, this.studentService);
 
         return studentBasicTest.getWeekList(semesterId);
     }
 
     @RequestMapping(value = {routeHelper.getSchedule}, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getSchedule (@RequestParam(value = "token", defaultValue = "") String token, @RequestParam(value = "semesterId", defaultValue = "") String semesterId, @RequestParam(value = "weekId", defaultValue = "") String weekId) throws IOException, InterruptedException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+    public String getSchedule (@RequestParam(value = "token", defaultValue = "") String token, @RequestParam(value = "semesterId", defaultValue = "") String semesterId, @RequestParam(value = "weekId", defaultValue = "") String weekId) throws IOException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         browserHelper studentBasicTest = new browserHelper(token, this.studentRepository, this.studentService);
 
         return studentBasicTest.getScheduleDetail(semesterId, weekId);
