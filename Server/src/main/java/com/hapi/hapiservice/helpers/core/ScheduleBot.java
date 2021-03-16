@@ -1,8 +1,5 @@
 package com.hapi.hapiservice.helpers.core;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hapi.hapiservice.helpers.common.browserHelper;
 import com.hapi.hapiservice.helpers.common.snapshotHelper;
 import com.hapi.hapiservice.helpers.common.stringHelper;
@@ -19,15 +16,14 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,6 +35,7 @@ public class ScheduleBot {
     private StudentRepository studentRepository;
     private StudentService studentService;
     private final Object _lock = new Object();
+    Logger logger = Logger.getLogger(ScheduleBot.class.getName());
 
     public ScheduleBot(
             String fid,
@@ -60,14 +57,6 @@ public class ScheduleBot {
                 new Button().setContentType("text").setTitle("Báo lỗi").setPayload("Báo lỗi")
         };
 
-        /*if (this.patternSearch(definedStr.cbotLogin_PRODUCTION(), message)) {
-            return this.login("");
-        } else if(this.patternSearch(definedStr.cboxStartFirstInitialPattern_PRODUCTION(), message)) {
-            return this.startFirstInitial();
-        } else if(this.patternSearch(definedStr.cboxExtractSemesterPattern_PRODUCTION(), message)) {
-            return this.startWeekInitial(message);
-        }*/
-
         return new Message().setText(reply).setQuickReplies(buttons);
     }
 
@@ -86,6 +75,7 @@ public class ScheduleBot {
         if (this.getStudentIdByFid() == -1) {
             return this.login("Bạn chưa đăng nhập hoặc mật khẩu của bạn đã bị thay đổi! \nNhấp vào nút *\"Lưu tài khoản\"* để lưu tài khoản bạn nhé!\nSau khi đã lưu xong bạn hãy gõ *Bắt đầu* hoặc nhấp nút *Bắt đầu lại*");
         }
+
         Button[] buttons = new Button[]{
                 new Button().setContentType("text").setTitle("Bắt đầu lại").setPayload("Bắt đầu lại"),
                 new Button().setContentType("text").setTitle("Báo lỗi").setPayload("Báo lỗi")
@@ -112,7 +102,7 @@ public class ScheduleBot {
         else return -1;
     }
 
-    public Message startFirstInitial() throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, MalformedURLException {
+    public Message startFirstInitial() throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, IOException {
         if (this.getStudentIdByFid() == -1) {
             return this.login("Bạn chưa đăng nhập hoặc mật khẩu của bạn đã bị thay đổi! \nNhấp vào nút *\"Lưu tài khoản\"* để lưu tài khoản bạn nhé!\nSau khi đã lưu xong bạn hãy gõ *Bắt đầu* hoặc nhấp nút *Bắt đầu lại*");
         }
@@ -126,6 +116,10 @@ public class ScheduleBot {
         if (studentCre.isPresent()) {
             browserHelper studentBasicTest = new browserHelper(studentCre.get().getToken(), this.studentRepository, this.studentService);
             ArrayList<Button> listBtn = new ArrayList<Button>();
+
+            /*if (studentBasicTest.isServerReloading()) {
+                return new Message().setText(this.definedStr.serverReloadingPlsTryAgainLab_PRODUCTION());
+            }*/
 
             listBtn.add(new Button().setContentType("text").setTitle("TKB tuần này").setPayload("TKB tuần này"));
 
@@ -183,6 +177,7 @@ public class ScheduleBot {
     public Message startWeekInitial(String semesterId) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, MalformedURLException, InterruptedException {
         Optional<Students> studentCre = this.studentService.findById(this.getStudentIdByFid());
         String reply = "Hãy gõ tuần bạn muốn xem thời khóa biểu và gửi lại cho Hapi";
+        ArrayList<weekResponse> weekArr;
         Button[] buttons = new Button[]{
                 new Button().setContentType("text").setTitle("Bắt đầu lại").setPayload("Bắt đầu lại"),
                 new Button().setContentType("text").setTitle("TKB tuần này").setPayload("TKB tuần này"),
@@ -196,22 +191,23 @@ public class ScheduleBot {
             ChatbotStudents cbst = this.chatbotStudentService.findById(this.fid).get();
 
             semesterId = extractSemesterId.group(2) + extractSemesterId.group(1);
-            synchronized (_lock){
-                ArrayList<weekResponse> weekArr = studentBasicTest.getWeekArr(semesterId);
 
-                cbst.setCurrentSemesterId(semesterId);
-                this.chatbotStudentService.save(cbst);
-
-                if (weekArr.size() != 0)
-                {
-                    for(weekResponse week : weekArr) {
-                        reply += "\nTuần " + week.getSotuan() + " (từ ngày " + week.getNgaybd() + " đến ngày " + week.getNgaykt() + ")";
-                    }
-                    reply += "\nFacebook không cho phép có quá nhiều nút bấm trong 1 lần, các bạn thông cảm giúp Hapi nha <3!" +
-                            "\nVí dụ bạn muốn xem thời khóa biểu tuần 26, hãy nhập: 26";
-                }
-                else reply = "Bạn không có thời khóa biểu trong học kỳ này!";
+            synchronized (_lock) {
+                weekArr = studentBasicTest.getWeekArr(semesterId);
             }
+
+            cbst.setCurrentSemesterId(semesterId);
+            this.chatbotStudentService.save(cbst);
+
+            if (weekArr.size() != 0)
+            {
+                for(weekResponse week : weekArr) {
+                    reply += "\nTuần *" + week.getSotuan() + "* (từ ngày *" + week.getNgaybd() + "* đến ngày *" + week.getNgaykt() + "*)";
+                }
+                reply += "\nFacebook không cho phép có quá nhiều nút bấm trong 1 lần, các bạn thông cảm giúp Hapi nha <3!" +
+                        "\nVí dụ bạn muốn xem thời khóa biểu tuần 26, hãy nhập: 26";
+            }
+            else reply = "Bạn không có thời khóa biểu trong học kỳ này!";
 
 
             return new Message().setText(reply).setQuickReplies(buttons);
@@ -236,6 +232,7 @@ public class ScheduleBot {
         Optional<Students> studentCre = this.studentService.findById(this.getStudentIdByFid());
         Button[] buttons = new Button[]{
                 new Button().setContentType("text").setTitle("Bắt đầu lại").setPayload("Bắt đầu lại"),
+                new Button().setContentType("text").setTitle("Xem thời khóa biểu").setPayload("Xem thời khóa biểu"),
                 new Button().setContentType("text").setTitle("TKB tuần này").setPayload("TKB tuần này"),
                 new Button().setContentType("text").setTitle("Báo lỗi").setPayload("Báo lỗi")
         };
@@ -245,7 +242,6 @@ public class ScheduleBot {
             ChatbotStudents cbst = this.chatbotStudentService.findById(this.fid).get();
             String semesterId = cbst.getCurrentSemesterId();
 
-            //weekId = "Tuần " + extractWeekId.group(1) + " [Từ " + extractWeekId.group(2) + " -- " + extractWeekId.group(3) + "]";
             weekId = this.getWeekByWeekNum(weekId);
 
             if (weekId == "")
@@ -318,7 +314,7 @@ public class ScheduleBot {
         return new Message().setText(reply).setQuickReplies(buttons);
     }
 
-    public Message detailPointOpt(String msg) throws BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, InvalidKeyException, MalformedURLException {
+    public Message detailPointOpt(String msg) throws BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, InvalidKeyException, IOException {
         if (this.getStudentIdByFid() == -1) {
             return this.login(this.definedStr.cboxInvalidCredentialsPlsLogAgain_PRODUCTION());
         }
@@ -326,6 +322,11 @@ public class ScheduleBot {
         ArrayList<Button> listBtn = new ArrayList<>();
         Optional<Students> studentCre = this.studentService.findById(this.getStudentIdByFid());
         browserHelper studentBasicTest = new browserHelper(studentCre.get().getToken(), this.studentRepository, this.studentService);
+
+
+        /*if (studentBasicTest.isServerReloading()) {
+            return new Message().setText(this.definedStr.serverReloadingPlsTryAgainLab_PRODUCTION());
+        }*/
 
         if (msg.toLowerCase().trim().equals("điểm hiện tại"))
         {
@@ -351,13 +352,17 @@ public class ScheduleBot {
         }
     }
 
-    public Message viewSpecificPoint(String msg) throws BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, InvalidKeyException, MalformedURLException {
+    public Message viewSpecificPoint(String msg) throws BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, InvalidKeyException, IOException {
         if (this.getStudentIdByFid() == -1) {
             return this.login(this.definedStr.cboxInvalidCredentialsPlsLogAgain_PRODUCTION());
         }
 
         Optional<Students> studentCre = this.studentService.findById(this.getStudentIdByFid());
         browserHelper studentBasicTest = new browserHelper(studentCre.get().getToken(), this.studentRepository, this.studentService);
+
+        /*if (studentBasicTest.isServerReloading()) {
+            return new Message().setText(this.definedStr.serverReloadingPlsTryAgainLab_PRODUCTION());
+        }*/
 
         String reply = "Sau đây là danh sách điểm học kỳ bạn đã chọn\n-----------------------------";
         Button[] buttons = new Button[]{

@@ -6,9 +6,12 @@ import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.google.gson.Gson;
+import com.hapi.hapiservice.helpers.core.ScheduleBot;
 import com.hapi.hapiservice.helpers.respository.StudentRepository;
 import com.hapi.hapiservice.models.schedule.*;
 import com.hapi.hapiservice.services.StudentService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -36,6 +39,7 @@ public class browserHelper extends stuffHelper {
     private static final Base64.Encoder base64 = Base64.getUrlEncoder();
     protected String token;
     protected EncryptHelper encryptEngine = new EncryptHelper();
+    Logger logger = LoggerFactory.getLogger(browserHelper.class);
 
     public browserHelper(
             int studentId,
@@ -96,7 +100,7 @@ public class browserHelper extends stuffHelper {
             }
         } catch (Exception e) {
             //Silent is Golden
-            e.printStackTrace();
+            logger.error(e.getMessage());
         } finally {
             return gson.toJson(response);
         }
@@ -108,7 +112,7 @@ public class browserHelper extends stuffHelper {
         return base64.encodeToString(randomBytes);
     }
 
-    public WebClient getLoginVS () throws MalformedURLException {
+    public WebClient getLoginVS () {
         try {
             Matcher check = this.processingCredential(this.definedStr.invalidCredentialsPattern_PRODUCTION());
             if (check.find()) {
@@ -117,9 +121,25 @@ public class browserHelper extends stuffHelper {
             }
         } catch (Exception e) {
             //Silent is Golden
+            logger.error(e.getMessage());
         } finally {
             return this.webClient;
         }
+    }
+
+    public boolean isServerReloading() throws IOException {
+        URL actionUrl = new URL(this.definedStr.defaultPage_PRODUCTION());
+        WebRequest defaultPage = new WebRequest(actionUrl);
+
+        defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
+
+        HtmlPage page = this.requestLogin()
+                .getPage(defaultPage);
+
+        Pattern pattern = Pattern.compile(this.definedStr.serverReloadPattern_PRODUCTION());
+        Matcher checkReloading = pattern.matcher(page.asXml());
+
+        return checkReloading.find();
     }
 
     public Matcher processingCredential(String regex) throws IOException {
@@ -139,7 +159,11 @@ public class browserHelper extends stuffHelper {
     }
 
     private String getString(HtmlPage page) throws IOException {
-        String parseBody = this.passCredentials(page).asXml();
+        Object _lock = new Object();
+        String parseBody;
+        synchronized (_lock) {
+            parseBody = this.passCredentials(page).asXml();
+        }
         return parseBody;
     }
 
@@ -170,10 +194,11 @@ public class browserHelper extends stuffHelper {
 
         HtmlPage page = null;
         try {
-            page = (HtmlPage) this.requestLogin()
+            page = (HtmlPage) this.webClient
                     .getPage(defaultPage);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            //Silent is Golden
+            logger.error(e.getMessage());
         }
 
         webClient.close();
@@ -186,7 +211,7 @@ public class browserHelper extends stuffHelper {
         String _studntName = null;
 
         try {
-            HtmlPage page = (HtmlPage) this.requestLogin()
+            HtmlPage page = (HtmlPage) this.webClient
                     .getPage(defaultPage);
 
             DomElement helloStudnt = page.getElementById(definedStr.helloStudentId_PRODUCTION());
@@ -199,6 +224,7 @@ public class browserHelper extends stuffHelper {
             }
         } catch (Exception e) {
             //Silent is Golden
+            logger.error(e.getMessage());
         } finally {
             return _studntName;
         }
@@ -217,7 +243,7 @@ public class browserHelper extends stuffHelper {
 
             this.passCredentials(page);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
         return this.webClient;
@@ -249,12 +275,13 @@ public class browserHelper extends stuffHelper {
             }
         } catch (Exception e) {
             //Silent is Golden
+            logger.error(e.getMessage());
         } finally {
             return _infoBack;
         }
     }
 
-    public WebClient verifyToken() throws MalformedURLException, IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+    public WebClient verifyToken() throws IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         Students tokenInfo = this.studentService.getStudentByToken(this.token);
 
         this.studentId = tokenInfo.getSid();
@@ -284,6 +311,7 @@ public class browserHelper extends stuffHelper {
 
         } catch (Exception e) {
             //Silent is Golden
+            logger.error(e.getMessage());
         } finally {
             webClient.close();
             return gson.toJson(semesterMap);
@@ -309,6 +337,7 @@ public class browserHelper extends stuffHelper {
 
         } catch (Exception e) {
             //Silent is Golden
+            logger.error(e.getMessage());
         } finally {
             webClient.close();
             return semesterMap;
@@ -349,6 +378,8 @@ public class browserHelper extends stuffHelper {
     }
 
     public ArrayList<weekResponse> getWeekArr(String currSemester) throws MalformedURLException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
+
+
         WebClient webClient = this.verifyToken();
         WebRequest defaultPage;
 
@@ -361,21 +392,19 @@ public class browserHelper extends stuffHelper {
 
         defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
 
-        Object _lock = new Object();
-        synchronized (_lock) {
-            HtmlPage page = null;
-            try {
-                page = (HtmlPage) webClient
-                        .getPage(defaultPage);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            DomElement semesterOpt = page.getElementById(definedStr.weekOptId_PRODUCTION());
-
-            webClient.close();
-            return this.weekProcessing(semesterOpt);
+        HtmlPage page = null;
+        try {
+            page = (HtmlPage) webClient
+                    .getPage(defaultPage);
+        } catch (Exception e) {
+            //Silent is Golden
+            logger.error(e.getMessage());
         }
+
+        DomElement semesterOpt = page.getElementById(definedStr.weekOptId_PRODUCTION());
+
+        webClient.close();
+        return this.weekProcessing(semesterOpt);
     }
 
     public weekResponse findSelectedWeek() throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, MalformedURLException, ParseException {
@@ -391,8 +420,8 @@ public class browserHelper extends stuffHelper {
         try {
             page = (HtmlPage) webClient
                     .getPage(defaultPage);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
         }
 
         DomElement semesterOpt = page.getElementById(definedStr.weekOptId_PRODUCTION());
@@ -429,8 +458,9 @@ public class browserHelper extends stuffHelper {
                 if (weekNum.find() && startDate.find() && endDate.find()) {
                     try {
                         _allSWeek.add(new weekResponse(startDate.group(1), endDate.group(1), weekNum.group(1), tempStr));
-                    } catch (ParseException e) {
+                    } catch (Exception e) {
                         //Silent is Golden
+                        logger.error(e.getMessage());
                     }
                 }
             }
@@ -491,8 +521,8 @@ public class browserHelper extends stuffHelper {
         try {
             page = (HtmlPage) webClient
                     .getPage(defaultPage);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
         }
 
         DomElement stdntPointTbl = page.getElementById(definedStr.studentCPointTblId_PRODUCTION());
@@ -527,7 +557,7 @@ public class browserHelper extends stuffHelper {
                 return this.showSemesterPoint(_xmlPTbl);
             }
         } catch (Exception e) {
-            //Silent is Golden
+            logger.error(e.getMessage());
         } finally {
             webClient.close();
             return _result;
@@ -575,8 +605,8 @@ public class browserHelper extends stuffHelper {
         try {
             page = (HtmlPage) webClient
                     .getPage(defaultPage);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
         }
 
         DomElement stdntPointTbl = page.getElementById(definedStr.studentPSemesterId_PRODUCTION());
@@ -607,8 +637,8 @@ public class browserHelper extends stuffHelper {
         try {
             page = (HtmlPage) webClient
                     .getPage(defaultPage);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
         }
 
         DomElement stdntPointTbl = page.getElementById(definedStr.studentPSemesterId_PRODUCTION());
@@ -646,10 +676,16 @@ public class browserHelper extends stuffHelper {
     public WebRequest selectSemesterOpt(String selectedOpt) throws MalformedURLException {
         URL actionUrl = new URL(this.definedStr.schedulePage_PRODUCTION());
         WebRequest schedulePage = new WebRequest(actionUrl, HttpMethod.POST);
+        String _VState;
+        Object _lock2 = new Object();
+
+        synchronized (_lock2) {
+            _VState = this.getVS(this.definedStr.schedulePage_PRODUCTION());
+        }
 
         schedulePage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
 
-        schedulePage.setRequestBody("__EVENTTARGET=ctl00\\$ContentPlaceHolder1\\$ctl00\\$ddlChonNHHK&__EVENTARGUMENT=&__LASTFOCUS=&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&__VIEWSTATE=" + URLEncoder.encode(this.getVS(this.definedStr.schedulePage_PRODUCTION())) + "&ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK=" + URLEncoder.encode(selectedOpt) + "&ctl00$ContentPlaceHolder1$ctl00$rad_MonHoc=rad_MonHoc");
+        schedulePage.setRequestBody("__EVENTTARGET=ctl00\\$ContentPlaceHolder1\\$ctl00\\$ddlChonNHHK&__EVENTARGUMENT=&__LASTFOCUS=&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&__VIEWSTATE=" + URLEncoder.encode(_VState) + "&ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK=" + URLEncoder.encode(selectedOpt) + "&ctl00$ContentPlaceHolder1$ctl00$rad_MonHoc=rad_MonHoc");
 
         return schedulePage;
     }

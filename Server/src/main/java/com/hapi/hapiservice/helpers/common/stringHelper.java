@@ -47,6 +47,8 @@ public class stringHelper {
     final private String cboxPointTestPattern = "Điểm kỳ (.*?), (.*?)-(.*)";
     final private String cboxFirstTime = "Bạn ơi, đây là lần đầu tiên bạn sử dụng Hapi, hãy đăng nhập lần đầu bạn nhé!?";
     final private String notificationPattern = "window\\.onload=function\\(\\)\\{alert\\('(.*)'\\);\\}";
+    final private String serverReloadPattern = "window.onload=function(){alert('Server đang tải lại dữ liệu. Vui lòng trở lại sau 15 phút!');}";
+    final private String serverReloadingPlsTryAgainLab = "Máy chủ đang bảo trì để cập nhật dữ liệu sinh viên, vui lòng thử lại sau 15 phút";
 
     public String defaultPage_PRODUCTION() {
         return this.defaultPage;
@@ -222,5 +224,13 @@ public class stringHelper {
 
     public String notificationPattern_PRODUCTION() {
         return this.notificationPattern;
+    }
+
+    public String serverReloadPattern_PRODUCTION() {
+        return this.serverReloadPattern;
+    }
+
+    public String serverReloadingPlsTryAgainLab_PRODUCTION() {
+        return this.serverReloadingPlsTryAgainLab;
     }
 }
