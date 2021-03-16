@@ -1,5 +1,6 @@
 package com.hapi.hapiservice.controllers;
 
+import com.hapi.hapiservice.helpers.common.snapshotHelper;
 import com.hapi.hapiservice.helpers.respository.StudentRepository;
 import com.hapi.hapiservice.helpers.common.browserHelper;
 import com.hapi.hapiservice.services.StudentService;
@@ -14,6 +15,7 @@ import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
 import java.util.Optional;
 
 @RestController
@@ -46,7 +48,7 @@ public class ScheduleController {
     }
 
     @RequestMapping(value = {routeHelper.getSchedule}, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getSchedule (@RequestParam(value = "token", defaultValue = "") String token, @RequestParam(value = "semesterId", defaultValue = "") String semesterId, @RequestParam(value = "weekId", defaultValue = "") String weekId) throws IOException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+    public String getSchedule (@RequestParam(value = "token", defaultValue = "") String token, @RequestParam(value = "semesterId", defaultValue = "") String semesterId, @RequestParam(value = "weekId", defaultValue = "") String weekId) throws IOException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException, ParseException {
         browserHelper studentBasicTest = new browserHelper(token, this.studentRepository, this.studentService);
 
         return studentBasicTest.getScheduleDetail(semesterId, weekId);
@@ -72,4 +74,6 @@ public class ScheduleController {
 
         return studentBasicTest.getPointListSemester(semesterId);
     }
+
+
 }

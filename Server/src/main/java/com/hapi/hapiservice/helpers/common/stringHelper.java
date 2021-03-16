@@ -18,6 +18,7 @@ public class stringHelper {
     final private String weekOptId = "ctl00_ContentPlaceHolder1_ctl00_ddlTuan";
     final private String selectOptPattern = "<([\\w]+)[^>]*>(.*?)<\\/\\1>";
     final private String miniOptPattern = "<option [^>]*value=\"(.*?)\">";
+    final private String selectedMiniOptPattern = "<option selected=\"selected\" value=\"(.*?)\">";
     final private String weekNumOptPattern = "Tuần (.*) \\[";
     final private String startDateOptPattern = "Từ (.*) --";
     final private String endDateOptPattern = "Đến (.*)\\]";
@@ -34,7 +35,7 @@ public class stringHelper {
     final private String studentCPointTblId = "ctl00_ContentPlaceHolder1_ctl00_div1";
     final private String studentPointPattern = "<span[^>]*>(?! *STT| *Học kỳ| *Thi L1| *Điểm | *Mã Môn| *Tên Môn| *TC| *\\% | *TK\\(*)(.*?)<\\/s";
     final private String studentPSemesterId = "ctl00_ContentPlaceHolder1_ctl00_div1";
-    final private String studentPListPattern = "title-hk-diem[^>]*>\\s*<((?!<)(.|\\n))*?\\>\\s*<((?!<)(.|\\n))*?\\>(.*?)<\\/";
+    final private String studentPListPattern = "title-hk-diem[^>]*>\\s*<((?!<)(.|\\n))*?\\>\\s*<((?!<)(.|\\n))*?\\> *Học kỳ (.*?) - Năm học (.*?)<\\/";
     final private String studentPRangeSelectPattern = "\\s*<\\/((?!<)(.|\\n))*?\\>\\s*<((?!<)(.|\\n))*?\\>\\s*<((?!<)(.|\\n))*?\\>(.*?)<((?!<)(.|\\n))*class=\"row-diemTK\"";
     final private String cbotLogin = "Đăng nhập";
     final private String cboxStartFirstInitialPattern = "(Thời khóa biểu của tôi|Xem thời khóa biểu)";
@@ -43,6 +44,9 @@ public class stringHelper {
     final private String cboxExtractSemesterPattern = "Học kỳ (.*), (.*)";
     final private String cboxExtractWeekPattern = "Tuần (.*?) \\(từ ngày (.*?) đến ngày (.*?)\\)";
     final private String cboxInvalidCredentialsPlsLogAgain = "\"Bạn chưa đăng nhập hoặc mật khẩu của bạn đã bị thay đổi! \\nNhấp vào nút *\\\"Lưu tài khoản\\\"* để lưu tài khoản bạn nhé!\\nSau khi đã lưu xong bạn hãy gõ *Bắt đầu* hoặc nhấp nút *Bắt đầu lại*\"";
+    final private String cboxPointTestPattern = "Điểm kỳ (.*?), (.*?)-(.*)";
+    final private String cboxFirstTime = "Bạn ơi, đây là lần đầu tiên bạn sử dụng Hapi, hãy đăng nhập lần đầu bạn nhé!?";
+    final private String notificationPattern = "window\\.onload=function\\(\\)\\{alert\\('(.*)'\\);\\}";
 
     public String defaultPage_PRODUCTION() {
         return this.defaultPage;
@@ -102,6 +106,10 @@ public class stringHelper {
 
     public String miniOptPattern_PRODUCTION() {
         return this.miniOptPattern;
+    }
+
+    public String selectedMiniOptPattern_PRODUCTION() {
+        return this.selectedMiniOptPattern;
     }
 
     public String weekNumOptPattern_PRODUCTION() {
@@ -202,5 +210,17 @@ public class stringHelper {
 
     public String cboxInvalidCredentialsPlsLogAgain_PRODUCTION() {
         return this.cboxInvalidCredentialsPlsLogAgain;
+    }
+
+    public String cboxPointTestPattern_PRODUCTION() {
+        return this.cboxPointTestPattern;
+    }
+
+    public String cboxFirstTime_PRODUCTION() {
+        return this.cboxFirstTime;
+    }
+
+    public String notificationPattern_PRODUCTION() {
+        return this.notificationPattern;
     }
 }

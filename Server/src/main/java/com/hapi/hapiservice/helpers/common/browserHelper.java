@@ -25,7 +25,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class browserHelper {
+public class browserHelper extends stuffHelper {
     final stringHelper definedStr = new stringHelper();
     final WebClient webClient = this.initial();
     protected int studentId;
@@ -56,25 +56,12 @@ public class browserHelper {
         this.token = token;
     }
 
-    public WebClient initial() {
-        WebClient webClient = new WebClient();
-        webClient.getCache().clear();
-
-        WebClientOptions webClientOpt = webClient.getOptions();
-        webClientOpt.setThrowExceptionOnScriptError(false);
-        webClientOpt.setThrowExceptionOnFailingStatusCode(false);
-        webClientOpt.setJavaScriptEnabled(false);
-        webClientOpt.setRedirectEnabled(true);
-        //webClientOpt.waitForBackgroundJavaScript(20000);
-        webClientOpt.setCssEnabled(false);
-        webClientOpt.setTimeout(100000);
-
-        return webClient;
+    public browserHelper() {
+        this(null, null, null);
     }
 
     public String conAuth(boolean isSaved) throws MalformedURLException {
         Gson gson = new Gson();
-        WebClient init = this.getLoginVS();
         authSuccess response = new authSuccess(true, "", "");
 
         if ((this.studentId + "").length() != 10)
@@ -121,37 +108,12 @@ public class browserHelper {
     }
 
     public WebClient getLoginVS () throws MalformedURLException {
-        URL actionUrl = new URL(this.definedStr.defaultPage_PRODUCTION());
-        WebRequest defaultPage = new WebRequest(actionUrl);
-        String parseBody;//, _viewState = null, _cookies = null;
-
-        defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
-
         try {
-            HtmlPage page = (HtmlPage) this.webClient
-                    .getPage(defaultPage);
-
-            HtmlInput logInput = page.getHtmlElementById(this.definedStr.loginId_PRODUCTION());
-            HtmlInput pwdInput = page.getHtmlElementById(this.definedStr.loginPwdId_PRODUCTION());
-
-            logInput.setValueAttribute(this.studentId + "");
-            pwdInput.setValueAttribute(this.studentPassword);
-
-            page = page.getHtmlElementById(this.definedStr.loginBtnId_PRODUCTION()).click();
-
-            //Thread.sleep(1500);
-
-            parseBody = page.asXml();
-
-            Pattern pattern = Pattern.compile(this.definedStr.invalidCredentialsPattern_PRODUCTION());
-            Matcher credentialsChecker = pattern.matcher(parseBody);
-            if (credentialsChecker.find()) {
+            Matcher check = this.processingCredential(this.definedStr.invalidCredentialsPattern_PRODUCTION());
+            if (check.find()) {
                 webClient.close();
                 return null;
             }
-
-            //CookieManager cookieManager = webClient.getCookieManager();
-            //_cookies = cookieManager.getCookies().toString();
         } catch (Exception e) {
             //Silent is Golden
         } finally {
@@ -159,21 +121,59 @@ public class browserHelper {
         }
     }
 
+    public Matcher processingCredential(String regex) throws IOException {
+        URL actionUrl = new URL(this.definedStr.defaultPage_PRODUCTION());
+        WebRequest defaultPage = new WebRequest(actionUrl);
+        String parseBody;
+
+        defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
+
+        HtmlPage page = this.webClient
+                .getPage(defaultPage);
+
+        parseBody = getString(page);
+
+        Pattern pattern = Pattern.compile(regex);
+        return pattern.matcher(parseBody);
+    }
+
+    private String getString(HtmlPage page) throws IOException {
+        String parseBody;
+        HtmlInput logInput = page.getHtmlElementById(this.definedStr.loginId_PRODUCTION());
+        HtmlInput pwdInput = page.getHtmlElementById(this.definedStr.loginPwdId_PRODUCTION());
+
+        logInput.setValueAttribute(this.studentId + "");
+        pwdInput.setValueAttribute(this.studentPassword);
+
+        page = page.getHtmlElementById(this.definedStr.loginBtnId_PRODUCTION()).click();
+
+        parseBody = page.asXml();
+        return parseBody;
+    }
+
+    public String loginAndPattern(String regex, int groupNum) throws IOException {
+        Matcher searchResult = this.processingCredential(regex);
+        if (searchResult.find()) {
+            webClient.close();
+            return searchResult.group(groupNum);
+        }
+        return null;
+    }
+
     public String getVS(String initialUrl) throws MalformedURLException {
         URL actionUrl = new URL(initialUrl);
         WebRequest defaultPage = new WebRequest(actionUrl);
-        String _viewState = null;
 
+        HtmlPage page = null;
         try {
-            HtmlPage page = (HtmlPage) this.webClient
+            page = (HtmlPage) this.webClient
                     .getPage(defaultPage);
-
-            _viewState = page.getElementById("__VIEWSTATE").getAttribute("value");
-        } catch (Exception e) {
-            //Silent is Golden
-        } finally {
-            return _viewState;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
+        webClient.close();
+        return page.getElementById("__VIEWSTATE").getAttribute("value");
     }
 
     public String getSName() throws MalformedURLException {
@@ -334,26 +334,64 @@ public class browserHelper {
             defaultPage = new WebRequest(actionUrl);
         }
 
-        ArrayList<weekResponse> allSWeek = new ArrayList<weekResponse>();
-
         defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
 
-        try {
-            HtmlPage page = (HtmlPage) webClient
-                    .getPage(defaultPage);
+        Object _lock = new Object();
+        synchronized (_lock) {
+            HtmlPage page = null;
+            try {
+                page = (HtmlPage) webClient
+                        .getPage(defaultPage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
             DomElement semesterOpt = page.getElementById(definedStr.weekOptId_PRODUCTION());
 
-            allSWeek = this.weekProcessing(semesterOpt);
-        } catch (Exception e) {
-            //Silent is Golden
-        } finally {
             webClient.close();
-            return allSWeek;
+            return this.weekProcessing(semesterOpt);
         }
     }
 
-    public ArrayList<weekResponse> weekProcessing(DomElement semesterOpt) throws ParseException {
+    public weekResponse findSelectedWeek() throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, MalformedURLException, ParseException {
+        WebClient webClient = this.verifyToken();
+        Object _lock = new Object();
+
+        URL actionUrl = new URL(this.definedStr.schedulePage_PRODUCTION());
+        WebRequest defaultPage = new WebRequest(actionUrl);
+
+        defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
+
+        HtmlPage page = null;
+        try {
+            page = (HtmlPage) webClient
+                    .getPage(defaultPage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        DomElement semesterOpt = page.getElementById(definedStr.weekOptId_PRODUCTION());
+
+        synchronized (_lock) {
+            if(semesterOpt.getTagName().toLowerCase().equals("select")) {
+                String _xmlWeek = this.removeTheDEGap(semesterOpt);
+                Matcher weekView = this.patternSearch(this.definedStr.selectedMiniOptPattern_PRODUCTION(), _xmlWeek);
+                if (weekView.find())
+                {
+                    String tempStr = weekView.group(1);
+                    Matcher weekNum = this.patternSearch(this.definedStr.weekNumOptPattern_PRODUCTION(), tempStr);
+                    Matcher startDate = this.patternSearch(this.definedStr.startDateOptPattern_PRODUCTION(), tempStr);
+                    Matcher endDate = this.patternSearch(this.definedStr.endDateOptPattern_PRODUCTION(), tempStr);
+                    if (weekNum.find() && startDate.find() && endDate.find()) {
+                        return new weekResponse(startDate.group(1), endDate.group(1), weekNum.group(1), tempStr);
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public ArrayList<weekResponse> weekProcessing(DomElement semesterOpt) {
         ArrayList<weekResponse> _allSWeek = new ArrayList<weekResponse>();
         if(semesterOpt.getTagName().toLowerCase().equals("select")) {
             String _xmlWeek = this.removeTheDEGap(semesterOpt);
@@ -363,20 +401,25 @@ public class browserHelper {
                 Matcher weekNum = this.patternSearch(this.definedStr.weekNumOptPattern_PRODUCTION(), tempStr);
                 Matcher startDate = this.patternSearch(this.definedStr.startDateOptPattern_PRODUCTION(), tempStr);
                 Matcher endDate = this.patternSearch(this.definedStr.endDateOptPattern_PRODUCTION(), tempStr);
-                if (weekNum.find() && startDate.find() && endDate.find())
-                    _allSWeek.add(new weekResponse(startDate.group(1), endDate.group(1), weekNum.group(1), tempStr));
+                if (weekNum.find() && startDate.find() && endDate.find()) {
+                    try {
+                        _allSWeek.add(new weekResponse(startDate.group(1), endDate.group(1), weekNum.group(1), tempStr));
+                    } catch (ParseException e) {
+                        //Silent is Golden
+                    }
+                }
             }
         }
         return _allSWeek;
     }
 
-    public String getScheduleDetail(String currSemester, String currWeek) throws IOException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
+    public String getScheduleDetail(String currSemester, String currWeek) throws IOException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException, ParseException {
         Gson gson = new Gson();
 
         return gson.toJson(this.getScheduleDetailArr(currSemester, currWeek));
     }
 
-    public ArrayList<scheduleReponse> getScheduleDetailArr(String currSemester, String currWeek) throws IOException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
+    public ArrayList<scheduleReponse> getScheduleDetailArr(String currSemester, String currWeek) throws IOException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException, ParseException {
         WebClient webClient = this.verifyToken();
         WebRequest defaultPage;
         ArrayList<scheduleReponse> _fullWSchedule = new ArrayList<scheduleReponse>();
@@ -411,12 +454,39 @@ public class browserHelper {
         return _fullWSchedule;
     }
 
+    public ArrayList<pointResponse> getCurrentPointArr() throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, MalformedURLException {
+        WebClient webClient = this.verifyToken();
+
+        URL actionUrl = new URL(this.definedStr.studentPointUrl_PRODUCTION());
+        WebRequest defaultPage = new WebRequest(actionUrl);
+
+        defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
+
+        HtmlPage page = null;
+        try {
+            page = (HtmlPage) webClient
+                    .getPage(defaultPage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        DomElement stdntPointTbl = page.getElementById(definedStr.studentCPointTblId_PRODUCTION());
+
+        if(stdntPointTbl.getTagName().toLowerCase().equals("div")) {
+            String _xmlPTbl = this.removeTheDEGap(stdntPointTbl);
+
+            return this.showSemesterPointArr(_xmlPTbl);
+        }
+        return null;
+    }
+
     public String getCurrentPoint() throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, MalformedURLException {
         WebClient webClient = this.verifyToken();
 
         URL actionUrl = new URL(this.definedStr.studentPointUrl_PRODUCTION());
         WebRequest defaultPage = new WebRequest(actionUrl);
         String _result = "";
+        Gson gson = new Gson();
 
         defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
 
@@ -429,7 +499,7 @@ public class browserHelper {
             if(stdntPointTbl.getTagName().toLowerCase().equals("div")) {
                 String _xmlPTbl = this.removeTheDEGap(stdntPointTbl);
 
-                _result = this.showSemesterPoint(_xmlPTbl);
+                return this.showSemesterPoint(_xmlPTbl);
             }
         } catch (Exception e) {
             //Silent is Golden
@@ -449,7 +519,6 @@ public class browserHelper {
         ArrayList<String> temp = new ArrayList<String>();
         int count = 0;
         Matcher pointView = this.patternSearch(this.definedStr.studentPointPattern_PRODUCTION(), _xmlPTbl);
-
         if (!pointView.find())
             return null;
         else
@@ -466,52 +535,78 @@ public class browserHelper {
         return fullPointView;
     }
 
-    public String getPointListSemester(String semesterId) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, MalformedURLException {
+    public ArrayList<PSListResponse> getPointListSemesterArr() throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, MalformedURLException {
+        WebClient webClient = this.verifyToken();
+        Matcher pointView = null;
+
+        WebRequest defaultPage = this.viewAllPoint();
+        ArrayList<PSListResponse> _last = null;
+
+        ArrayList<PSListResponse> fullPointView = new ArrayList<PSListResponse>();
+
+        defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
+
+        HtmlPage page = null;
+        try {
+            page = (HtmlPage) webClient
+                    .getPage(defaultPage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        DomElement stdntPointTbl = page.getElementById(definedStr.studentPSemesterId_PRODUCTION());
+
+        String _xmlPTbl = this.removeTheDEGap(stdntPointTbl);
+        pointView = this.patternSearch(this.definedStr.studentPListPattern_PRODUCTION(), _xmlPTbl);
+
+        while (pointView.find()) {
+            fullPointView.add(new PSListResponse(pointView.group(5).trim(), pointView.group(6).trim()));
+        }
+        return fullPointView;
+    }
+
+    public ArrayList<pointResponse> getPointBySemesterArr(String semesterId) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, MalformedURLException {
         WebClient webClient = this.verifyToken();
         Matcher pointView;
 
         WebRequest defaultPage = this.viewAllPoint();
-        String _last = null;
-
-        ArrayList<PSListResponse> fullPointView = new ArrayList<PSListResponse>();
-        Gson gson = new Gson();
 
         defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
 
-        try {
-            HtmlPage page = (HtmlPage) webClient
-                    .getPage(defaultPage);
-
-            DomElement stdntPointTbl = page.getElementById(definedStr.studentPSemesterId_PRODUCTION());
-
-            if(stdntPointTbl.getTagName().toLowerCase().equals("div")) {
-                String _xmlPTbl = this.removeTheDEGap(stdntPointTbl);
-                if (semesterId == "")
-                    pointView = this.patternSearch(this.definedStr.studentPListPattern_PRODUCTION(), _xmlPTbl);
-                else {
-                    String myPattern = semesterId.trim().concat(this.definedStr.studentPRangeSelectPattern_PRODUCTION());
-                    pointView = this.patternSearch(myPattern, _xmlPTbl);
-                }
-
-                if (!pointView.find())
-                    return null;
-                else if (semesterId == "")
-                {
-                    while (pointView.find()) {
-                        fullPointView.add(new PSListResponse(pointView.group(5).trim()));
-                    }
-                    _last = gson.toJson(fullPointView);
-                }
-                else {
-                    _last = this.showSemesterPoint(pointView.group(7));
-                }
-            }
-        } catch (Exception e) {
-            //Silent is Golden
-        } finally {
-            webClient.close();
-            return _last;
+        Matcher firstTest = this.patternSearch(this.definedStr.cboxPointTestPattern_PRODUCTION(), semesterId);
+        if (firstTest.find()) {
+            semesterId = "Học kỳ " + firstTest.group(1) + " - Năm học " + firstTest.group(2) + "-" + firstTest.group(3);
         }
+
+        HtmlPage page = null;
+        try {
+            page = (HtmlPage) webClient
+                    .getPage(defaultPage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        DomElement stdntPointTbl = page.getElementById(definedStr.studentPSemesterId_PRODUCTION());
+
+        if(stdntPointTbl.getTagName().toLowerCase().equals("div")) {
+            String _xmlPTbl = this.removeTheDEGap(stdntPointTbl);
+
+            String myPattern = semesterId.trim().concat(this.definedStr.studentPRangeSelectPattern_PRODUCTION());
+            pointView = this.patternSearch(myPattern, _xmlPTbl);
+
+            if (pointView.find())
+                return this.showSemesterPointArr(pointView.group(7));
+        }
+        return null;
+    }
+
+    public String getPointListSemester(String semesterId) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, MalformedURLException {
+        Gson gson = new Gson();
+
+        if (semesterId == "")
+            return gson.toJson(this.getPointListSemesterArr());
+        else
+            return gson.toJson(this.getPointBySemesterArr(semesterId));
     }
 
     public Matcher patternSearch(String regex, String _test) {
@@ -534,13 +629,33 @@ public class browserHelper {
         return schedulePage;
     }
 
-    public WebRequest selectWeekOpt(String selectedSemester, String selectedWeek) throws MalformedURLException {
-        URL actionUrl = new URL(this.definedStr.schedulePageUrlMode1_PRODUCTION());
+    public WebRequest selectWeekOpt(String selectedSemester, String selectedWeek) throws MalformedURLException, IllegalBlockSizeException, InvalidKeyException, NoSuchAlgorithmException, BadPaddingException, NoSuchPaddingException, ParseException {
+        Object _lock = new Object();
+        Object _lock1 = new Object();
+        Object _lock2 = new Object();
+
+        weekResponse weekRes;
+        String _acUrl;
+        String _VState;
+
+        synchronized (_lock) {
+            weekRes = this.findSelectedWeek();
+        }
+
+        synchronized (_lock1) {
+            _acUrl = weekRes.getTenxacdinh().equals(selectedWeek) ? this.definedStr.schedulePageUrlMode1_PRODUCTION() : this.definedStr.schedulePage_PRODUCTION();
+        }
+
+        URL actionUrl = new URL(_acUrl);
         WebRequest schedulePage = new WebRequest(actionUrl, HttpMethod.POST);
+
+        synchronized (_lock2) {
+            _VState = this.getVS(_acUrl);
+        }
 
         schedulePage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
 
-        schedulePage.setRequestBody("__EVENTTARGET=ctl00$ContentPlaceHolder1$ctl00$ddlTuan&__EVENTARGUMENT=&__LASTFOCUS=&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&__VIEWSTATE=" + URLEncoder.encode(this.getVS(this.definedStr.schedulePageUrlMode1_PRODUCTION())) + "&ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK=" + URLEncoder.encode(selectedSemester) + "&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&ctl00$ContentPlaceHolder1$ctl00$ddlTuan=" + URLEncoder.encode(selectedWeek));
+        schedulePage.setRequestBody("__EVENTTARGET=ctl00$ContentPlaceHolder1$ctl00$ddlTuan&__EVENTARGUMENT=&__LASTFOCUS=&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&__VIEWSTATE=" + URLEncoder.encode(_VState) + "&ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK=" + URLEncoder.encode(selectedSemester) + "&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&ctl00$ContentPlaceHolder1$ctl00$ddlTuan=" + URLEncoder.encode(selectedWeek));
 
         return schedulePage;
     }

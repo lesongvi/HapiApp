@@ -6,17 +6,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class weekResponse {
-    public String ngaybd;
+    private String ngaybd;
 
-    public String ngaykt;
+    private String ngaykt;
 
-    public String sotuan;
+    private String sotuan;
 
-    public String tenxacdinh;
+    private String tenxacdinh;
 
-    public long unixtimebd;
+    private long unixtimebd;
 
-    public long unixtimekt;
+    private long unixtimekt;
 
     public weekResponse(
             String ngaybd,
@@ -36,5 +36,53 @@ public class weekResponse {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = dateFormat.parse(dString);
         return date.getTime()/1000;
+    }
+
+    public void setNgaybd(String ngaybd) {
+        this.ngaybd = ngaybd;
+    }
+
+    public String getNgaybd() {
+        return this.ngaybd;
+    }
+
+    public void setNgaykt(String ngaykt) {
+        this.ngaykt = ngaykt;
+    }
+
+    public String getNgaykt() {
+        return this.ngaykt;
+    }
+
+    public void setSotuan(String sotuan) {
+        this.sotuan = sotuan;
+    }
+
+    public String getSotuan() {
+        return this.sotuan;
+    }
+
+    public void setTenxacdinh(String tenxacdinh) {
+        this.tenxacdinh = tenxacdinh;
+    }
+
+    public String getTenxacdinh() {
+        return this.tenxacdinh;
+    }
+
+    public void setUnixtimebd(long unixtimebd) {
+        this.unixtimebd = unixtimebd;
+    }
+
+    public long getUnixtimebd() {
+        return this.unixtimebd;
+    }
+
+    public void setUnixtimekt(long unixtimekt) {
+        this.unixtimekt = unixtimekt;
+    }
+
+    public long getUnixtimekt() {
+        return this.unixtimekt;
     }
 }

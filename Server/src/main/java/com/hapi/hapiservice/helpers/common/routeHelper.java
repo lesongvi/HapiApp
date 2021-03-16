@@ -40,4 +40,8 @@ public class routeHelper {
     public final static String getFbSendUrl = fbGraphApi + "/me/messages?access_token={PAGE_ACCESS_TOKEN}";
 
     public final static String getFbMessengerProfileUrl = fbGraphApi + "/me/messenger_profile?access_token={PAGE_ACCESS_TOKEN}";
+
+    public final static String snapshotApiPath = apiPrefix + "snapshot/";
+
+    public final static String snapshotNotification = snapshotApiPath + "notification";
 }

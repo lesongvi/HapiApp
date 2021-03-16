@@ -21,7 +21,8 @@ public class StudentService {
     }
 
     public Students getStudent(int stdntId) {
-        return (Students)studentRepository.findById(stdntId).get();
+        Optional<Students> stdnt = studentRepository.findById(stdntId);
+        return stdnt.isPresent() ? stdnt.get() : null;
     }
 
     public Students getStudentByToken(String token) {
