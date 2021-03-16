@@ -26,7 +26,7 @@ public class ScheduleController {
     private StudentService studentService;
 
     @RequestMapping(value = {routeHelper.studentAuth}, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String authenticate (@RequestParam(value = "sid", defaultValue = "") int sid, @RequestParam(value = "pwd", defaultValue = "") String pwd) throws IOException {
+    public String authenticate (@RequestParam(value = "sid", defaultValue = "") int sid, @RequestParam(value = "pwd", defaultValue = "") String pwd) throws IOException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
         browserHelper studentBasicTest = new browserHelper(sid, pwd, this.studentRepository, this.studentService);
         Optional userVerify = this.studentService.findById(sid);
 

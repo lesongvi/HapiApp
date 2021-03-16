@@ -351,7 +351,7 @@ public class ChatBotController extends BaseBot {
         reply(event, schedulebot.login(""));
     }
 
-    @Controller(events = {EventType.MESSAGE, EventType.POSTBACK}, pattern = "!((?i)^([0-9]*?|Đăng nhập|bắt đầu|chào|bắt đầu lại|Xem thời khóa biểu|Đăng xuất|Cài đặt|Điểm kỳ (.*), (.*)-(.*)|TKB tuần này|Báo lỗi|Xem thông báo)$)")
+    @Controller(events = {EventType.MESSAGE, EventType.POSTBACK}, pattern = "?!((?i)^([0-9]*?|Đăng nhập|bắt đầu|chào|bắt đầu lại|Xem thời khóa biểu|Đăng xuất|Cài đặt|Điểm kỳ (.*), (.*)-(.*)|TKB tuần này|Báo lỗi|Xem thông báo)$)")
     public void defaultReply(Event event) {
         String fid = event.getSender().getId();
         ScheduleBot schedulebot = new ScheduleBot(
@@ -507,19 +507,6 @@ public class ChatBotController extends BaseBot {
         stopConversation(event);
     }
 
-    /*@Controller(events = {EventType.MESSAGE, EventType.POSTBACK}, pattern = "(?!(chào|hi))")
-    public void handleMessage(Event event) throws BadPaddingException, JsonProcessingException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeyException, MalformedURLException {
-        String fid = event.getSender().getId();
-        ScheduleBot schedulebot = new ScheduleBot(
-                fid,
-                this.chatbotstudentRepository,
-                this.chatbotstudentService,
-                this.studentRepository,
-                this.studentService
-        );
-        reply(event, schedulebot.onMessageCome(event.getMessage().getText()));
-    }*/
-
     @CrossOrigin(origins = "https://2cll.com", maxAge = 3600)
     @RequestMapping(value = {routeHelper.saveFbCredentials}, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity saveFacebookCredentials(
@@ -527,12 +514,12 @@ public class ChatBotController extends BaseBot {
             @RequestParam(value = "sid", defaultValue = "") int sid,
             @RequestParam(value = "pwd", defaultValue = "") String pwd
 
-    ) throws MalformedURLException {
+    ) throws MalformedURLException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
         if (fid == "" || sid == 0 || pwd == "")
             return ResponseEntity.badRequest().build();
         ScheduleBot scheduleBasic = new ScheduleBot(decryptFid(fid), this.chatbotstudentRepository, this.chatbotstudentService, this.studentRepository, this.studentService);
         browserHelper studentBasicTest = new browserHelper(sid, pwd, this.studentRepository, this.studentService);
-        Optional stdntVerify = this.studentService.findById(sid);
+        Optional<Students> stdntVerify = this.studentService.findById(sid);
 
         if (stdntVerify.isPresent())
             scheduleBasic.saveFbCredentials(sid);

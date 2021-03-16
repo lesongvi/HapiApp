@@ -60,7 +60,7 @@ public class browserHelper extends stuffHelper {
         this(null, null, null);
     }
 
-    public String conAuth(boolean isSaved) throws MalformedURLException {
+    public String conAuth(boolean isSaved) throws MalformedURLException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         Gson gson = new Gson();
         authSuccess response = new authSuccess(true, "", "");
 
@@ -96,6 +96,7 @@ public class browserHelper extends stuffHelper {
             }
         } catch (Exception e) {
             //Silent is Golden
+            e.printStackTrace();
         } finally {
             return gson.toJson(response);
         }
@@ -111,13 +112,13 @@ public class browserHelper extends stuffHelper {
         try {
             Matcher check = this.processingCredential(this.definedStr.invalidCredentialsPattern_PRODUCTION());
             if (check.find()) {
-                webClient.close();
+                this.webClient.close();
                 return null;
             }
         } catch (Exception e) {
             //Silent is Golden
         } finally {
-            return webClient;
+            return this.webClient;
         }
     }
 
@@ -128,7 +129,7 @@ public class browserHelper extends stuffHelper {
 
         defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
 
-        HtmlPage page = this.webClient
+        HtmlPage page = this.requestLogin()
                 .getPage(defaultPage);
 
         parseBody = getString(page);
@@ -138,7 +139,11 @@ public class browserHelper extends stuffHelper {
     }
 
     private String getString(HtmlPage page) throws IOException {
-        String parseBody;
+        String parseBody = this.passCredentials(page).asXml();
+        return parseBody;
+    }
+
+    private HtmlPage passCredentials(HtmlPage page) throws IOException {
         HtmlInput logInput = page.getHtmlElementById(this.definedStr.loginId_PRODUCTION());
         HtmlInput pwdInput = page.getHtmlElementById(this.definedStr.loginPwdId_PRODUCTION());
 
@@ -147,8 +152,7 @@ public class browserHelper extends stuffHelper {
 
         page = page.getHtmlElementById(this.definedStr.loginBtnId_PRODUCTION()).click();
 
-        parseBody = page.asXml();
-        return parseBody;
+        return page;
     }
 
     public String loginAndPattern(String regex, int groupNum) throws IOException {
@@ -166,7 +170,7 @@ public class browserHelper extends stuffHelper {
 
         HtmlPage page = null;
         try {
-            page = (HtmlPage) this.webClient
+            page = (HtmlPage) this.requestLogin()
                     .getPage(defaultPage);
         } catch (IOException e) {
             e.printStackTrace();
@@ -182,7 +186,7 @@ public class browserHelper extends stuffHelper {
         String _studntName = null;
 
         try {
-            HtmlPage page = (HtmlPage) this.webClient
+            HtmlPage page = (HtmlPage) this.requestLogin()
                     .getPage(defaultPage);
 
             DomElement helloStudnt = page.getElementById(definedStr.helloStudentId_PRODUCTION());
@@ -200,13 +204,34 @@ public class browserHelper extends stuffHelper {
         }
     }
 
-    public ArrayList<String> getMailAndPhoneNum() throws MalformedURLException {
+    public WebClient requestLogin() throws IOException {
+        URL actionUrl = new URL(this.definedStr.defaultPage_PRODUCTION());
+        WebRequest defaultPage = new WebRequest(actionUrl);
+
+        defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
+
+        HtmlPage page = null;
+        try {
+            page = this.webClient
+                    .getPage(defaultPage);
+
+            this.passCredentials(page);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return this.webClient;
+    }
+
+    public ArrayList<String> getMailAndPhoneNum() throws MalformedURLException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
         URL actionUrl = new URL(this.definedStr.userInfoChangerUrl_PRODUCTION());
         WebRequest defaultPage = new WebRequest(actionUrl);
         ArrayList<String> _infoBack = new ArrayList<String>();
 
+        defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
+
         try {
-            HtmlPage page = (HtmlPage) this.webClient
+            HtmlPage page = this.requestLogin()
                     .getPage(defaultPage);
 
             DomElement studntMailSlct = page.getElementById(definedStr.studentEmailId_PRODUCTION());
