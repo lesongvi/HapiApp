@@ -101,6 +101,7 @@ public class browserHelper extends stuffHelper {
         } catch (Exception e) {
             //Silent is Golden
             logger.error(e.getMessage());
+            //e.getStackTrace();
         } finally {
             return gson.toJson(response);
         }
@@ -122,6 +123,7 @@ public class browserHelper extends stuffHelper {
         } catch (Exception e) {
             //Silent is Golden
             logger.error(e.getMessage());
+            //e.getStackTrace();
         } finally {
             return this.webClient;
         }
@@ -143,40 +145,49 @@ public class browserHelper extends stuffHelper {
     }
 
     public Matcher processingCredential(String regex) throws IOException {
+        Object _lock = new Object();
         URL actionUrl = new URL(this.definedStr.defaultPage_PRODUCTION());
         WebRequest defaultPage = new WebRequest(actionUrl);
         String parseBody;
+        Pattern pattern;
 
         defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
 
-        HtmlPage page = this.requestLogin()
-                .getPage(defaultPage);
 
-        parseBody = getString(page);
+        synchronized (_lock) {
+            HtmlPage page = null;
+            page = this.requestLogin()
+                    .getPage(defaultPage);
 
-        Pattern pattern = Pattern.compile(regex);
+            parseBody = getString(page);
+
+            pattern = Pattern.compile(regex);
+        }
+
         return pattern.matcher(parseBody);
     }
 
-    private String getString(HtmlPage page) throws IOException {
-        Object _lock = new Object();
+    private String getString(HtmlPage page) {
         String parseBody;
-        synchronized (_lock) {
-            parseBody = this.passCredentials(page).asXml();
-        }
+        parseBody = this.passCredentials(page).asXml();
         return parseBody;
     }
 
-    private HtmlPage passCredentials(HtmlPage page) throws IOException {
-        HtmlInput logInput = page.getHtmlElementById(this.definedStr.loginId_PRODUCTION());
-        HtmlInput pwdInput = page.getHtmlElementById(this.definedStr.loginPwdId_PRODUCTION());
+    private HtmlPage passCredentials(HtmlPage page) {
+        try {
+            HtmlInput logInput = page.getHtmlElementById(this.definedStr.loginId_PRODUCTION());
+            HtmlInput pwdInput = page.getHtmlElementById(this.definedStr.loginPwdId_PRODUCTION());
 
-        logInput.setValueAttribute(this.studentId + "");
-        pwdInput.setValueAttribute(this.studentPassword);
+            logInput.setValueAttribute(this.studentId + "");
+            pwdInput.setValueAttribute(this.studentPassword);
 
-        page = page.getHtmlElementById(this.definedStr.loginBtnId_PRODUCTION()).click();
-
-        return page;
+            page = page.getHtmlElementById(this.definedStr.loginBtnId_PRODUCTION()).click();
+        } catch (Exception e) {
+            //Silent is Golden
+            logger.error(e.getMessage());
+        } finally {
+            return page;
+        }
     }
 
     public String loginAndPattern(String regex, int groupNum) throws IOException {
@@ -185,7 +196,7 @@ public class browserHelper extends stuffHelper {
             webClient.close();
             return searchResult.group(groupNum);
         }
-        return null;
+        return "";
     }
 
     public String getVS(String initialUrl) throws MalformedURLException {
@@ -199,6 +210,7 @@ public class browserHelper extends stuffHelper {
         } catch (Exception e) {
             //Silent is Golden
             logger.error(e.getMessage());
+            //e.getStackTrace();
         }
 
         webClient.close();
@@ -225,6 +237,7 @@ public class browserHelper extends stuffHelper {
         } catch (Exception e) {
             //Silent is Golden
             logger.error(e.getMessage());
+            //e.getStackTrace();
         } finally {
             return _studntName;
         }
@@ -244,6 +257,7 @@ public class browserHelper extends stuffHelper {
             this.passCredentials(page);
         } catch (IOException e) {
             logger.error(e.getMessage());
+            //e.getStackTrace();
         }
 
         return this.webClient;
@@ -276,6 +290,7 @@ public class browserHelper extends stuffHelper {
         } catch (Exception e) {
             //Silent is Golden
             logger.error(e.getMessage());
+            //e.getStackTrace();
         } finally {
             return _infoBack;
         }
@@ -312,6 +327,7 @@ public class browserHelper extends stuffHelper {
         } catch (Exception e) {
             //Silent is Golden
             logger.error(e.getMessage());
+            //e.getStackTrace();
         } finally {
             webClient.close();
             return gson.toJson(semesterMap);
@@ -338,6 +354,7 @@ public class browserHelper extends stuffHelper {
         } catch (Exception e) {
             //Silent is Golden
             logger.error(e.getMessage());
+            //e.getStackTrace();
         } finally {
             webClient.close();
             return semesterMap;
@@ -399,6 +416,7 @@ public class browserHelper extends stuffHelper {
         } catch (Exception e) {
             //Silent is Golden
             logger.error(e.getMessage());
+            //e.getStackTrace();
         }
 
         DomElement semesterOpt = page.getElementById(definedStr.weekOptId_PRODUCTION());
@@ -422,6 +440,7 @@ public class browserHelper extends stuffHelper {
                     .getPage(defaultPage);
         } catch (Exception e) {
             logger.error(e.getMessage());
+            //e.getStackTrace();
         }
 
         DomElement semesterOpt = page.getElementById(definedStr.weekOptId_PRODUCTION());
@@ -461,6 +480,7 @@ public class browserHelper extends stuffHelper {
                     } catch (Exception e) {
                         //Silent is Golden
                         logger.error(e.getMessage());
+                        //e.getStackTrace();
                     }
                 }
             }
@@ -523,6 +543,7 @@ public class browserHelper extends stuffHelper {
                     .getPage(defaultPage);
         } catch (Exception e) {
             logger.error(e.getMessage());
+            //e.getStackTrace();
         }
 
         DomElement stdntPointTbl = page.getElementById(definedStr.studentCPointTblId_PRODUCTION());
@@ -558,6 +579,7 @@ public class browserHelper extends stuffHelper {
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
+            //e.getStackTrace();
         } finally {
             webClient.close();
             return _result;
@@ -574,19 +596,17 @@ public class browserHelper extends stuffHelper {
         ArrayList<String> temp = new ArrayList<String>();
         int count = 0;
         Matcher pointView = this.patternSearch(this.definedStr.studentPointPattern_PRODUCTION(), _xmlPTbl);
-        if (!pointView.find())
-            return null;
-        else
-            while (pointView.find()) {
-                temp.add(pointView.group(1).trim());
-                if (!!(count == 10))
-                {
-                    fullPointView.add(new pointResponse(temp.get(0),temp.get(1), temp.get(2), temp.get(3), temp.get(4), temp.get(5), temp.get(6), temp.get(7), temp.get(8), temp.get(9)));
-                    count = -1;
-                    temp.clear();
-                }
-                count++;
+        while (pointView.find()) {
+            temp.add(pointView.group(1).trim());
+            if (!!(count == 10))
+            {
+                fullPointView.add(new pointResponse(temp.get(1), temp.get(2), temp.get(3), temp.get(4), temp.get(5), temp.get(6), temp.get(7), temp.get(8), temp.get(9), temp.get(10)));
+                count = -1;
+                temp.clear();
             }
+            count++;
+        }
+
         return fullPointView;
     }
 
@@ -607,6 +627,7 @@ public class browserHelper extends stuffHelper {
                     .getPage(defaultPage);
         } catch (Exception e) {
             logger.error(e.getMessage());
+            //e.getStackTrace();
         }
 
         DomElement stdntPointTbl = page.getElementById(definedStr.studentPSemesterId_PRODUCTION());
@@ -639,6 +660,7 @@ public class browserHelper extends stuffHelper {
                     .getPage(defaultPage);
         } catch (Exception e) {
             logger.error(e.getMessage());
+            //e.getStackTrace();
         }
 
         DomElement stdntPointTbl = page.getElementById(definedStr.studentPSemesterId_PRODUCTION());

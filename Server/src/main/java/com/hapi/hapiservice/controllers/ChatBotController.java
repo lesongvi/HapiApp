@@ -87,12 +87,13 @@ public class ChatBotController extends BaseBot {
         //Nếu chưa verify webhook thì comment 2 dòng dưới lại
         try {
             setGetStartedButton("Bắt đầu");
-            setGreetingText(new Payload[]{new Payload().setLocale("default").setText("HUTECH Bot là một chatbot tự động" +
-                    " giúp sinh viên HUTECH có thể xem chi tiết thời khóa biểu và điểm của mình ngay trên ứng dụng Messenger " +
+            setGreetingText(new Payload[]{new Payload().setLocale("default").setText("Hapi HUTECH Bot là một chatbot tự động" +
+                    " giúp sinh viên HUTECH có thể xem chi tiết thời khóa biểu, điểm các học kỳ và thông báo mới nhất từ trường HUTECH ngay trên ứng dụng Messenger " +
                     "hãy nhấp vào nút \"Bắt đầu\" hoặc gõ \"Chào\".")});
         } catch (Exception e) {
             //Silent is Golden
             logger.error(e.getMessage());
+            //e.getStackTrace();
         }
     }
 
@@ -161,6 +162,7 @@ public class ChatBotController extends BaseBot {
         } catch (Exception e) {
             //Silent is Golden
             logger.error(e.getMessage());
+            //e.getStackTrace();
         }
         return ResponseEntity.ok("EVENT_RECEIVED");
     }
@@ -181,6 +183,7 @@ public class ChatBotController extends BaseBot {
             return restTemplate.postForEntity(fbSendUrl, event, String.class);
         } catch (HttpClientErrorException e) {
             logger.error(e.getMessage());
+            //e.getStackTrace();
             return new ResponseEntity<String>(e.getResponseBodyAsString(), e.getStatusCode());
         }
     }
@@ -229,6 +232,7 @@ public class ChatBotController extends BaseBot {
         } catch (Exception e) {
             //Silent is Golden
             logger.error(e.getMessage());
+            //e.getStackTrace();
         }
     }
 
@@ -272,6 +276,7 @@ public class ChatBotController extends BaseBot {
         } catch (Exception e) {
             //Silent is Golden
             logger.error(e.getMessage());
+            //e.getStackTrace();
         }
     }
 
@@ -292,6 +297,7 @@ public class ChatBotController extends BaseBot {
             } catch (Exception e) {
                 //Silent is Golden
                 logger.error(e.getMessage());
+                //e.getStackTrace();
             }
         }
     }
@@ -313,9 +319,13 @@ public class ChatBotController extends BaseBot {
     public void onGetStarted(Event event) {
         String fid = event.getSender().getId();
         Optional<ChatbotStudents> userVerify = this.chatbotstudentService.findById(fid);
+        Object _lock = new Object();
+        Students stdunt;
 
         if (userVerify.isPresent()) {
-            Students stdunt = studentService.getStudent(userVerify.get().getSid());
+            synchronized (_lock) {
+                stdunt = studentService.getStudent(userVerify.get().getSid());
+            }
             if (stdunt != null)
             {
                 Button[] quickReplies = new Button[]{
@@ -325,18 +335,14 @@ public class ChatBotController extends BaseBot {
                         new Button().setContentType("text").setTitle("Cài đặt").setPayload("Cài đặt")
                 };
                 reply(event, new Message().setText("Xin chào " + stdunt.getName() + ", lại là Hapi đây, bạn muốn xem thông tin gì?").setQuickReplies(quickReplies));
-            } else {
-                Button[] quickReplies = new Button[]{
-                        new Button().setContentType("text").setTitle("Đăng nhập").setPayload("Đăng nhập")
-                };
-                reply(event, new Message().setText("Bạn ơi, đây là lần đầu tiên bạn sử dụng Hapi, hãy đăng nhập lần đầu bạn nhé!?").setQuickReplies(quickReplies));
+
+                return;
             }
-        } else {
-            Button[] quickReplies = new Button[]{
-                    new Button().setContentType("text").setTitle("Đăng nhập").setPayload("Đăng nhập")
-            };
-            reply(event, new Message().setText("Bạn ơi, đây là lần đầu tiên bạn sử dụng Hapi, hãy đăng nhập lần đầu bạn nhé!?").setQuickReplies(quickReplies));
         }
+        Button[] quickReplies = new Button[]{
+                new Button().setContentType("text").setTitle("Đăng nhập").setPayload("Đăng nhập")
+        };
+        reply(event, new Message().setText("Bạn ơi, đây là lần đầu tiên bạn sử dụng Hapi, hãy đăng nhập lần đầu bạn nhé!?").setQuickReplies(quickReplies));
     }
 
     @Controller(events = {EventType.MESSAGE, EventType.POSTBACK, EventType.QUICK_REPLY}, pattern = "^(?i)(Xem thông báo)$")
@@ -363,19 +369,6 @@ public class ChatBotController extends BaseBot {
                 this.studentService
         );
         reply(event, schedulebot.login(""));
-    }
-
-    @Controller(events = {EventType.MESSAGE, EventType.POSTBACK}, pattern = "?!((?i)^([0-9]*?|Đăng nhập|bắt đầu|chào|bắt đầu lại|Xem thời khóa biểu|Đăng xuất|Cài đặt|Điểm kỳ (.*), (.*)-(.*)|TKB tuần này|Báo lỗi|Xem thông báo)$)")
-    public void defaultReply(Event event) {
-        String fid = event.getSender().getId();
-        ScheduleBot schedulebot = new ScheduleBot(
-                fid,
-                this.chatbotstudentRepository,
-                this.chatbotstudentService,
-                this.studentRepository,
-                this.studentService
-        );
-        reply(event, schedulebot.onMessageCome(event.getMessage().getText()));
     }
 
     @Controller(events = {EventType.MESSAGE, EventType.POSTBACK, EventType.QUICK_REPLY}, pattern = "^(?i)(Cài đặt)$", next = "configCredentialsStep2")
@@ -406,9 +399,9 @@ public class ChatBotController extends BaseBot {
         stopConversation(event);
     }
 
-    @Controller(events = {EventType.MESSAGE, EventType.POSTBACK, EventType.QUICK_REPLY}, pattern = "^(?i)(Xem điểm)$", next = "viewPointStep2")
+    @Controller(events = {EventType.MESSAGE, EventType.POSTBACK, EventType.QUICK_REPLY}, pattern = "^(?i)(Xem điểm)$"/*, next = "viewPointStep2"*/)
     public void viewMyPoint(Event event) {
-        startConversation(event, "viewPointStep2");
+        //startConversation(event, "viewPointStep2");
         String fid = event.getSender().getId();
         ScheduleBot schedulebot = new ScheduleBot(
                 fid,
@@ -430,16 +423,17 @@ public class ChatBotController extends BaseBot {
                 this.studentRepository,
                 this.studentService
         );
+
         reply(event, schedulebot.detailPointOpt(event.getMessage().getText()));
-        stopConversation(event);
+        //stopConversation(event);
     }
 
     @Controller(events = {EventType.MESSAGE, EventType.POSTBACK, EventType.QUICK_REPLY}, pattern = "^(?i)(Báo lỗi)$")
     public void bugReport(Event event) {
-        String reply = "Sau đây là danh sách điểm của bạn\n-----------------------------";
+        String reply = "Lỗi ư :((( bạn có thể cho Hapi biết chi tiết lỗi là gì bằng những nút ở dưới được không ạ, buồn quá đi";
         Button[] buttons = new Button[]{
                 new Button().setType("web_url").setUrl("https://maxmines.com/contact").setTitle("Liên hệ"),
-                new Button().setType("web_url").setUrl("mailto:vi@error.vn").setTitle("Gửi Email")
+                new Button().setType("web_url").setUrl("https://vlink.maxddns.com/qx0VaGby").setTitle("Pháp lý (Email)")
         };
         Button[] buttons2 = new Button[]{
                 new Button().setContentType("text").setTitle("Bắt đầu lại").setPayload("Bắt đầu lại"),
@@ -462,9 +456,9 @@ public class ChatBotController extends BaseBot {
         reply(event, schedulebot.viewSpecificPoint(event.getMessage().getText()));
     }
 
-    @Controller(events = {EventType.MESSAGE, EventType.POSTBACK, EventType.QUICK_REPLY}, pattern = "^(?i)(Xem thời khóa biểu)$", next = "askForWeek")
+    @Controller(events = {EventType.MESSAGE, EventType.POSTBACK, EventType.QUICK_REPLY}, pattern = "^(?i)(Xem thời khóa biểu)$"/*, next = "askForWeek"*/)
     public void askForSemester(Event event) throws BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeyException, IOException {
-        startConversation(event, "askForWeek");
+        //startConversation(event, "askForWeek");
         String fid = event.getSender().getId();
         ScheduleBot schedulebot = new ScheduleBot(
                 fid,
@@ -489,7 +483,7 @@ public class ChatBotController extends BaseBot {
         reply(event, schedulebot.currentWeekView());
     }
 
-    @Controller(events = {EventType.MESSAGE, EventType.POSTBACK, EventType.QUICK_REPLY}, next = "showMeMySchedule")
+    @Controller(events = {EventType.MESSAGE, EventType.POSTBACK, EventType.QUICK_REPLY}, pattern = "^(?i)(Học kỳ (.*), (.*))$", next = "showMeMySchedule")
     public void askForWeek(Event event) throws BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeyException, IOException, InterruptedException, ParseException {
         String fid = event.getSender().getId();
         ScheduleBot schedulebot = new ScheduleBot(
@@ -500,8 +494,8 @@ public class ChatBotController extends BaseBot {
                 this.studentService
         );
         if (schedulebot.patternSearch("Học kỳ (.*), (.*)", event.getMessage().getText())) {
+            startConversation(event, "showMeMySchedule");
             reply(event, schedulebot.startWeekInitial(event.getMessage().getText()));
-            nextConversation(event);
         } else if(schedulebot.patternSearch("TKB tuần này", event.getMessage().getText())) {
             reply(event, schedulebot.currentWeekView());
             stopConversation(event);
@@ -512,6 +506,7 @@ public class ChatBotController extends BaseBot {
 
     @Controller(events = {EventType.MESSAGE, EventType.POSTBACK}, pattern = "^[0-9]*$")
     public void showMeMySchedule(Event event) throws BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeyException, IOException, InterruptedException, ParseException {
+        stopConversation(event);
         String fid = event.getSender().getId();
         ScheduleBot schedulebot = new ScheduleBot(
                 fid,
@@ -521,7 +516,19 @@ public class ChatBotController extends BaseBot {
                 this.studentService
         );
         reply(event, schedulebot.getScheduleByWeekAndSemester(event.getMessage().getText()));
-        stopConversation(event);
+    }
+
+    @Controller(events = {EventType.MESSAGE, EventType.POSTBACK}, pattern = "\\b(?!([0-9]|Đăng nhập|bắt đầu|chào|bắt đầu lại|Xem thời khóa biểu|Đăng xuất|Cài đặt|Điểm kỳ |TKB tuần này|Báo lỗi|Xem thông báo|Học kỳ |Báo lỗi|Xem điểm))\\b\\S+")
+    public void defaultReply(Event event) {
+        String fid = event.getSender().getId();
+        ScheduleBot schedulebot = new ScheduleBot(
+                fid,
+                this.chatbotstudentRepository,
+                this.chatbotstudentService,
+                this.studentRepository,
+                this.studentService
+        );
+        reply(event, schedulebot.onMessageCome(event.getMessage().getText()));
     }
 
     @CrossOrigin(origins = "https://2cll.com", maxAge = 3600)

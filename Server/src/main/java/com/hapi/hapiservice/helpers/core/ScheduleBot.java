@@ -176,11 +176,13 @@ public class ScheduleBot {
 
     public Message startWeekInitial(String semesterId) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, MalformedURLException, InterruptedException {
         Optional<Students> studentCre = this.studentService.findById(this.getStudentIdByFid());
-        String reply = "Hãy gõ tuần bạn muốn xem thời khóa biểu và gửi lại cho Hapi";
+        String reply = "Hãy gõ *số tuần* bạn muốn xem thời khóa biểu và nhấp Enter\n-------------------";
         ArrayList<weekResponse> weekArr;
+        String _randomExample = "Tuần 19";
         Button[] buttons = new Button[]{
                 new Button().setContentType("text").setTitle("Bắt đầu lại").setPayload("Bắt đầu lại"),
                 new Button().setContentType("text").setTitle("TKB tuần này").setPayload("TKB tuần này"),
+                new Button().setContentType("text").setTitle("Xem thời khóa biểu").setPayload("Xem thời khóa biểu"),
                 new Button().setContentType("text").setTitle("Báo lỗi").setPayload("Báo lỗi")
         };
         browserHelper studentBasicTest = new browserHelper(studentCre.get().getToken(), this.studentRepository, this.studentService);
@@ -204,8 +206,8 @@ public class ScheduleBot {
                 for(weekResponse week : weekArr) {
                     reply += "\nTuần *" + week.getSotuan() + "* (từ ngày *" + week.getNgaybd() + "* đến ngày *" + week.getNgaykt() + "*)";
                 }
-                reply += "\nFacebook không cho phép có quá nhiều nút bấm trong 1 lần, các bạn thông cảm giúp Hapi nha <3!" +
-                        "\nVí dụ bạn muốn xem thời khóa biểu tuần 26, hãy nhập: 26";
+                reply += //"\nFacebook không cho phép có quá nhiều nút bấm trong 1 lần, các bạn thông cảm giúp Hapi nha <3!" +
+                        "\n\nVí dụ bạn muốn xem thời khóa biểu " + weekArr.get(0).getSotuan() + " (từ ngày " + weekArr.get(0).getNgaybd() + " - " + weekArr.get(0).getNgaykt() + ", hãy nhập: 26";
             }
             else reply = "Bạn không có thời khóa biểu trong học kỳ này!";
 
@@ -318,6 +320,8 @@ public class ScheduleBot {
         if (this.getStudentIdByFid() == -1) {
             return this.login(this.definedStr.cboxInvalidCredentialsPlsLogAgain_PRODUCTION());
         }
+        double diemHocjKyHe4 = 0, tinChiHocKy = 0;
+        ArrayList<pointResponse> pointFullList;
 
         ArrayList<Button> listBtn = new ArrayList<>();
         Optional<Students> studentCre = this.studentService.findById(this.getStudentIdByFid());
@@ -335,11 +339,24 @@ public class ScheduleBot {
                     new Button().setContentType("text").setTitle("Bắt đầu lại").setPayload("Bắt đầu lại"),
                     new Button().setContentType("text").setTitle("Báo lỗi").setPayload("Báo lỗi")
             };
-            if (studentBasicTest.getCurrentPointArr().size() != 0)
-                for (pointResponse point : studentBasicTest.getCurrentPointArr()) {
-                    reply += "\n\nMôn " + point.getTenmon() + " (" + point.getTinchi() + " tín chỉ): điểm kiểm tra lần 1 *" + point.getDiemkt1() + "*, điểm kiểm tra lần 2 *" + point.getDiemkt2() + "*, điểm thi *" + point.getThil1() + "*, điểm tổng (thang điểm 4) *" + point.getTk4() + "*";
+            synchronized (this._lock) {
+                pointFullList = studentBasicTest.getCurrentPointArr();
+
+                if (pointFullList.size() != 0)
+                {
+                    for (pointResponse point : pointFullList) {
+                        reply += "\n\nMôn " + point.getTenmon() + " (" + point.getTinchi() + " tín chỉ): điểm kiểm tra lần 1 *" + point.getDiemkt1() + "*, điểm kiểm tra lần 2 *" + point.getDiemkt2() + "*, điểm thi *" + point.getThil1() + "*, điểm tổng (thang điểm 4): *" + point.getTk4() + "* (Đạt loại *" + point.getTkch() + "*)";
+                        if (this.isNumeric(point.getTk4()) && this.isNumeric(point.getTinchi()))
+                        {
+                            diemHocjKyHe4 += Double.parseDouble(point.getTk4());
+                            tinChiHocKy += Double.parseDouble(point.getTinchi());
+                        }
+                    }
+                    diemHocjKyHe4 /= pointFullList.size();
+                    reply += "\n\nTổng kết:\n- Điểm trung bình học kỳ (thang 4): *" + diemHocjKyHe4 + "* (Xếp loại: " + this.rankByPoint(diemHocjKyHe4) + ")\n- Số tín chỉ đạt được trong học kỳ: " + tinChiHocKy ;
                 }
-            else reply = "Bạn chưa có điểm nào cả!";
+                else reply = "Bạn chưa có điểm nào cả!";
+            }
             return new Message().setText(reply).setQuickReplies(buttons);
         } else {
             String reply = "Hãy chọn học kỳ mà bạn muốn xem điểm";
@@ -356,6 +373,8 @@ public class ScheduleBot {
         if (this.getStudentIdByFid() == -1) {
             return this.login(this.definedStr.cboxInvalidCredentialsPlsLogAgain_PRODUCTION());
         }
+        double diemHocjKyHe4 = 0, tinChiHocKy = 0;
+        ArrayList<pointResponse> pointFullList;
 
         Optional<Students> studentCre = this.studentService.findById(this.getStudentIdByFid());
         browserHelper studentBasicTest = new browserHelper(studentCre.get().getToken(), this.studentRepository, this.studentService);
@@ -367,14 +386,36 @@ public class ScheduleBot {
         String reply = "Sau đây là danh sách điểm học kỳ bạn đã chọn\n-----------------------------";
         Button[] buttons = new Button[]{
                 new Button().setContentType("text").setTitle("Bắt đầu lại").setPayload("Bắt đầu lại"),
+                new Button().setContentType("text").setTitle("Xem điểm").setPayload("Xem điểm"),
+                new Button().setContentType("text").setTitle("Xem thời khóa biểu").setPayload("Xem thời khóa biểu"),
                 new Button().setContentType("text").setTitle("Báo lỗi").setPayload("Báo lỗi")
         };
-        if (studentBasicTest.getPointBySemesterArr(msg).size() != 0)
-            for (pointResponse point : studentBasicTest.getPointBySemesterArr(msg)) {
-                reply += "\n\nMôn " + point.getTenmon() + " (" + point.getTinchi() + " tín chỉ): điểm kiểm tra lần 1 *" + point.getDiemkt1() + "*, điểm kiểm tra lần 2 *" + point.getDiemkt2() + "*, điểm thi *" + point.getThil1() + "*, điểm tổng (thang điểm 4) *" + point.getTk4() + "*";
+        synchronized (this._lock) {
+            pointFullList = studentBasicTest.getPointBySemesterArr(msg);
+        }
+        if (pointFullList.size() != 0)
+        {
+            for (pointResponse point : pointFullList) {
+                reply += "\n\nMôn " + point.getTenmon() + " (" + point.getTinchi() + " tín chỉ): điểm kiểm tra lần 1 *" + point.getDiemkt1() + "*, điểm kiểm tra lần 2 *" + point.getDiemkt2() + "*, điểm thi *" + point.getThil1() + "*, điểm tổng (thang điểm 4) *" + point.getTk4() + "* (Đạt loại *" + point.getTkch() + "*)";
+                if (this.isNumeric(point.getTk4()) && this.isNumeric(point.getTinchi()))
+                {
+                    diemHocjKyHe4 += Double.parseDouble(point.getTk4());
+                    tinChiHocKy += Double.parseDouble(point.getTinchi());
+                }
             }
+            diemHocjKyHe4 /= pointFullList.size();
+            reply += "\n\nTổng kết:\n- Điểm trung bình học kỳ (thang 4): *" + diemHocjKyHe4 + "* (Xếp loại: " + this.rankByPoint(diemHocjKyHe4) + ")\n- Số tín chỉ đạt được trong học kỳ: " + tinChiHocKy ;
+        }
         else reply = "Bạn chưa có điểm nào cả!";
         return new Message().setText(reply).setQuickReplies(buttons);
+    }
+
+    private String rankByPoint(double p4) {
+        if (p4 < 2.) return "Yếu";
+        else if (p4 >= 2. && p4 <= 2.49) return "Trung bình";
+        else if (p4 > 2.49 && p4 <= 3.19) return "Khá";
+        else if (p4 > 3.19 && p4 <= 3.59) return "Giỏi";
+        else return "Xuất sắc";
     }
 
     public Message userConfigCome () {
@@ -418,5 +459,13 @@ public class ScheduleBot {
             objs[i] = buttons.get(i);
 
         return objs;
+    }
+
+    public boolean isNumeric(String strNum) {
+        Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
+        if (strNum == null) {
+            return false;
+        }
+        return pattern.matcher(strNum).matches();
     }
 }

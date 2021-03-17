@@ -49,6 +49,7 @@ public class stringHelper {
     final private String notificationPattern = "window\\.onload=function\\(\\)\\{alert\\('(.*)'\\);\\}";
     final private String serverReloadPattern = "window.onload=function(){alert('Server đang tải lại dữ liệu. Vui lòng trở lại sau 15 phút!');}";
     final private String serverReloadingPlsTryAgainLab = "Máy chủ đang bảo trì để cập nhật dữ liệu sinh viên, vui lòng thử lại sau 15 phút";
+    final private String echoPattern = "nói (.*)";
 
     public String defaultPage_PRODUCTION() {
         return this.defaultPage;
@@ -232,5 +233,9 @@ public class stringHelper {
 
     public String serverReloadingPlsTryAgainLab_PRODUCTION() {
         return this.serverReloadingPlsTryAgainLab;
+    }
+
+    public String echoPattern_PRODUCTION() {
+        return this.echoPattern;
     }
 }

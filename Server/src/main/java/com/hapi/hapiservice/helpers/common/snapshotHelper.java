@@ -34,13 +34,15 @@ public class snapshotHelper extends browserHelper {
 
     public NotificationResponse snapshotNotificationNotify() throws IOException {
 
-        String init = this.loginAndPattern(this.definedStr.notificationPattern_PRODUCTION(), 1)
-                        .replaceAll("\\\\n", "");
+        String init = this.loginAndPattern(this.definedStr.notificationPattern_PRODUCTION(), 1);
+
+        if (init != "")
+            init.replaceAll("\\\\n", "");
 
         Notifications testNotify = this.notificationService.findTopByOrderByIDDesc();
         NotificationResponse response;
 
-        if (testNotify == null || testNotify.getUNIXTIME() < Instant.now().getEpochSecond() - 86400) {
+        if (init != "" && (testNotify == null || testNotify.getUNIXTIME() < Instant.now().getEpochSecond() - 86400)) {
             response = new NotificationResponse(init);
             Notifications ntfcation = new Notifications();
             ntfcation.setID(0);

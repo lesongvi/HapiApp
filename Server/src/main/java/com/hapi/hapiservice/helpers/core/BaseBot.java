@@ -96,7 +96,7 @@ public abstract class BaseBot {
                         methodWrapper.setMatcher(m);
                         return methodWrapper;
                     } else {
-                        listIterator.remove();  // remove methods from the original list whose pattern do not match
+                        listIterator.remove();
                     }
                 }
             }
