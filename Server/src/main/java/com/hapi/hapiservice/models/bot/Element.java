@@ -20,6 +20,9 @@ public class Element {
     @JsonProperty("default_action")
     private Button defaultAction;
     private Button[] buttons;
+    @JsonProperty("media_type")
+    private String mediaType;
+    private String url;
 
     public String getTitle() {
         return title;
@@ -99,6 +102,24 @@ public class Element {
 
     public Element setButtons(Button[] buttons) {
         this.buttons = buttons;
+        return this;
+    }
+
+    public String getMediaType() {
+        return mediaType;
+    }
+
+    public Element setMediaType(String mediaType) {
+        this.mediaType = mediaType;
+        return this;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public Element setUrl(String url) {
+        this.url = url;
         return this;
     }
 }

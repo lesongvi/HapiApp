@@ -230,6 +230,17 @@ public class ScheduleBot {
         return "";
     }
 
+    public Message howToUse() {
+        Button[] buttons = new Button[]{
+                new Button().setContentType("text").setTitle("Bắt đầu").setPayload("Bắt đầu"),
+                new Button().setContentType("text").setTitle("Báo lỗi").setPayload("Báo lỗi")
+        };
+        String reply = "Hapi chào bạn nhaaa, bạn có thể nhấn nút *Bắt đầu* để bắt đầu sử dụng ứng dụng.\n" +
+                "Hapi là một bot giúp sinh viên trường HUTECH có thể dễ dàng trong việc xem thông tin như thời khoá biểu, điểm thi các học kỳ, thông báo mới từ nhà trường...";
+
+        return new Message().setText(reply).setQuickReplies(buttons);
+    }
+
     public Message getScheduleByWeekAndSemester(String weekId) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, IOException, InterruptedException, ParseException {
         Optional<Students> studentCre = this.studentService.findById(this.getStudentIdByFid());
         Button[] buttons = new Button[]{
@@ -322,11 +333,16 @@ public class ScheduleBot {
         }
         double diemHocjKyHe4 = 0, tinChiHocKy = 0;
         ArrayList<pointResponse> pointFullList;
+        ArrayList<PSListResponse> plSemester;
+        String reply;
 
         ArrayList<Button> listBtn = new ArrayList<>();
         Optional<Students> studentCre = this.studentService.findById(this.getStudentIdByFid());
         browserHelper studentBasicTest = new browserHelper(studentCre.get().getToken(), this.studentRepository, this.studentService);
-
+        Button[] buttons = new Button[]{
+                new Button().setContentType("text").setTitle("Bắt đầu lại").setPayload("Bắt đầu lại"),
+                new Button().setContentType("text").setTitle("Báo lỗi").setPayload("Báo lỗi")
+        };
 
         /*if (studentBasicTest.isServerReloading()) {
             return new Message().setText(this.definedStr.serverReloadingPlsTryAgainLab_PRODUCTION());
@@ -334,11 +350,7 @@ public class ScheduleBot {
 
         if (msg.toLowerCase().trim().equals("điểm hiện tại"))
         {
-            String reply = "Sau đây là danh sách điểm của bạn\n-----------------------------";
-            Button[] buttons = new Button[]{
-                    new Button().setContentType("text").setTitle("Bắt đầu lại").setPayload("Bắt đầu lại"),
-                    new Button().setContentType("text").setTitle("Báo lỗi").setPayload("Báo lỗi")
-            };
+            reply = "Sau đây là danh sách điểm của bạn\n-----------------------------";
             synchronized (this._lock) {
                 pointFullList = studentBasicTest.getCurrentPointArr();
 
@@ -359,13 +371,22 @@ public class ScheduleBot {
             }
             return new Message().setText(reply).setQuickReplies(buttons);
         } else {
-            String reply = "Hãy chọn học kỳ mà bạn muốn xem điểm";
-            for (PSListResponse aSemester : studentBasicTest.getPointListSemesterArr()) {
-                String semesterDetail = "Điểm kỳ " + aSemester.getHocky() + ", " + aSemester.getNamhoc();
-                listBtn.add(new Button().setContentType("text").setTitle(semesterDetail).setPayload(semesterDetail));
+            Button[] rederedBtns = buttons;
+            reply = "Đã có lỗi xảy ra, bạn vui lòng xem điểm sau 1 lát nữa nhé @@~";
+            synchronized (this._lock) {
+                plSemester = studentBasicTest.getPointListSemesterArr();
+                for (PSListResponse aSemester : plSemester) {
+                    String semesterDetail = "Điểm kỳ " + aSemester.getHocky() + ", " + aSemester.getNamhoc();
+                    listBtn.add(new Button().setContentType("text").setTitle(semesterDetail).setPayload(semesterDetail));
+                }
+
+                if(listBtn.size() != 0) {
+                    reply = "Hãy chọn học kỳ mà bạn muốn xem điểm";
+                    rederedBtns = this.ArrToBtnArr(listBtn);
+                }
             }
 
-            return new Message().setText(reply).setQuickReplies(this.ArrToBtnArr(listBtn));
+            return new Message().setText(reply).setQuickReplies(rederedBtns);
         }
     }
 
@@ -406,7 +427,7 @@ public class ScheduleBot {
             diemHocjKyHe4 /= pointFullList.size();
             reply += "\n\nTổng kết:\n- Điểm trung bình học kỳ (thang 4): *" + diemHocjKyHe4 + "* (Xếp loại: " + this.rankByPoint(diemHocjKyHe4) + ")\n- Số tín chỉ đạt được trong học kỳ: " + tinChiHocKy ;
         }
-        else reply = "Bạn chưa có điểm nào cả!";
+        else reply = "Hiện tại học kỳ này vẫn chưa có điểm :(! Hãy xem lại sau bạn nhé!!";
         return new Message().setText(reply).setQuickReplies(buttons);
     }
 

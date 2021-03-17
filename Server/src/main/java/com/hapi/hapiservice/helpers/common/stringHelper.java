@@ -1,5 +1,7 @@
 package com.hapi.hapiservice.helpers.common;
 
+import java.net.URLEncoder;
+
 public class stringHelper {
     final private String defaultPage = "http://daotao.hutech.edu.vn/default.aspx";
     final private String defaultPageWithUppercaseD = "http://daotao.hutech.edu.vn/Default.aspx";
@@ -50,6 +52,9 @@ public class stringHelper {
     final private String serverReloadPattern = "window.onload=function(){alert('Server đang tải lại dữ liệu. Vui lòng trở lại sau 15 phút!');}";
     final private String serverReloadingPlsTryAgainLab = "Máy chủ đang bảo trì để cập nhật dữ liệu sinh viên, vui lòng thử lại sau 15 phút";
     final private String echoPattern = "nói (.*)";
+    final private String requestBodySSO = "__EVENTTARGET=ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK&__EVENTARGUMENT=&__LASTFOCUS=&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&__VIEWSTATE={{VIEWSTATE}}&ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK={{CHON_NHHK}}&ctl00$ContentPlaceHolder1$ctl00$rad_MonHoc=rad_MonHoc";
+    final private String requestBodySWO = "__EVENTTARGET=ctl00$ContentPlaceHolder1$ctl00$ddlTuan&__EVENTARGUMENT=&__LASTFOCUS=&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&__VIEWSTATE={{VIEWSTATE}}&ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK={{CHON_NHHK}}&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&ctl00$ContentPlaceHolder1$ctl00$ddlTuan={{DDL_TUAN}}";
+    final private String requestBodyVAP = "__EVENTTARGET=ctl00$ContentPlaceHolder1$ctl00$lnkChangeview2&__EVENTARGUMENT=&__LASTFOCUS=&ctl00$ContentPlaceHolder1$ctl00$txtChonHK=&__VIEWSTATE={{VIEWSTATE}}";
 
     public String defaultPage_PRODUCTION() {
         return this.defaultPage;
@@ -237,5 +242,17 @@ public class stringHelper {
 
     public String echoPattern_PRODUCTION() {
         return this.echoPattern;
+    }
+
+    public String requestBodySSO_PRODUCTION() {
+        return this.requestBodySSO;
+    }
+
+    public String requestBodySWO_PRODUCTION() {
+        return this.requestBodySWO;
+    }
+
+    public String requestBodyVAP_PRODUCTION() {
+        return this.requestBodyVAP;
     }
 }

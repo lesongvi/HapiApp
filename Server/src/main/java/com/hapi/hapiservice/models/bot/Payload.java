@@ -13,7 +13,6 @@ public class Payload {
     private String coordinatesLat;
     @JsonProperty("coordinates.long")
     private String coordinatesLong;
-    @JsonProperty("is_reusable")
     private Boolean isReusable;
     @JsonProperty("attachment_id")
     private String attachmentId;
@@ -59,6 +58,8 @@ public class Payload {
     @JsonProperty("price_info")
     private Amount[] priceInfo;
     private Long timestamp;
+    @JsonProperty("call_to_actions")
+    private CallToActions[] callToActions;
 
     public String getUrl() {
         return url;
@@ -91,11 +92,13 @@ public class Payload {
         return isReusable;
     }
 
-    public Payload setReusable(Boolean reusable) {
-        isReusable = reusable;
+    public Payload setReusable(Boolean isReusable) {
+        this.isReusable = isReusable;
         return this;
     }
 
+    //SB Bug
+    @JsonProperty("is_reusable")
     public Boolean getReusable() {
         return isReusable;
     }
@@ -214,6 +217,15 @@ public class Payload {
 
     public Payload setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
+        return this;
+    }
+
+    public CallToActions[] getCallToActions() {
+        return callToActions;
+    }
+
+    public Payload setCallToActions(CallToActions[] callToActions) {
+        this.callToActions = callToActions;
         return this;
     }
 

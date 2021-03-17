@@ -644,6 +644,7 @@ public class browserHelper extends stuffHelper {
     public ArrayList<pointResponse> getPointBySemesterArr(String semesterId) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, MalformedURLException {
         WebClient webClient = this.verifyToken();
         Matcher pointView;
+        ArrayList<pointResponse> _empty = new ArrayList<pointResponse>();
 
         WebRequest defaultPage = this.viewAllPoint();
 
@@ -659,11 +660,11 @@ public class browserHelper extends stuffHelper {
             page = (HtmlPage) webClient
                     .getPage(defaultPage);
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            this.logger.error(e.getMessage());
             //e.getStackTrace();
         }
 
-        DomElement stdntPointTbl = page.getElementById(definedStr.studentPSemesterId_PRODUCTION());
+        DomElement stdntPointTbl = page.getElementById(this.definedStr.studentPSemesterId_PRODUCTION());
 
         if(stdntPointTbl.getTagName().toLowerCase().equals("div")) {
             String _xmlPTbl = this.removeTheDEGap(stdntPointTbl);
@@ -673,14 +674,15 @@ public class browserHelper extends stuffHelper {
 
             if (pointView.find())
                 return this.showSemesterPointArr(pointView.group(7));
+            else return _empty;
         }
-        return null;
+        return _empty;
     }
 
     public String getPointListSemester(String semesterId) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, MalformedURLException {
         Gson gson = new Gson();
 
-        if (semesterId == "")
+        if (semesterId.length() == 0)
             return gson.toJson(this.getPointListSemesterArr());
         else
             return gson.toJson(this.getPointBySemesterArr(semesterId));
@@ -707,7 +709,9 @@ public class browserHelper extends stuffHelper {
 
         schedulePage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
 
-        schedulePage.setRequestBody("__EVENTTARGET=ctl00\\$ContentPlaceHolder1\\$ctl00\\$ddlChonNHHK&__EVENTARGUMENT=&__LASTFOCUS=&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&__VIEWSTATE=" + URLEncoder.encode(_VState) + "&ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK=" + URLEncoder.encode(selectedOpt) + "&ctl00$ContentPlaceHolder1$ctl00$rad_MonHoc=rad_MonHoc");
+        schedulePage.setRequestBody(this.definedStr.requestBodySSO_PRODUCTION()
+                .replace("{{VIEWSTATE}}", URLEncoder.encode(_VState))
+                .replace("{{CHON_NHHK}}", URLEncoder.encode(selectedOpt)));
 
         return schedulePage;
     }
@@ -738,7 +742,12 @@ public class browserHelper extends stuffHelper {
 
         schedulePage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
 
-        schedulePage.setRequestBody("__EVENTTARGET=ctl00$ContentPlaceHolder1$ctl00$ddlTuan&__EVENTARGUMENT=&__LASTFOCUS=&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&__VIEWSTATE=" + URLEncoder.encode(_VState) + "&ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK=" + URLEncoder.encode(selectedSemester) + "&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&ctl00$ContentPlaceHolder1$ctl00$ddlTuan=" + URLEncoder.encode(selectedWeek));
+        schedulePage.setRequestBody(this.definedStr.requestBodySWO_PRODUCTION()
+                .replace("{{VIEWSTATE}}", URLEncoder.encode(_VState)
+                .replace("{{CHON_NHHK}}", URLEncoder.encode(selectedSemester))
+                .replace("{{CHON_NHHK}}", URLEncoder.encode(selectedSemester))
+                .replace("{{DLL_TUAN}}", URLEncoder.encode(selectedWeek))
+                ));
 
         return schedulePage;
     }
@@ -749,7 +758,8 @@ public class browserHelper extends stuffHelper {
 
         schedulePage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
 
-        schedulePage.setRequestBody("__EVENTTARGET=ctl00$ContentPlaceHolder1$ctl00$lnkChangeview2&__EVENTARGUMENT=&__LASTFOCUS=&ctl00$ContentPlaceHolder1$ctl00$txtChonHK=&__VIEWSTATE=" + URLEncoder.encode(this.getVS(this.definedStr.studentPointUrl_PRODUCTION())));
+        schedulePage.setRequestBody(this.definedStr.requestBodyVAP_PRODUCTION()
+                .replace("{{VIEWSTATE}}", URLEncoder.encode(this.getVS(this.definedStr.studentPointUrl_PRODUCTION()))));
 
         return schedulePage;
     }

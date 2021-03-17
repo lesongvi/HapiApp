@@ -53,6 +53,8 @@ public class Event {
     private String challenge;
     @JsonProperty("get_started")
     private Postback getStarted;
+    @JsonProperty("persistent_menu")
+    private Payload[] persistentMenu;
     private Payload[] greeting;
     private EventType type;
 
@@ -269,6 +271,15 @@ public class Event {
 
     public Event setGetStarted(Postback getStarted) {
         this.getStarted = getStarted;
+        return this;
+    }
+
+    public Payload[] getPersistentMenu() {
+        return persistentMenu;
+    }
+
+    public Event setPersistentMenu(Payload[] persistentMenu) {
+        this.persistentMenu = persistentMenu;
         return this;
     }
 
