@@ -345,11 +345,12 @@ public class ChatBotController extends BaseBot {
     }
 
     @Controller(events = {EventType.MESSAGE, EventType.POSTBACK, EventType.QUICK_REPLY}, pattern = "^(?i)(bắt đầu|chào|bắt đầu lại)$")
-    public void onGetStarted(Event event) {
+    public void onGetStarted(Event event) throws InterruptedException {
         String fid = event.getSender().getId();
         Optional<ChatbotStudents> userVerify = this.chatbotstudentService.findById(fid);
         Object _lock = new Object();
         Students stdunt;
+        User userData;
 
         if (userVerify.isPresent()) {
             synchronized (_lock) {
@@ -371,15 +372,17 @@ public class ChatBotController extends BaseBot {
         Button[] quickReplies = new Button[]{
                 new Button().setContentType("text").setTitle("Đăng nhập").setPayload("Đăng nhập")
         };
-        User userData = this.getUser(fid);
+        synchronized (_lock) {
+            userData = this.getUser(fid);
+        }
+        reply(event, new Message().setAttachment(new Attachment().setType("image").setPayload(new Payload()
+                .setReusable(true)
+                .setUrl("https://cdn.notevn.com/TPWuM66xl.png") //userData.getProfilePic()
+        )));
         reply(event, new Message()
                         .setText("Bạn " + userData.getFirstName() + " cute dễ thương ơi ^^, đây là lần đầu tiên bạn sử dụng Hapi, hãy đăng nhập lần đầu bạn nhé!?")
                         .setQuickReplies(quickReplies)
                 );
-        reply(event, new Message().setAttachment(new Attachment().setType("image").setPayload(new Payload()
-                .setReusable(true)
-                .setUrl("https://cdn.notevn.com/TPWuM66xl.png") //userData.getProfilePic()
-                )).setQuickReplies(quickReplies));
     }
 
     public User getUser(String id) {
@@ -398,18 +401,25 @@ public class ChatBotController extends BaseBot {
         reply(event, schedulebot.login(""));
     }
 
-    @Controller(events = {EventType.MESSAGE, EventType.POSTBACK, EventType.QUICK_REPLY}, pattern = "^(?i)(Cài đặt)$", next = "configCredentialsStep2")
+    @Controller(events = {EventType.MESSAGE, EventType.POSTBACK, EventType.QUICK_REPLY}, pattern = "^(?i)(Cài đặt)$"/*, next = "configCredentialsStep2"*/)
     public void configMyCredentials(Event event) {
-        startConversation(event, "configCredentialsStep2");
+        //startConversation(event, "configCredentialsStep2");
         ScheduleBot schedulebot = this.initial(event);
         reply(event, schedulebot.userConfigRequest());
     }
 
     @Controller(events = {EventType.MESSAGE, EventType.POSTBACK, EventType.QUICK_REPLY}, pattern = "^(?i)(Đăng xuất)$")
     public void configCredentialsStep2(Event event) {
+        Button[] quickReplies = new Button[]{
+                new Button().setContentType("text").setTitle("Bắt đầu lại").setPayload("Bắt đầu lại")
+        };
         ScheduleBot schedulebot = this.initial(event);
-        reply(event, schedulebot.userConfigCome());
-        stopConversation(event);
+        reply(event, new Message().setAttachment(new Attachment().setType("image").setPayload(new Payload()
+                .setReusable(true)
+                .setUrl("https://cdn.notevn.com/9i9JSQXxe.png")
+        )).setQuickReplies(quickReplies));
+        reply(event, schedulebot.userConfigCome().setQuickReplies(quickReplies));
+        //stopConversation(event);
     }
 
     @Controller(events = {EventType.MESSAGE, EventType.POSTBACK, EventType.QUICK_REPLY}, pattern = "^(?i)(Xem điểm)$"/*, next = "viewPointStep2"*/)
@@ -455,7 +465,7 @@ public class ChatBotController extends BaseBot {
         reply(event, schedulebot.startFirstInitial());
     }
 
-    @Controller(events = {EventType.MESSAGE, EventType.POSTBACK, EventType.QUICK_REPLY}, pattern = "^(HOW_TO_USE)$")
+    @Controller(events = {EventType.MESSAGE, EventType.POSTBACK, EventType.QUICK_REPLY}, pattern = "^(HOW_TO_USE|Cách xử dụng)$")
     public void howToUse(Event event) {
         ScheduleBot schedulebot = this.initial(event);
         reply(event, schedulebot.howToUse());
@@ -467,7 +477,7 @@ public class ChatBotController extends BaseBot {
         reply(event, schedulebot.currentWeekView());
     }
 
-    @Controller(events = {EventType.MESSAGE, EventType.POSTBACK, EventType.QUICK_REPLY}, pattern = "^(?i)(Học kỳ (.*), (.*))$", next = "showMeMySchedule")
+    @Controller(events = {EventType.MESSAGE, EventType.POSTBACK, EventType.QUICK_REPLY}, pattern = "^(?i)(Học kỳ (.*), (.*))$"/*, next = "showMeMySchedule"*/)
     public void askForWeek(Event event) throws BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeyException, IOException, InterruptedException, ParseException {
         ScheduleBot schedulebot = this.initial(event);
         if (schedulebot.patternSearch("Học kỳ (.*), (.*)", event.getMessage().getText())) {
@@ -475,9 +485,9 @@ public class ChatBotController extends BaseBot {
             reply(event, schedulebot.startWeekInitial(event.getMessage().getText()));
         } else if(schedulebot.patternSearch("TKB tuần này", event.getMessage().getText())) {
             reply(event, schedulebot.currentWeekView());
-            stopConversation(event);
+            //stopConversation(event);
         } else {
-            stopConversation(event);
+            //stopConversation(event);
         }
     }
 
@@ -485,10 +495,10 @@ public class ChatBotController extends BaseBot {
     public void showMeMySchedule(Event event) throws BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeyException, IOException, InterruptedException, ParseException {
         stopConversation(event);
         ScheduleBot schedulebot = this.initial(event);
-        reply(event, schedulebot.getScheduleByWeekAndSemester(event.getMessage().getText()));
+        reply(event, schedulebot.getScheduleByWeekAndSemester(event.getMessage().getText(), false));
     }
 
-    @Controller(events = {EventType.MESSAGE, EventType.POSTBACK}, pattern = "\\b(?!([0-9]|Đăng nhập|bắt đầu|chào|bắt đầu lại|Xem thời khóa biểu|Đăng xuất|Cài đặt|Điểm kỳ |TKB tuần này|Báo lỗi|Xem thông báo|Học kỳ |Báo lỗi|Xem điểm))\\b\\S+")
+    @Controller(events = {EventType.MESSAGE, EventType.POSTBACK}, pattern = "\\b(?!(?i)([0-9]|Đăng nhập|bắt đầu|chào|bắt đầu lại|Xem thời khóa biểu|Đăng xuất|Cài đặt|Điểm kỳ |TKB tuần này|Báo lỗi|Xem thông báo|Học kỳ |Báo lỗi|Xem điểm|Cách xử dụng|HOW_TO_USE))\\b\\S+")
     public void defaultReply(Event event) {
         ScheduleBot schedulebot = this.initial(event);
         reply(event, schedulebot.onMessageCome(event.getMessage().getText()));
@@ -507,11 +517,17 @@ public class ChatBotController extends BaseBot {
         ScheduleBot scheduleBasic = new ScheduleBot(decryptFid(fid), this.chatbotstudentRepository, this.chatbotstudentService, this.studentRepository, this.studentService);
         browserHelper studentBasicTest = new browserHelper(sid, pwd, this.studentRepository, this.studentService);
         Optional<Students> stdntVerify = this.studentService.findById(sid);
+        Optional<Students> reAuthenticate;
+
+        String _back = studentBasicTest.conAuth(stdntVerify.isPresent());
+
+        if (!stdntVerify.isPresent())
+            stdntVerify = this.studentService.findById(sid);
 
         if (stdntVerify.isPresent())
             scheduleBasic.saveFbCredentials(sid);
 
-        return ResponseEntity.ok(studentBasicTest.conAuth(stdntVerify.isPresent()));
+        return ResponseEntity.ok(_back);
     }
 
     public String decryptFid (String strEncoded) {

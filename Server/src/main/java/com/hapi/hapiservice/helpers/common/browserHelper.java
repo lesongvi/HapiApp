@@ -133,7 +133,7 @@ public class browserHelper extends stuffHelper {
         URL actionUrl = new URL(this.definedStr.defaultPage_PRODUCTION());
         WebRequest defaultPage = new WebRequest(actionUrl);
 
-        defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
+        defaultPage = this.setAdditionalHeader(defaultPage);
 
         HtmlPage page = this.requestLogin()
                 .getPage(defaultPage);
@@ -151,8 +151,7 @@ public class browserHelper extends stuffHelper {
         String parseBody;
         Pattern pattern;
 
-        defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
-
+        defaultPage = this.setAdditionalHeader(defaultPage);
 
         synchronized (_lock) {
             HtmlPage page = null;
@@ -247,7 +246,7 @@ public class browserHelper extends stuffHelper {
         URL actionUrl = new URL(this.definedStr.defaultPage_PRODUCTION());
         WebRequest defaultPage = new WebRequest(actionUrl);
 
-        defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
+        defaultPage = this.setAdditionalHeader(defaultPage);
 
         HtmlPage page = null;
         try {
@@ -263,12 +262,20 @@ public class browserHelper extends stuffHelper {
         return this.webClient;
     }
 
+    private WebRequest setAdditionalHeader(WebRequest wr) {
+        wr.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
+        wr.setAdditionalHeader("Accept-Encoding", this.definedStr.acceptEncoding_PRODUCTION());
+        wr.setAdditionalHeader("Accept-Language", this.definedStr.acceptLanguage_PRODUCTION());
+        wr.setAdditionalHeader("Accept", this.definedStr.acceptDataType_PRODUCTION());
+        return wr;
+    }
+
     public ArrayList<String> getMailAndPhoneNum() throws MalformedURLException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
         URL actionUrl = new URL(this.definedStr.userInfoChangerUrl_PRODUCTION());
         WebRequest defaultPage = new WebRequest(actionUrl);
         ArrayList<String> _infoBack = new ArrayList<String>();
 
-        defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
+        defaultPage = this.setAdditionalHeader(defaultPage);
 
         try {
             HtmlPage page = this.requestLogin()
@@ -314,7 +321,7 @@ public class browserHelper extends stuffHelper {
 
         Gson gson = new Gson();
 
-        defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
+        defaultPage = this.setAdditionalHeader(defaultPage);
 
         try {
             HtmlPage page = (HtmlPage) webClient
@@ -341,7 +348,7 @@ public class browserHelper extends stuffHelper {
         WebRequest defaultPage = new WebRequest(actionUrl);
         ArrayList<semesterResponse> semesterMap = new ArrayList<semesterResponse>();
 
-        defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
+        defaultPage = this.setAdditionalHeader(defaultPage);
 
         try {
             HtmlPage page = (HtmlPage) webClient
@@ -396,7 +403,6 @@ public class browserHelper extends stuffHelper {
 
     public ArrayList<weekResponse> getWeekArr(String currSemester) throws MalformedURLException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
 
-
         WebClient webClient = this.verifyToken();
         WebRequest defaultPage;
 
@@ -407,12 +413,13 @@ public class browserHelper extends stuffHelper {
             defaultPage = new WebRequest(actionUrl);
         }
 
-        defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
+        defaultPage = this.setAdditionalHeader(defaultPage);
 
         HtmlPage page = null;
         try {
             page = (HtmlPage) webClient
                     .getPage(defaultPage);
+
         } catch (Exception e) {
             //Silent is Golden
             logger.error(e.getMessage());
@@ -432,7 +439,7 @@ public class browserHelper extends stuffHelper {
         URL actionUrl = new URL(this.definedStr.schedulePage_PRODUCTION());
         WebRequest defaultPage = new WebRequest(actionUrl);
 
-        defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
+        defaultPage = this.setAdditionalHeader(defaultPage);
 
         HtmlPage page = null;
         try {
@@ -506,7 +513,7 @@ public class browserHelper extends stuffHelper {
             defaultPage = new WebRequest(actionUrl);
         }
 
-        defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
+        defaultPage = this.setAdditionalHeader(defaultPage);
 
         HtmlPage page = (HtmlPage) webClient
                 .getPage(defaultPage);
@@ -535,7 +542,7 @@ public class browserHelper extends stuffHelper {
         URL actionUrl = new URL(this.definedStr.studentPointUrl_PRODUCTION());
         WebRequest defaultPage = new WebRequest(actionUrl);
 
-        defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
+        defaultPage = this.setAdditionalHeader(defaultPage);
 
         HtmlPage page = null;
         try {
@@ -564,7 +571,7 @@ public class browserHelper extends stuffHelper {
         String _result = "";
         Gson gson = new Gson();
 
-        defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
+        defaultPage = this.setAdditionalHeader(defaultPage);
 
         try {
             HtmlPage page = (HtmlPage) webClient
@@ -619,7 +626,7 @@ public class browserHelper extends stuffHelper {
 
         ArrayList<PSListResponse> fullPointView = new ArrayList<PSListResponse>();
 
-        defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
+        defaultPage = this.setAdditionalHeader(defaultPage);
 
         HtmlPage page = null;
         try {
@@ -648,7 +655,7 @@ public class browserHelper extends stuffHelper {
 
         WebRequest defaultPage = this.viewAllPoint();
 
-        defaultPage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
+        defaultPage = this.setAdditionalHeader(defaultPage);
 
         Matcher firstTest = this.patternSearch(this.definedStr.cboxPointTestPattern_PRODUCTION(), semesterId);
         if (firstTest.find()) {
@@ -707,7 +714,7 @@ public class browserHelper extends stuffHelper {
             _VState = this.getVS(this.definedStr.schedulePage_PRODUCTION());
         }
 
-        schedulePage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
+        schedulePage = this.setAdditionalHeader(schedulePage);
 
         schedulePage.setRequestBody(this.definedStr.requestBodySSO_PRODUCTION()
                 .replace("{{VIEWSTATE}}", URLEncoder.encode(_VState))
@@ -740,14 +747,7 @@ public class browserHelper extends stuffHelper {
             _VState = this.getVS(_acUrl);
         }
 
-        schedulePage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
-
-        schedulePage.setRequestBody(this.definedStr.requestBodySWO_PRODUCTION()
-                .replace("{{VIEWSTATE}}", URLEncoder.encode(_VState)
-                .replace("{{CHON_NHHK}}", URLEncoder.encode(selectedSemester))
-                .replace("{{CHON_NHHK}}", URLEncoder.encode(selectedSemester))
-                .replace("{{DLL_TUAN}}", URLEncoder.encode(selectedWeek))
-                ));
+        schedulePage.setRequestBody("__EVENTTARGET=ctl00$ContentPlaceHolder1$ctl00$ddlTuan&__EVENTARGUMENT=&__LASTFOCUS=&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&__VIEWSTATE=" + URLEncoder.encode(_VState) + "&ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK=" + URLEncoder.encode(selectedSemester) + "&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&ctl00$ContentPlaceHolder1$ctl00$ddlTuan=" + URLEncoder.encode(selectedWeek));
 
         return schedulePage;
     }
@@ -756,7 +756,7 @@ public class browserHelper extends stuffHelper {
         URL actionUrl = new URL(this.definedStr.studentPointUrl_PRODUCTION());
         WebRequest schedulePage = new WebRequest(actionUrl, HttpMethod.POST);
 
-        schedulePage.setAdditionalHeader("User-Agent", this.definedStr.userAgentDefault_PRODUCTION());
+        schedulePage = this.setAdditionalHeader(schedulePage);
 
         schedulePage.setRequestBody(this.definedStr.requestBodyVAP_PRODUCTION()
                 .replace("{{VIEWSTATE}}", URLEncoder.encode(this.getVS(this.definedStr.studentPointUrl_PRODUCTION()))));

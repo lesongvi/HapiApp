@@ -13,7 +13,7 @@ public class stuffHelper {
         WebClientOptions webClientOpt = webClient.getOptions();
         webClientOpt.setThrowExceptionOnScriptError(false);
         webClientOpt.setThrowExceptionOnFailingStatusCode(false);
-        webClientOpt.setJavaScriptEnabled(false);
+        webClientOpt.setJavaScriptEnabled(false); //AnhQuan? What a Stupidity!
         webClientOpt.setRedirectEnabled(true);
         //webClientOpt.waitForBackgroundJavaScript(20000);
         webClientOpt.setCssEnabled(false);

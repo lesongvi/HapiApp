@@ -45,7 +45,7 @@ public class stringHelper {
     final private String cboxSemesterCheckPattern = "Học kỳ .* - Năm .*";
     final private String cboxExtractSemesterPattern = "Học kỳ (.*), (.*)";
     final private String cboxExtractWeekPattern = "Tuần (.*?) \\(từ ngày (.*?) đến ngày (.*?)\\)";
-    final private String cboxInvalidCredentialsPlsLogAgain = "\"Bạn chưa đăng nhập hoặc mật khẩu của bạn đã bị thay đổi! \\nNhấp vào nút *\\\"Lưu tài khoản\\\"* để lưu tài khoản bạn nhé!\\nSau khi đã lưu xong bạn hãy gõ *Bắt đầu* hoặc nhấp nút *Bắt đầu lại*\"";
+    final private String cboxInvalidCredentialsPlsLogAgain = "Bạn chưa đăng nhập hoặc mật khẩu của bạn đã bị thay đổi! \nNhấp vào nút *\"Lưu tài khoản\"* để lưu tài khoản bạn nhé!\nSau khi đã lưu xong bạn hãy gõ *Bắt đầu* hoặc nhấp nút *Bắt đầu lại*";
     final private String cboxPointTestPattern = "Điểm kỳ (.*?), (.*?)-(.*)";
     final private String cboxFirstTime = "Bạn ơi, đây là lần đầu tiên bạn sử dụng Hapi, hãy đăng nhập lần đầu bạn nhé!?";
     final private String notificationPattern = "window\\.onload=function\\(\\)\\{alert\\('(.*)'\\);\\}";
@@ -55,6 +55,10 @@ public class stringHelper {
     final private String requestBodySSO = "__EVENTTARGET=ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK&__EVENTARGUMENT=&__LASTFOCUS=&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&__VIEWSTATE={{VIEWSTATE}}&ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK={{CHON_NHHK}}&ctl00$ContentPlaceHolder1$ctl00$rad_MonHoc=rad_MonHoc";
     final private String requestBodySWO = "__EVENTTARGET=ctl00$ContentPlaceHolder1$ctl00$ddlTuan&__EVENTARGUMENT=&__LASTFOCUS=&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&__VIEWSTATE={{VIEWSTATE}}&ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK={{CHON_NHHK}}&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&ctl00$ContentPlaceHolder1$ctl00$ddlTuan={{DDL_TUAN}}";
     final private String requestBodyVAP = "__EVENTTARGET=ctl00$ContentPlaceHolder1$ctl00$lnkChangeview2&__EVENTARGUMENT=&__LASTFOCUS=&ctl00$ContentPlaceHolder1$ctl00$txtChonHK=&__VIEWSTATE={{VIEWSTATE}}";
+    final private String youNeedToInitialize = "Xin lỗi nhưng đây là lần sử dụng đầu tiên của bạn! Bạn phải nhấp vào *Xem thời khóa biểu* sau đó chọn _học kỳ_ và _tuần học_ bạn muốn.\nSau khi hoàn thành lần xem này bạn có thể xem thời khóa biểu tự do theo học kỳ đã chọn ^^";
+    final private String acceptLanguage = "en,vi;q=0.9,en-US;q=0.8,tr;q=0.7";
+    final private String acceptEncoding = "gzip, deflate";
+    final private String acceptDataType = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9";
 
     public String defaultPage_PRODUCTION() {
         return this.defaultPage;
@@ -254,5 +258,21 @@ public class stringHelper {
 
     public String requestBodyVAP_PRODUCTION() {
         return this.requestBodyVAP;
+    }
+
+    public String youNeedToInitialize_PRODUCTION() {
+        return this.youNeedToInitialize;
+    }
+
+    public String acceptLanguage_PRODUCTION() {
+        return this.acceptLanguage;
+    }
+
+    public String acceptEncoding_PRODUCTION() {
+        return this.acceptEncoding;
+    }
+
+    public String acceptDataType_PRODUCTION() {
+        return this.acceptDataType;
     }
 }

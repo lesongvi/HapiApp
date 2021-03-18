@@ -82,6 +82,7 @@ public class ScheduleBot {
         };
         Optional<Students> studentCre = this.studentService.findById(this.getStudentIdByFid());
 
+
         if (studentCre.isPresent()) {
             browserHelper studentBasicTest = new browserHelper(studentCre.get().getToken(), this.studentRepository, this.studentService);
 
@@ -90,7 +91,7 @@ public class ScheduleBot {
                 selectedWeek = studentBasicTest.findSelectedWeek();
             }
 
-            return this.getScheduleByWeekAndSemester(selectedWeek.getSotuan());
+            return this.getScheduleByWeekAndSemester(selectedWeek.getTenxacdinh(), true);
         }
         return new Message().setText(this.definedStr.pleaseTryAgainlab_PRODUCTION()).setQuickReplies(buttons);
     }
@@ -204,10 +205,10 @@ public class ScheduleBot {
             if (weekArr.size() != 0)
             {
                 for(weekResponse week : weekArr) {
-                    reply += "\nTuần *" + week.getSotuan() + "* (từ ngày *" + week.getNgaybd() + "* đến ngày *" + week.getNgaykt() + "*)";
+                    reply += "\nTuần *" + Integer.parseInt(week.getSotuan()) + "* (từ ngày *" + week.getNgaybd() + "* đến ngày *" + week.getNgaykt() + "*)";
                 }
                 reply += //"\nFacebook không cho phép có quá nhiều nút bấm trong 1 lần, các bạn thông cảm giúp Hapi nha <3!" +
-                        "\n\nVí dụ bạn muốn xem thời khóa biểu " + weekArr.get(0).getSotuan() + " (từ ngày " + weekArr.get(0).getNgaybd() + " - " + weekArr.get(0).getNgaykt() + ", hãy nhập: 26";
+                        "\n\nVí dụ bạn muốn xem thời khóa biểu tuần " + Integer.parseInt(weekArr.get(0).getSotuan()) + " (từ ngày " + weekArr.get(0).getNgaybd() + " - " + weekArr.get(0).getNgaykt() + ", hãy nhập: " + Integer.parseInt(weekArr.get(0).getSotuan());
             }
             else reply = "Bạn không có thời khóa biểu trong học kỳ này!";
 
@@ -230,6 +231,14 @@ public class ScheduleBot {
         return "";
     }
 
+    private String getCurrentSemester() throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, MalformedURLException {
+        ChatbotStudents cbst = this.chatbotStudentService.findById(this.fid).get();
+        Optional<Students> studentCre = this.studentService.findById(this.getStudentIdByFid());
+        browserHelper studentBasicTest = new browserHelper(studentCre.get().getToken(), this.studentRepository, this.studentService);
+
+        return studentBasicTest.getSemesterArr().get(0).semesterId;
+    }
+
     public Message howToUse() {
         Button[] buttons = new Button[]{
                 new Button().setContentType("text").setTitle("Bắt đầu").setPayload("Bắt đầu"),
@@ -241,7 +250,7 @@ public class ScheduleBot {
         return new Message().setText(reply).setQuickReplies(buttons);
     }
 
-    public Message getScheduleByWeekAndSemester(String weekId) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, IOException, InterruptedException, ParseException {
+    public Message getScheduleByWeekAndSemester(String weekId, boolean isFormated) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, IOException, InterruptedException, ParseException {
         Optional<Students> studentCre = this.studentService.findById(this.getStudentIdByFid());
         Button[] buttons = new Button[]{
                 new Button().setContentType("text").setTitle("Bắt đầu lại").setPayload("Bắt đầu lại"),
@@ -249,31 +258,41 @@ public class ScheduleBot {
                 new Button().setContentType("text").setTitle("TKB tuần này").setPayload("TKB tuần này"),
                 new Button().setContentType("text").setTitle("Báo lỗi").setPayload("Báo lỗi")
         };
+        ArrayList<scheduleReponse> stdntList;
         String reply = "Sau đây là thông tin thời khóa biểu tuần " + weekId + " của bạn:\n--------------------------------";
 
         if (studentCre.isPresent()) {
             ChatbotStudents cbst = this.chatbotStudentService.findById(this.fid).get();
             String semesterId = cbst.getCurrentSemesterId();
 
-            weekId = this.getWeekByWeekNum(weekId);
+            if (!isFormated)
+            {
+                weekId = this.getWeekByWeekNum(weekId);
+            } else {
+                synchronized (_lock) {
+                    semesterId = this.getCurrentSemester().trim();
+                }
+            }
 
             if (weekId == "")
                 return new Message().setText(this.definedStr.pleaseTryAgainlab_PRODUCTION()).setQuickReplies(buttons);
+            //if (cbst.getCurrentSemesterId() == null)
+                //return new Message().setText(this.definedStr.youNeedToInitialize_PRODUCTION()).setQuickReplies(buttons);
+
 
             cbst.setCurrentWeekId(weekId);
             this.chatbotStudentService.save(cbst);
 
-            browserHelper studentBasicTest = new browserHelper(studentCre.get().getToken(), this.studentRepository, this.studentService);
-
             synchronized(_lock) {
-                ArrayList<scheduleReponse> stdntList = studentBasicTest.getScheduleDetailArr(semesterId, weekId);
-
-                if (stdntList != null && stdntList.size() != 0)
-                    for (scheduleReponse scdule : stdntList) {
-                        reply += "\n\n*" + scdule.thu + "* tiết *" + scdule.tietbatdau + "* (" + this.convertTime(Integer.parseInt(scdule.tietbatdau)) + "): học *" + scdule.sotiet + " tiết* môn *" + scdule.mon + "* (" + scdule.tinchi + " tín chỉ) với, lớp *" + scdule.lop + "* (" + scdule.nhom + ") tại phòng *" + scdule.phong + "*" + (scdule.giangvien.length() > 5 ? " do giảng viên " + scdule.giangvien + " dạy" : "") + ". Bạn sẽ học môn này từ ngày " + scdule.ngaybd + " đến ngày " + scdule.ngaykt + ".";
-                    }
-                else reply = "Bạn không có thời khóa biểu trong tuần này!";
+                browserHelper studentBasicTest = new browserHelper(studentCre.get().getToken(), this.studentRepository, this.studentService);
+                stdntList = studentBasicTest.getScheduleDetailArr(semesterId, weekId);
             }
+
+            if (stdntList != null && stdntList.size() != 0)
+                for (scheduleReponse scdule : stdntList) {
+                    reply += "\n\n*" + scdule.thu + "* tiết *" + scdule.tietbatdau + "* (" + this.convertTime(Integer.parseInt(scdule.tietbatdau)) + "): học *" + scdule.sotiet + " tiết* môn *" + scdule.mon + "* (" + scdule.tinchi + " tín chỉ) với, lớp *" + scdule.lop + "* (" + scdule.nhom + ") tại phòng *" + scdule.phong + "*" + (scdule.giangvien.length() > 5 ? " do giảng viên " + scdule.giangvien + " dạy" : "") + ". Bạn sẽ học môn này từ ngày " + scdule.ngaybd + " đến ngày " + scdule.ngaykt + ".";
+                }
+            else reply = "Bạn không có thời khóa biểu trong tuần này!";
 
             return new Message().setText(reply).setQuickReplies(buttons);
         }
@@ -341,6 +360,7 @@ public class ScheduleBot {
         browserHelper studentBasicTest = new browserHelper(studentCre.get().getToken(), this.studentRepository, this.studentService);
         Button[] buttons = new Button[]{
                 new Button().setContentType("text").setTitle("Bắt đầu lại").setPayload("Bắt đầu lại"),
+                new Button().setContentType("text").setTitle("Xem điểm").setPayload("Xem điểm"),
                 new Button().setContentType("text").setTitle("Báo lỗi").setPayload("Báo lỗi")
         };
 
@@ -448,13 +468,10 @@ public class ScheduleBot {
             cbstdnt.setSid(0);
             this.chatbotStudentService.save(cbstdnt);
         });
-        
-        Button[] buttons = new Button[]{
-                new Button().setContentType("text").setTitle("Bắt đầu lại").setPayload("Bắt đầu lại")
-        };
-        String reply = "Đăng xuất tài khoản thành công khỏi hệ thống Hapi. Cảm ơn bạn đã sử dụng dịch vụ!\nHãy giới thiệu bạn bè học chung tại HUTECH để họ có thể biết về dịch vụ miễn phí này nhè <3 <3";
 
-        return new Message().setText(reply).setQuickReplies(buttons);
+        String reply = "Đăng xuất tài khoản thành công khỏi hệ thống Hapi :( _Tại sao lại bỏ mình thế huhu_. Nhưng mà không sao hết á, bạn có thể đăng nhập lại bất cứ lúc nào.\nXin hãy giới thiệu cho bạn bè học chung tại HUTECH để họ có thể biết về dịch vụ miễn phí và hữu ích này nhé <3 <3";
+
+        return new Message().setText(reply);
     }
 
     public void saveFbCredentials (int sid) {
