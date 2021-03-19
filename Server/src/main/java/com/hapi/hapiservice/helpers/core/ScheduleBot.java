@@ -250,7 +250,7 @@ public class ScheduleBot {
         return new Message().setText(reply).setQuickReplies(buttons);
     }
 
-    public Message getScheduleByWeekAndSemester(String weekId, boolean isFormated) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, IOException, InterruptedException, ParseException {
+    public Message getScheduleByWeekAndSemester(String weekId, boolean isFormated) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, IOException, ParseException {
         Optional<Students> studentCre = this.studentService.findById(this.getStudentIdByFid());
         Button[] buttons = new Button[]{
                 new Button().setContentType("text").setTitle("Bắt đầu lại").setPayload("Bắt đầu lại"),
@@ -276,8 +276,8 @@ public class ScheduleBot {
 
             if (weekId == "")
                 return new Message().setText(this.definedStr.pleaseTryAgainlab_PRODUCTION()).setQuickReplies(buttons);
-            //if (cbst.getCurrentSemesterId() == null)
-                //return new Message().setText(this.definedStr.youNeedToInitialize_PRODUCTION()).setQuickReplies(buttons);
+            if (cbst.getCurrentSemesterId() == null)
+                return new Message().setText(this.definedStr.youNeedToInitialize_PRODUCTION()).setQuickReplies(buttons);
 
 
             cbst.setCurrentWeekId(weekId);
@@ -344,6 +344,26 @@ public class ScheduleBot {
         String reply = "Hãy chọn không gian bạn muốn, *điểm hiện tại* tức là điểm của học kỳ hiện tại, *tất cả điểm* tức là điểm của tất cả học kỳ ^^";
 
         return new Message().setText(reply).setQuickReplies(buttons);
+    }
+
+    public Message currentSessionDetail() {
+        if (this.getStudentIdByFid() == -1) {
+            return this.login(this.definedStr.cboxInvalidCredentialsPlsLogAgain_PRODUCTION());
+        }
+
+        Button[] buttons = new Button[]{
+                new Button().setContentType("text").setTitle("Bắt đầu lại").setPayload("Bắt đầu lại"),
+                new Button().setContentType("text").setTitle("Cài đặt").setPayload("Cài đặt")
+        };
+
+        String msgBack = "";
+        Optional<Students> studentCre = this.studentService.findById(this.getStudentIdByFid());
+        if(!studentCre.isPresent())
+            msgBack += this.definedStr.pleaseTryAgainlab_PRODUCTION();
+        else
+            msgBack += "Thông tin tài khoản của bạn\nHọ tên sinh viên: " + studentCre.get().getName() + "\nMã số sinh viên: " + studentCre.get().getSid();
+
+        return new Message().setText(msgBack).setQuickReplies(buttons);
     }
 
     public Message detailPointOpt(String msg) throws BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, InvalidKeyException, IOException {

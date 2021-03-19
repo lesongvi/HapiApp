@@ -55,7 +55,7 @@ public class stringHelper {
     final private String requestBodySSO = "__EVENTTARGET=ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK&__EVENTARGUMENT=&__LASTFOCUS=&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&__VIEWSTATE={{VIEWSTATE}}&ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK={{CHON_NHHK}}&ctl00$ContentPlaceHolder1$ctl00$rad_MonHoc=rad_MonHoc";
     final private String requestBodySWO = "__EVENTTARGET=ctl00$ContentPlaceHolder1$ctl00$ddlTuan&__EVENTARGUMENT=&__LASTFOCUS=&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&__VIEWSTATE={{VIEWSTATE}}&ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK={{CHON_NHHK}}&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&ctl00$ContentPlaceHolder1$ctl00$ddlTuan={{DDL_TUAN}}";
     final private String requestBodyVAP = "__EVENTTARGET=ctl00$ContentPlaceHolder1$ctl00$lnkChangeview2&__EVENTARGUMENT=&__LASTFOCUS=&ctl00$ContentPlaceHolder1$ctl00$txtChonHK=&__VIEWSTATE={{VIEWSTATE}}";
-    final private String youNeedToInitialize = "Xin lỗi nhưng đây là lần sử dụng đầu tiên của bạn! Bạn phải nhấp vào *Xem thời khóa biểu* sau đó chọn _học kỳ_ và _tuần học_ bạn muốn.\nSau khi hoàn thành lần xem này bạn có thể xem thời khóa biểu tự do theo học kỳ đã chọn ^^";
+    final private String youNeedToInitialize = "Xin lỗi nhưng đây là lần sử dụng đầu tiên của bạn! Bạn phải nhấp vào *Xem thời khóa biểu* sau đó chọn _học kỳ_ bạn muốn.\nSau đó bạn có thể xem thời khóa biểu tự do theo học kỳ đã chọn ^^";
     final private String acceptLanguage = "en,vi;q=0.9,en-US;q=0.8,tr;q=0.7";
     final private String acceptEncoding = "gzip, deflate";
     final private String acceptDataType = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9";

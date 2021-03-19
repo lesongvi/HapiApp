@@ -1,6 +1,5 @@
 package com.hapi.hapiservice.controllers;
 
-import com.google.gson.Gson;
 import com.hapi.hapiservice.helpers.common.browserHelper;
 import com.hapi.hapiservice.helpers.respository.ChatbotStudentRepository;
 import com.hapi.hapiservice.helpers.respository.NotificationRespository;
@@ -149,7 +148,6 @@ public class ChatBotController extends BaseBot {
                             } else {
                                 event.setType(EventType.MESSAGE);
                                 sendTypingOnIndicator((User)event.getSender());
-                                //sendTypingOnIndicator((User)event.getSender());
                             }
                         } else if (event.getDelivery() != null) {
                             event.setType(EventType.MESSAGE_DELIVERED);
@@ -345,7 +343,7 @@ public class ChatBotController extends BaseBot {
     }
 
     @Controller(events = {EventType.MESSAGE, EventType.POSTBACK, EventType.QUICK_REPLY}, pattern = "^(?i)(bắt đầu|chào|bắt đầu lại)$")
-    public void onGetStarted(Event event) throws InterruptedException {
+    public void onGetStarted(Event event) {
         String fid = event.getSender().getId();
         Optional<ChatbotStudents> userVerify = this.chatbotstudentService.findById(fid);
         Object _lock = new Object();
@@ -362,6 +360,7 @@ public class ChatBotController extends BaseBot {
                         new Button().setContentType("text").setTitle("Xem thời khóa biểu").setPayload("Xem thời khóa biểu"),
                         new Button().setContentType("text").setTitle("Xem điểm").setPayload("Xem điểm"),
                         new Button().setContentType("text").setTitle("Xem thông báo").setPayload("Xem thông báo"),
+                        new Button().setContentType("text").setTitle("Xem thông tin").setPayload("Xem thông tin"),
                         new Button().setContentType("text").setTitle("Cài đặt").setPayload("Cài đặt")
                 };
                 reply(event, new Message().setText("Xin chào " + stdunt.getName() + ", lại là Hapi đây ^^, bạn muốn xem thông tin gì ạ?").setQuickReplies(quickReplies));
@@ -477,6 +476,12 @@ public class ChatBotController extends BaseBot {
         reply(event, schedulebot.currentWeekView());
     }
 
+    @Controller(events = {EventType.MESSAGE, EventType.POSTBACK, EventType.QUICK_REPLY}, pattern = "^(Xem thông tin)$")
+    public void currentSessionInfomation(Event event) throws BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeyException, IOException, InterruptedException, ParseException {
+        ScheduleBot schedulebot = this.initial(event);
+        reply(event, schedulebot.currentSessionDetail());
+    }
+
     @Controller(events = {EventType.MESSAGE, EventType.POSTBACK, EventType.QUICK_REPLY}, pattern = "^(?i)(Học kỳ (.*), (.*))$"/*, next = "showMeMySchedule"*/)
     public void askForWeek(Event event) throws BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeyException, IOException, InterruptedException, ParseException {
         ScheduleBot schedulebot = this.initial(event);
@@ -498,7 +503,7 @@ public class ChatBotController extends BaseBot {
         reply(event, schedulebot.getScheduleByWeekAndSemester(event.getMessage().getText(), false));
     }
 
-    @Controller(events = {EventType.MESSAGE, EventType.POSTBACK}, pattern = "\\b(?!(?i)([0-9]|Đăng nhập|bắt đầu|chào|bắt đầu lại|Xem thời khóa biểu|Đăng xuất|Cài đặt|Điểm kỳ |TKB tuần này|Báo lỗi|Xem thông báo|Học kỳ |Báo lỗi|Xem điểm|Cách xử dụng|HOW_TO_USE))\\b\\S+")
+    @Controller(events = {EventType.MESSAGE, EventType.POSTBACK}, pattern = "\\b(?!(?i)([0-9]|Đăng nhập|bắt đầu|chào|bắt đầu lại|Xem thời khóa biểu|Đăng xuất|Cài đặt|Điểm kỳ |TKB tuần này|Báo lỗi|Xem thông báo|Học kỳ |Báo lỗi|Xem điểm|Cách xử dụng|HOW_TO_USE|get started))\\b\\S+")
     public void defaultReply(Event event) {
         ScheduleBot schedulebot = this.initial(event);
         reply(event, schedulebot.onMessageCome(event.getMessage().getText()));
