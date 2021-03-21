@@ -59,6 +59,14 @@ public class stringHelper {
     final private String acceptLanguage = "en,vi;q=0.9,en-US;q=0.8,tr;q=0.7";
     final private String acceptEncoding = "gzip, deflate";
     final private String acceptDataType = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9";
+    final private String studentEvaluateSearchByStudent = "https://api.hutech.edu.vn/ren-luyen-sinh-vien/api/phieudanhgia/searchsinhvien";
+    final private String studentEvaluateGetTicket = "https://api.hutech.edu.vn/ren-luyen-sinh-vien/api/phieudanhgia/searchphieuchitietsinhvien";
+
+
+
+
+
+
 
     public String defaultPage_PRODUCTION() {
         return this.defaultPage;
@@ -274,5 +282,13 @@ public class stringHelper {
 
     public String acceptDataType_PRODUCTION() {
         return this.acceptDataType;
+    }
+
+    public String studentEvaluateSearchByStudent_PRODUCTION() {
+        return this.studentEvaluateSearchByStudent;
+    }
+
+    public String studentEvaluateGetTicket_PRODUCTION() {
+        return this.studentEvaluateGetTicket;
     }
 }

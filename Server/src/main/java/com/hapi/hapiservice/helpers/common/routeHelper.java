@@ -13,6 +13,8 @@ public class routeHelper {
 
     public final static String botPath = apiPrefix + "bot/";
 
+    public final static String studentPath = apiPrefix + "student/";
+
     public final static String getSemester = schedulePath + "semester";
 
     public final static String getWeek = schedulePath + "week";
@@ -44,4 +46,10 @@ public class routeHelper {
     public final static String snapshotApiPath = apiPrefix + "snapshot/";
 
     public final static String snapshotNotification = snapshotApiPath + "notification";
+
+    public final static String studentEvaluate = studentPath + "evaluate/";
+
+    public final static String evaluateList = studentEvaluate + "list";
+
+    public final static String evaluateView = studentEvaluate + "view";
 }

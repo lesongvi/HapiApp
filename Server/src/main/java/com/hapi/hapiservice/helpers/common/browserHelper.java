@@ -6,7 +6,6 @@ import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.google.gson.Gson;
-import com.hapi.hapiservice.helpers.core.ScheduleBot;
 import com.hapi.hapiservice.helpers.respository.StudentRepository;
 import com.hapi.hapiservice.models.schedule.*;
 import com.hapi.hapiservice.services.StudentService;
@@ -17,6 +16,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -241,6 +241,7 @@ public class browserHelper extends stuffHelper {
             return _studntName;
         }
     }
+
 
     public WebClient requestLogin() throws IOException {
         URL actionUrl = new URL(this.definedStr.defaultPage_PRODUCTION());
