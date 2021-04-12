@@ -52,4 +52,10 @@ public class routeHelper {
     public final static String evaluateList = studentEvaluate + "list";
 
     public final static String evaluateView = studentEvaluate + "view";
+
+    public final static String taRest = studentPath + "tarest/";
+
+    public final static String takeARest = taRest + "request";
+
+    public final static String restList = taRest + "list";
 }

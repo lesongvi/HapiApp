@@ -6,10 +6,8 @@ import com.hapi.hapiservice.helpers.respository.NotificationRespository;
 import com.hapi.hapiservice.models.notification.NotificationResponse;
 import com.hapi.hapiservice.models.notification.Notifications;
 import com.hapi.hapiservice.services.NotificationService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.time.Instant;
 
 public class snapshotHelper extends browserHelper {

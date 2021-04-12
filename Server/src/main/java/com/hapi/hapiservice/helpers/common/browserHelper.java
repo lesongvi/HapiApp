@@ -16,7 +16,6 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -271,7 +270,7 @@ public class browserHelper extends stuffHelper {
         return wr;
     }
 
-    public ArrayList<String> getMailAndPhoneNum() throws MalformedURLException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
+    public ArrayList<String> getMailAndPhoneNum() throws MalformedURLException {
         URL actionUrl = new URL(this.definedStr.userInfoChangerUrl_PRODUCTION());
         WebRequest defaultPage = new WebRequest(actionUrl);
         ArrayList<String> _infoBack = new ArrayList<String>();
@@ -623,7 +622,6 @@ public class browserHelper extends stuffHelper {
         Matcher pointView = null;
 
         WebRequest defaultPage = this.viewAllPoint();
-        ArrayList<PSListResponse> _last = null;
 
         ArrayList<PSListResponse> fullPointView = new ArrayList<PSListResponse>();
 

@@ -477,7 +477,7 @@ public class ChatBotController extends BaseBot {
     }
 
     @Controller(events = {EventType.MESSAGE, EventType.POSTBACK, EventType.QUICK_REPLY}, pattern = "^(Xem thông tin)$")
-    public void currentSessionInfomation(Event event) throws BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeyException, IOException, InterruptedException, ParseException {
+    public void currentSessionInfomation(Event event) {
         ScheduleBot schedulebot = this.initial(event);
         reply(event, schedulebot.currentSessionDetail());
     }

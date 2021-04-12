@@ -6,7 +6,6 @@ import com.hapi.hapiservice.models.schedule.Students;
 import com.hapi.hapiservice.models.student.*;
 import com.hapi.hapiservice.services.StudentService;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -20,11 +19,9 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Enumeration;
 
 public class studentHelper {
     private StudentRepository studentRepository;
@@ -50,62 +47,76 @@ public class studentHelper {
         int studentId = tokenInfo.getSid();
         String studentPassword = this.encryptEngine.pleaseHelpViHackThis(tokenInfo.getPwd());
 
-        HttpClient httpClient = HttpClientBuilder.create().build();
-        HttpPost actionUrl = new HttpPost("https://api.hutech.edu.vn/authentication/api/auth/login");
-
-        StringEntity input = new StringEntity("{\"app\":\"MOBILE_HUTECH\", \"captcha\": null, \"diuu\": 123, \"password\": \"" + studentPassword + "\", \"username\": \"" + studentId + "\"}");
-        actionUrl = this.initialAction(input, actionUrl);
-
-        HttpResponse response = httpClient.execute(actionUrl);
-
-        HttpEntity entity = response.getEntity();
-
-        InputStream instream = entity.getContent();
-
-        if (response.getStatusLine().getStatusCode() != 200)
-            this.token = null;
-        else
+        try {
+            InputStream instream = this.sRequest(this.definedStr.studentAuthApi_PRODUCTION(), "{\"app\":\"MOBILE_HUTECH\", \"captcha\": null, \"diuu\": 123, \"password\": \"" + studentPassword + "\", \"username\": \"" + studentId + "\"}");
             this.token = new Gson().fromJson(IOUtils.toString(instream, StandardCharsets.UTF_8.name()), loginResponse.class).getToken();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
     }
 
     public String getEvaluateList() throws IOException {
-        HttpClient httpClient = HttpClientBuilder.create().build();
-        HttpPost actionUrl = new HttpPost(this.definedStr.studentEvaluateSearchByStudent_PRODUCTION());
-
-        StringEntity input = new StringEntity("{\"page\": 1, \"per_page\": 20}");
-        actionUrl = this.initialAction(input, actionUrl);
-
-        HttpResponse response = httpClient.execute(actionUrl);
-
-        HttpEntity entity = response.getEntity();
-
-        InputStream instream = entity.getContent();
-
-        if (response.getStatusLine().getStatusCode() != 200)
-            return null;
-        else
+        InputStream instream = null;
+        try {
+            instream = this.sRequest(this.definedStr.studentEvaluateSearchByStudent_PRODUCTION(), "{\"page\": 1, \"per_page\": 20}");
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        } finally {
             return new Gson().toJson(new Gson().fromJson(IOUtils.toString(instream, StandardCharsets.UTF_8.name()), evaluatePaginate.class).getResult());
+        }
     }
 
-    public String getEvaluateTicket(String ticketId) throws IOException, IllegalAccessException {
+    private InputStream sRequest(String req, String content) throws IOException {
         HttpClient httpClient = HttpClientBuilder.create().build();
-        HttpPost actionUrl = new HttpPost(this.definedStr.studentEvaluateGetTicket_PRODUCTION());
+        HttpPost actionUrl = new HttpPost(req);
 
-        StringEntity input = new StringEntity("{\"phieu_danh_gia_id\": " + ticketId + "}");
+        StringEntity input =
+                new StringEntity(content);
         actionUrl = this.initialAction(input, actionUrl);
 
         HttpResponse response = httpClient.execute(actionUrl);
 
-        HttpEntity entity = response.getEntity();
+        //if (response.getStatusLine().getStatusCode() != 200)
+            //throw new NullPointerException("Máy chủ trả lại lỗi!");
 
-        InputStream instream = entity.getContent();
+        return response.getEntity().getContent();
+    }
 
-        evaluateTicketResultItem[] qlist = new Gson().fromJson(IOUtils.toString(instream, StandardCharsets.UTF_8.name()), evaluateTicket.class).getResult();
-
-        if (response.getStatusLine().getStatusCode() != 200)
-            return null;
-        else
+    public String takeARestByParams(RestForm rest) {
+        evaluateTicketResultItem[] qlist = null;
+        try {
+            InputStream instream = this.sRequest(this.definedStr.studentTakeaRest_PRODUCTION(), "{\"mon_hoc\": " + rest.getMonHoc() + ", \"giang_vien\": " + rest.getGiangVien() + ", \"ngay_nghi\": " + rest.getNgayNghi() + ", \"ly_do\": " + rest.getLyDo() + ", \"ca\": " + rest.getCaHoc() + "}");
+            System.out.println(IOUtils.toString(instream, StandardCharsets.UTF_8.name()));
+            qlist = new Gson().fromJson(IOUtils.toString(instream, StandardCharsets.UTF_8.name()), evaluateTicket.class).getResult();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        } finally {
             return new Gson().toJson(qlist);
+        }
+    }
+
+    public String getRestList() {
+        studentRestList[] rlist = null;
+        try {
+            InputStream instream = this.sRequest(this.definedStr.studentRestList_PRODUCTION(), "{\"page\": " + 1 + ", \"per_page\": " + 10 + "}");
+            rlist = new Gson().fromJson(IOUtils.toString(instream, StandardCharsets.UTF_8.name()), restListResponse.class).getResult();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        } finally {
+            return new Gson().toJson(rlist);
+        }
+    }
+
+    public String getEvaluateTicket(String ticketId) {
+        evaluateTicketResultItem[] qlist = null;
+        try {
+            InputStream instream = this.sRequest(this.definedStr.studentEvaluateGetTicket_PRODUCTION(), "{\"phieu_danh_gia_id\": " + ticketId + "}");
+            qlist = new Gson().fromJson(IOUtils.toString(instream, StandardCharsets.UTF_8.name()), evaluateTicket.class).getResult();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        } finally {
+            return new Gson().toJson(qlist);
+        }
     }
 
     public HttpPost initialAction(StringEntity input, HttpPost actionUrl) {

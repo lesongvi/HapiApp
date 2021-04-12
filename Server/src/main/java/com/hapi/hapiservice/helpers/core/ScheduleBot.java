@@ -71,7 +71,7 @@ public class ScheduleBot {
         return new Message().setText(reply).setQuickReplies(buttons);
     }
 
-    public Message currentWeekView() throws BadPaddingException, InterruptedException, ParseException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeyException, IOException {
+    public Message currentWeekView() throws BadPaddingException, ParseException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeyException, IOException {
         if (this.getStudentIdByFid() == -1) {
             return this.login("Bạn chưa đăng nhập hoặc mật khẩu của bạn đã bị thay đổi! \nNhấp vào nút *\"Lưu tài khoản\"* để lưu tài khoản bạn nhé!\nSau khi đã lưu xong bạn hãy gõ *Bắt đầu* hoặc nhấp nút *Bắt đầu lại*");
         }
@@ -175,11 +175,10 @@ public class ScheduleBot {
         }
     }
 
-    public Message startWeekInitial(String semesterId) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, MalformedURLException, InterruptedException {
+    public Message startWeekInitial(String semesterId) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, MalformedURLException {
         Optional<Students> studentCre = this.studentService.findById(this.getStudentIdByFid());
         String reply = "Hãy gõ *số tuần* bạn muốn xem thời khóa biểu và nhấp Enter\n-------------------";
         ArrayList<weekResponse> weekArr;
-        String _randomExample = "Tuần 19";
         Button[] buttons = new Button[]{
                 new Button().setContentType("text").setTitle("Bắt đầu lại").setPayload("Bắt đầu lại"),
                 new Button().setContentType("text").setTitle("TKB tuần này").setPayload("TKB tuần này"),

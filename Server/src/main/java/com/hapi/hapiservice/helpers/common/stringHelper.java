@@ -5,6 +5,7 @@ import java.net.URLEncoder;
 public class stringHelper {
     final private String defaultPage = "http://daotao.hutech.edu.vn/default.aspx";
     final private String defaultPageWithUppercaseD = "http://daotao.hutech.edu.vn/Default.aspx";
+    final private String studentApi = "https://api.hutech.edu.vn/";
     final private String loginId = "ctl00_ContentPlaceHolder1_ctl00_ucDangNhap_txtTaiKhoa";
     final private String loginPwdId = "ctl00_ContentPlaceHolder1_ctl00_ucDangNhap_txtMatKhau";
     final private String loginPwdName = "ctl00$ContentPlaceHolder1$ctl00$ucDangNhap$txtMatKhau";
@@ -59,14 +60,11 @@ public class stringHelper {
     final private String acceptLanguage = "en,vi;q=0.9,en-US;q=0.8,tr;q=0.7";
     final private String acceptEncoding = "gzip, deflate";
     final private String acceptDataType = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9";
-    final private String studentEvaluateSearchByStudent = "https://api.hutech.edu.vn/ren-luyen-sinh-vien/api/phieudanhgia/searchsinhvien";
-    final private String studentEvaluateGetTicket = "https://api.hutech.edu.vn/ren-luyen-sinh-vien/api/phieudanhgia/searchphieuchitietsinhvien";
-
-
-
-
-
-
+    final private String studentEvaluateSearchByStudent = this.studentApi + "ren-luyen-sinh-vien/api/phieudanhgia/searchsinhvien";
+    final private String studentEvaluateGetTicket = this.studentApi + "ren-luyen-sinh-vien/api/phieudanhgia/searchphieuchitietsinhvien";
+    final private String studentTakeaRest = this.studentApi + "corona/api/nghi-phep-sinh-vien";
+    final private String studentAuthApi = this.studentApi + "authentication/api/auth/login";
+    final private String studentRestList = this.studentApi + "corona/api/nghi-phep-sinh-vien/get-list";
 
     public String defaultPage_PRODUCTION() {
         return this.defaultPage;
@@ -290,5 +288,17 @@ public class stringHelper {
 
     public String studentEvaluateGetTicket_PRODUCTION() {
         return this.studentEvaluateGetTicket;
+    }
+
+    public String studentTakeaRest_PRODUCTION() {
+        return this.studentTakeaRest;
+    }
+
+    public String studentAuthApi_PRODUCTION() {
+        return this.studentAuthApi;
+    }
+
+    public String studentRestList_PRODUCTION() {
+        return this.studentRestList;
     }
 }

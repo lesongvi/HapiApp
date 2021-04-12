@@ -1,9 +1,9 @@
 package com.hapi.hapiservice.controllers;
 
-import com.hapi.hapiservice.helpers.common.browserHelper;
 import com.hapi.hapiservice.helpers.common.routeHelper;
 import com.hapi.hapiservice.helpers.common.studentHelper;
 import com.hapi.hapiservice.helpers.respository.StudentRepository;
+import com.hapi.hapiservice.models.student.RestForm;
 import com.hapi.hapiservice.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -26,17 +26,34 @@ public class StudentController {
     @Autowired
     private StudentService studentService;
 
-    @RequestMapping(value = {routeHelper.evaluateList}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    private studentHelper studentEngine;
+
+    @RequestMapping(value = {routeHelper.evaluateList}, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public String studentEvaluate (@RequestParam(value = "token", defaultValue = "") String token) throws IOException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
-        studentHelper studentEngine = new studentHelper(token, this.studentRepository, this.studentService);
+        this.studentEngine = new studentHelper(token, this.studentRepository, this.studentService);
 
-        return studentEngine.getEvaluateList();
+        return this.studentEngine.getEvaluateList();
     }
 
-    @RequestMapping(value = {routeHelper.evaluateView}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = {routeHelper.evaluateView}, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public String studentEvaluate (@RequestParam(value = "token", defaultValue = "") String token, @RequestParam(value = "ticket", defaultValue = "") String ticket) throws IOException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalAccessException {
-        studentHelper studentEngine = new studentHelper(token, this.studentRepository, this.studentService);
+        this.studentEngine = new studentHelper(token, this.studentRepository, this.studentService);
 
-        return studentEngine.getEvaluateTicket(ticket);
+        return this.studentEngine.getEvaluateTicket(ticket);
     }
+
+    @RequestMapping(value = {routeHelper.restList}, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public String studentTARestList (@RequestParam(value = "token", defaultValue = "") String token) throws IOException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+        this.studentEngine = new studentHelper(token, this.studentRepository, this.studentService);
+
+        return this.studentEngine.getRestList();
+    }
+
+    /*@RequestMapping(value = {routeHelper.takeARest}, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public String studentTARest (@RequestParam(value = "token", defaultValue = "") String token, @RequestParam(value = "monhoc", defaultValue = "") String monhoc, @RequestParam(value = "giangvien", defaultValue = "") String giangvien, @RequestParam(value = "ngaynghi", defaultValue = "") String ngaynghi, @RequestParam(value = "lydo", defaultValue = "") String lydo, @RequestParam(value = "ca", defaultValue = "") List<String> ca) throws IOException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+        this.studentEngine = new studentHelper(token, this.studentRepository, this.studentService);
+        RestForm rest = new RestForm().setMonHoc(monhoc).setGiangVien(giangvien).setCa(ca.toArray(new String[ca.size()])).setLyDo(lydo).setNgayNghi(ngaynghi);
+
+        return this.studentEngine.takeARestByParams(rest);
+    }*/
 }

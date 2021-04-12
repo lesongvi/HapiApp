@@ -173,7 +173,6 @@ public abstract class BaseBot {
             if (patternFlags != that.patternFlags) return false;
             if (matcher != null ? !matcher.equals(that.matcher) : that.matcher != null) return false;
             return next != null ? next.equals(that.next) : that.next == null;
-
         }
 
         @Override
