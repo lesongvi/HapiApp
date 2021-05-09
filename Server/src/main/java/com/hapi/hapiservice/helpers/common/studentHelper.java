@@ -41,7 +41,7 @@ public class studentHelper {
         this.genJWTToken();
     }
 
-    public void genJWTToken() throws IOException, IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+    public void genJWTToken() throws IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         Students tokenInfo = this.studentService.getStudentByToken(this.token);
 
         int studentId = tokenInfo.getSid();

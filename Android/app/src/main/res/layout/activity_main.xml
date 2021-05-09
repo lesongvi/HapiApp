@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.scheduleproject.MainActivity">
+
+    <androidx.viewpager.widget.ViewPager
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:id="@+id/ViewPagerHome">
+
+    </androidx.viewpager.widget.ViewPager>
+
+    <com.google.android.material.tabs.TabLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/TapLayout_Home"
+        android:background="@color/white"
+        app:tabIndicatorColor="#FF9800"
+        app:tabIndicatorHeight="2dp"
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="#FFC107"
+        app:tabTextColor="#000000">
+    </com.google.android.material.tabs.TabLayout>
+
+</LinearLayout>

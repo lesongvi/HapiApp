@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragment.SettingFragment"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Cài đặt"
+            android:textSize="30dp"
+            android:paddingTop="50dp"/>
+        ></LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <Switch
+            android:id="@+id/SwitchBackground"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="50dp"
+            android:paddingTop="30dp"
+            android:checked="false"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/SwitchBackground"
+            android:text="Dark mode"
+            android:paddingLeft="30dp"
+            android:paddingTop="25dp"
+            android:textSize="20dp"/>
+        <TextView
+            android:id="@+id/Help"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hỗ trợ"
+            android:textSize="20dp"
+            android:drawableLeft="@drawable/ic_baseline_support_24"
+            android:layout_below="@+id/SwitchBackground"
+            android:paddingLeft="55dp"
+            android:drawablePadding="50dp"
+            android:paddingTop="20dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cập nhật ứng dụng"
+            android:textSize="20dp"
+            android:layout_below="@+id/Help"
+            android:drawableLeft="@drawable/ic_baseline_system_update_alt_24"
+            android:paddingLeft="55dp"
+            android:drawablePadding="50dp"
+            android:paddingTop="20dp"/>
+
+
+    </RelativeLayout>
+
+</LinearLayout>

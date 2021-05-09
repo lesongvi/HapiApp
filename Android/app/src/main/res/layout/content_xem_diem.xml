@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/content_frame_XD"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:orientation="vertical"
+    tools:showIn="@layout/app_bar_xem_diem">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Điểm"
+            android:textSize="25dp"
+            android:gravity="center"
+            android:layout_marginTop="80dp"/>
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Năm học"
+                    android:textSize="15dp"
+                    android:layout_marginLeft="35dp"
+                    android:layout_marginTop="20dp"/>
+                <Spinner
+                    android:id="@+id/spn_NamHoc"
+                    android:layout_width="100dp"
+                    android:layout_height="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="20dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Học kỳ"
+                    android:layout_marginTop="20dp"
+                    android:textSize="15dp"
+                    android:layout_marginLeft="50dp"/>
+                <Spinner
+                    android:id="@+id/spn_HocKy"
+                    android:layout_width="50dp"
+                    android:layout_height="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="20dp"/>
+            </TableRow>
+        </TableLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home"
+            android:title="@string/menu_home" />
+        <item
+            android:id="@+id/nav_setting"
+            android:icon="@drawable/ic_settings"
+            android:title="Cài đặt" />
+        <item
+            android:id="@+id/nav_account"
+            android:icon="@drawable/ic_account"
+            android:title="Tài khoản" />
+        <item
+            android:id="@+id/nav_support"
+            android:icon="@drawable/ic_baseline_support_24"
+            android:title="Trợ giúp" />
+    </group>
+    <item android:title="Tính năng">
+        <menu>
+            <item
+                android:id="@+id/nav_xem_diem"
+                android:icon="@drawable/ic_mark"
+                android:title="Xem điểm"/>
+
+            <item
+                android:id="@+id/nav_TKB"
+                android:icon="@drawable/ic_shedule"
+                android:title="Thời khóa biểu"/>
+            <item
+                android:id="@+id/nav_LichThi"
+                android:icon="@drawable/ic_exam_schedu"
+                android:title="Lịch thi"/>
+            <item
+                android:id="@+id/nav_Renluyen"
+                android:icon="@drawable/ic_train"
+                android:title="Đánh giá rèn luyện"/>
+
+        </menu>
+    </item>
+</menu>
