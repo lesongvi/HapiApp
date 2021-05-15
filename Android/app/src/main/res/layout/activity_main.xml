@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Theme.AppCompat.DayNight"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -17,14 +18,12 @@
 
     <com.google.android.material.tabs.TabLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:backgroundTintMode="add"
+        android:layout_height="50dp"
         android:id="@+id/TapLayout_Home"
-        android:background="@color/white"
-        app:tabIndicatorColor="#FF9800"
         app:tabIndicatorHeight="2dp"
         app:tabMode="fixed"
-        app:tabSelectedTextColor="#FFC107"
-        app:tabTextColor="#000000">
+        app:tabSelectedTextColor="@color/white">
     </com.google.android.material.tabs.TabLayout>
 
 </LinearLayout>

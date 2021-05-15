@@ -20,7 +20,11 @@
         ></LinearLayout>
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+
+        >
         <Switch
             android:id="@+id/SwitchBackground"
             android:layout_width="wrap_content"
@@ -42,7 +46,7 @@
             android:layout_height="wrap_content"
             android:text="Hỗ trợ"
             android:textSize="20dp"
-            android:drawableLeft="@drawable/ic_baseline_support_24"
+            android:drawableLeft="@drawable/ic_help"
             android:layout_below="@+id/SwitchBackground"
             android:paddingLeft="55dp"
             android:drawablePadding="50dp"
@@ -54,7 +58,7 @@
             android:text="Cập nhật ứng dụng"
             android:textSize="20dp"
             android:layout_below="@+id/Help"
-            android:drawableLeft="@drawable/ic_baseline_system_update_alt_24"
+            android:drawableLeft="@drawable/ic_updated"
             android:paddingLeft="55dp"
             android:drawablePadding="50dp"
             android:paddingTop="20dp"/>

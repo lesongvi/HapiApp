@@ -31,6 +31,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.example.scheduleproject.MainActivity;
 
 public class LichThi extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final int RLACTIVITY =1;
@@ -44,6 +45,7 @@ public class LichThi extends AppCompatActivity implements NavigationView.OnNavig
     private int currentFragment = RLACTIVITY;
     Spinner spn_Namhoc;
     Spinner spn_HK;
+    TabLayout tabLayout;
 
     private AppBarConfiguration mAppBarConfiguration;
 
@@ -138,25 +140,21 @@ public class LichThi extends AppCompatActivity implements NavigationView.OnNavig
         if (id == R.id.nav_home) {
             //Open fragment home
             if (HOMEFRAGMENT != currentFragment) {
-                this.finish();
                 replaceFragment(new HomeFragment());
                 currentFragment = HOMEFRAGMENT;
             }
         } else if (id == R.id.nav_setting) {
-            //Open fragment setting
             if (SETTINGFRAGMENT != currentFragment) {
-                this.finish();
                 replaceFragment(new SettingFragment());
                 currentFragment = SETTINGFRAGMENT;
             }
         } else if (id == R.id.nav_account) {
             //Open fragment setting
             if (ACCOUNT  != currentFragment) {
-                this.finish();
-                replaceFragment(new AccountFragment());
+                replaceFragment(new AccountFragment() );
                 currentFragment = ACCOUNT;
             }
-        } else if (id == R.id.nav_support) {
+        } else if (id == R.id.nav_Chat) {
             //Open fragment support
         } else if (id == R.id.nav_xem_diem){
             if (XEMDIEM != currentFragment){
@@ -181,4 +179,5 @@ public class LichThi extends AppCompatActivity implements NavigationView.OnNavig
         fragmentTransaction.replace(R.id.content_frame_LT, fragment);
         fragmentTransaction.commit();
     }
+
 }

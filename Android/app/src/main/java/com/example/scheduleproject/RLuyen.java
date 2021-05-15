@@ -94,6 +94,7 @@ public class RLuyen extends AppCompatActivity implements NavigationView.OnNaviga
             //Open fragment setting
             if (SETTINGFRAGMENT != currentFragment) {
                 this.finish();
+
                 replaceFragment(new SettingFragment());
                 currentFragment = SETTINGFRAGMENT;
             }
@@ -104,7 +105,7 @@ public class RLuyen extends AppCompatActivity implements NavigationView.OnNaviga
                 replaceFragment(new AccountFragment());
                 currentFragment = ACCOUNT;
             }
-        } else if (id == R.id.nav_support) {
+        } else if (id == R.id.nav_Chat) {
             //Open fragment support
         }else if (id == R.id.nav_xem_diem){
             if (XEMDIEM != currentFragment){

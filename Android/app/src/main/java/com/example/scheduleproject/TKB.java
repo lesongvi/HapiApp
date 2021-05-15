@@ -180,7 +180,7 @@ public class TKB extends AppCompatActivity implements NavigationView.OnNavigatio
                 replaceFragment(new AccountFragment());
                 currentFragment = ACCOUNT;
             }
-        } else if (id == R.id.nav_support) {
+        } else if (id == R.id.nav_Chat) {
             //Open fragment support
         }else if (id == R.id.nav_xem_diem){
             if (XEMDIEM != currentFragment){

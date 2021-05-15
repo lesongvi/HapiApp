@@ -9,7 +9,7 @@
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_home"
-            android:title="@string/menu_home" />
+            android:title="Trang chủ" />
         <item
             android:id="@+id/nav_setting"
             android:icon="@drawable/ic_settings"
@@ -19,28 +19,31 @@
             android:icon="@drawable/ic_account"
             android:title="Tài khoản" />
         <item
-            android:id="@+id/nav_support"
-            android:icon="@drawable/ic_baseline_support_24"
-            android:title="Trợ giúp" />
+            android:id="@+id/nav_Todo"
+            android:icon="@drawable/ic_list__todo"
+            android:title="Việc cần làm" />
+        <item
+            android:id="@+id/nav_Chat"
+            android:icon="@drawable/ic_chat"
+            android:title="Hỏi đáp" />
     </group>
     <item android:title="Tính năng">
         <menu>
             <item
+                android:id="@+id/nav_thongtin"
+                android:title="Thông tin đào tạo"/>
+            <item
                 android:id="@+id/nav_xem_diem"
-                android:icon="@drawable/ic_mark"
                 android:title="Xem điểm"/>
 
             <item
                 android:id="@+id/nav_TKB"
-                android:icon="@drawable/ic_shedule"
                 android:title="Thời khóa biểu"/>
             <item
                 android:id="@+id/nav_LichThi"
-                android:icon="@drawable/ic_exam_schedu"
                 android:title="Lịch thi"/>
             <item
                 android:id="@+id/nav_Renluyen"
-                android:icon="@drawable/ic_train"
                 android:title="Đánh giá rèn luyện"/>
 
         </menu>

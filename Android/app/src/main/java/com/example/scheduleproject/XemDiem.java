@@ -105,7 +105,7 @@ public class XemDiem extends AppCompatActivity implements NavigationView.OnNavig
                 replaceFragment(new AccountFragment());
                 currentFragment = ACCOUNT;
             }
-        } else if (id == R.id.nav_support) {
+        } else if (id == R.id.nav_Chat) {
             //Open fragment support
         }else if (id == R.id.nav_xem_diem){
             if (XEMDIEM != currentFragment){

@@ -1,79 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".Fragment.HomeFragment">
+    tools:context=".Fragment.HomeFragment"
+    android:backgroundTint="@color/teal_700"
+    android:backgroundTintMode="add">
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/layout_home"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <fragment
-            android:id="@+id/fragmentbanner"
-            android:name="com.example.scheduleproject.Fragment.BannerFragment"
+        <ImageView
+            android:id="@+id/boxwhite"
             android:layout_width="match_parent"
-            android:layout_height="150dp">
-
-        </fragment>
-
-        <TableLayout
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-           android:layout_gravity="center"
-            >
+            android:layout_marginTop="150dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/boxwhite" />
 
-            <TableRow>
-
-
-                <Button
-                    android:id="@+id/btn_thongtin"
-                    android:layout_width="90dp"
-                    android:layout_height="90dp"
-                    android:layout_marginRight="20dp"
-                    android:drawableTop="@drawable/ic_school"
-                    android:text="Thông tin "
-                  />
-
-                <Button
-                    android:id="@+id/btn_diem"
-                    android:layout_width="90dp"
-                    android:layout_height="90dp"
-                    android:drawableTop="@drawable/ic_mark"
-                    android:text="Xem điểm" />
-            </TableRow>
-
-            <TableRow>
-                <Button
-                    android:id="@+id/btn_lichthi"
-                    android:layout_width="90dp"
-                    android:layout_height="90dp"
-                    android:text="lịch thi"
-                    android:layout_marginRight="20dp"
-                    android:drawableTop="@drawable/ic_exam_schedu"/>
-
-                <Button
-                    android:id="@+id/btn_thoikhoabieu"
-                    android:layout_width="90dp"
-                    android:layout_height="90dp"
-                    android:text="Thời khóa biểu"
-                    android:drawableTop="@drawable/ic_shedule"/>
-            </TableRow>
+        <RelativeLayout
+            android:id="@+id/layout_first"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="170dp"
+            android:gravity="center_horizontal">
 
 
-            <TextView
-                android:id="@+id/btn_dgrl"
-                android:layout_width="230dp"
+            <Button
+                android:id="@+id/btn_thongtin"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Đánh giá rèn luyện"
-                android:layout_marginTop="10dp"
-                android:textSize="20dp"/>
+                android:layout_marginRight="30dp"
+                android:background="@android:color/transparent"
+                android:drawableTop="@drawable/ic_education"
+                android:text="Thông tin "
+                android:textColor="@color/black" />
 
-        </TableLayout>
-    </LinearLayout>
+            <Button
+                android:id="@+id/btn_diem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/btn_thongtin"
+                android:background="@android:color/transparent"
+                android:drawableTop="@drawable/ic_grade"
+                android:text="Xem điểm"
+                android:textColor="@color/black"
+                app:cornerRadius="50px" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/layout_first"
+            android:layout_marginTop="@dimen/dimen_20dp"
+            android:gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/btn_lichthi"
+                android:layout_width="100dp"
+                android:layout_height="130dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="20dp"
+                android:background="@android:color/transparent"
+                android:drawableTop="@drawable/ic_lich_thi"
+                android:text="lịch thi"
+                android:textColor="@color/black" />
+
+            <Button
+                android:id="@+id/btn_thoikhoabieu"
+                android:layout_width="100dp"
+                android:layout_height="130dp"
+                android:layout_marginRight="20dp"
+                android:layout_toRightOf="@id/btn_lichthi"
+                android:background="@android:color/transparent"
+                android:drawableTop="@drawable/ic_tkb"
+                android:text="Thời khóa biểu"
+                android:textColor="@color/black" />
+
+
+            <Button
+                android:id="@+id/btn_dgrl"
+                android:layout_width="100dp"
+                android:layout_height="130dp"
+                android:layout_toRightOf="@id/btn_thoikhoabieu"
+                android:background="@android:color/transparent"
+                android:drawableTop="@drawable/ic_train"
+                android:outlineAmbientShadowColor="@color/black"
+                android:shadowColor="@color/black"
+                android:text="Đánh giá rèn luyện"
+                android:textColor="@color/black"
+                app:cornerRadius="50px" />
+        </RelativeLayout>
+
+
+    </RelativeLayout>
 
 </ScrollView>
