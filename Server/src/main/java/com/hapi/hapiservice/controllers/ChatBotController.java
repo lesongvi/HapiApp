@@ -471,7 +471,7 @@ public class ChatBotController extends BaseBot {
     }
 
     @Controller(events = {EventType.MESSAGE, EventType.POSTBACK, EventType.QUICK_REPLY}, pattern = "^(TKB tuần này)$")
-    public void currentWeekSchedule(Event event) throws BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeyException, IOException, InterruptedException, ParseException {
+    public void currentWeekSchedule(Event event) throws BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeyException, IOException, ParseException {
         ScheduleBot schedulebot = this.initial(event);
         reply(event, schedulebot.currentWeekView());
     }
@@ -483,7 +483,7 @@ public class ChatBotController extends BaseBot {
     }
 
     @Controller(events = {EventType.MESSAGE, EventType.POSTBACK, EventType.QUICK_REPLY}, pattern = "^(?i)(Học kỳ (.*), (.*))$"/*, next = "showMeMySchedule"*/)
-    public void askForWeek(Event event) throws BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeyException, IOException, InterruptedException, ParseException {
+    public void askForWeek(Event event) throws BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeyException, IOException, ParseException {
         ScheduleBot schedulebot = this.initial(event);
         if (schedulebot.patternSearch("Học kỳ (.*), (.*)", event.getMessage().getText())) {
             startConversation(event, "showMeMySchedule");
@@ -497,7 +497,7 @@ public class ChatBotController extends BaseBot {
     }
 
     @Controller(events = {EventType.MESSAGE, EventType.POSTBACK}, pattern = "^[0-9]*$")
-    public void showMeMySchedule(Event event) throws BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeyException, IOException, InterruptedException, ParseException {
+    public void showMeMySchedule(Event event) throws BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeyException, IOException, ParseException {
         stopConversation(event);
         ScheduleBot schedulebot = this.initial(event);
         reply(event, schedulebot.getScheduleByWeekAndSemester(event.getMessage().getText(), false));
