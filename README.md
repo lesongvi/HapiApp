@@ -50,6 +50,10 @@ Method: POST
 Endpoint starestListRequest: /api/v1/student/tarest/list
 Method: POST
 ```
+```
+Endpoint starestListRequest: /api/v1/schedule/cexam
+Method: POST
+```
 
 ## Lỗi đã biết
 ### Dữ liệu trả về rỗng sau khi ủy quyền
