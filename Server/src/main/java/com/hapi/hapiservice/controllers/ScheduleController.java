@@ -48,7 +48,7 @@ public class ScheduleController {
         return this.studentBasicTest.getWeekList(semesterId);
     }
 
-    @RequestMapping(value = {routeHelper.getSchedule}, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = {routeHelper.getSchedule}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public String getSchedule (@RequestParam(value = "token", defaultValue = "") String token, @RequestParam(value = "semesterId", defaultValue = "") String semesterId, @RequestParam(value = "weekId", defaultValue = "") String weekId) throws IOException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException, ParseException {
         this.studentBasicTest = new browserHelper(token, this.studentRepository, this.studentService);
 

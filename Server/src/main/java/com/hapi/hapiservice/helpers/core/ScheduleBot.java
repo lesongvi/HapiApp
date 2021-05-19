@@ -16,6 +16,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -175,7 +176,7 @@ public class ScheduleBot {
         }
     }
 
-    public Message startWeekInitial(String semesterId) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, MalformedURLException {
+    public Message startWeekInitial(String semesterId) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, MalformedURLException, UnsupportedEncodingException {
         Optional<Students> studentCre = this.studentService.findById(this.getStudentIdByFid());
         String reply = "Hãy gõ *số tuần* bạn muốn xem thời khóa biểu và nhấp Enter\n-------------------";
         ArrayList<weekResponse> weekArr;
@@ -217,7 +218,7 @@ public class ScheduleBot {
         return new Message().setText(this.definedStr.pleaseTryAgainlab_PRODUCTION()).setQuickReplies(buttons);
     }
 
-    private String getWeekByWeekNum(String weekNum) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, MalformedURLException {
+    private String getWeekByWeekNum(String weekNum) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, MalformedURLException, UnsupportedEncodingException {
         ChatbotStudents cbst = this.chatbotStudentService.findById(this.fid).get();
         Optional<Students> studentCre = this.studentService.findById(this.getStudentIdByFid());
         browserHelper studentBasicTest = new browserHelper(studentCre.get().getToken(), this.studentRepository, this.studentService);

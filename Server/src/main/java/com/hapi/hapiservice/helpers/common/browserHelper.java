@@ -243,7 +243,7 @@ public class browserHelper extends stuffHelper {
 
         defaultPage = this.setAdditionalHeader(defaultPage);
 
-        HtmlPage page = null;
+        HtmlPage page;
         try {
             page = this.webClient
                     .getPage(defaultPage);
@@ -323,7 +323,7 @@ public class browserHelper extends stuffHelper {
 
         URL actionUrl = new URL(this.definedStr.schedulePage_PRODUCTION());
         WebRequest defaultPage = new WebRequest(actionUrl);
-        ArrayList<semesterResponse> semesterMap = new ArrayList<semesterResponse>();
+        ArrayList<semesterResponse> semesterMap = new ArrayList();
 
         Gson gson = new Gson();
 
@@ -350,7 +350,7 @@ public class browserHelper extends stuffHelper {
 
         URL actionUrl = new URL(this.definedStr.schedulePage_PRODUCTION());
         WebRequest defaultPage = new WebRequest(actionUrl);
-        ArrayList<semesterResponse> semesterMap = new ArrayList<semesterResponse>();
+        ArrayList<semesterResponse> semesterMap = new ArrayList();
 
         defaultPage = this.setAdditionalHeader(defaultPage);
 
@@ -363,9 +363,7 @@ public class browserHelper extends stuffHelper {
             semesterMap = this.semesterProcess(semesterOpt);
 
         } catch (Exception e) {
-            //Silent is Golden
             logger.error(e.getMessage());
-            //e.getStackTrace();
         } finally {
             webClient.close();
             return semesterMap;
@@ -399,13 +397,13 @@ public class browserHelper extends stuffHelper {
         return semesterMap;
     }
 
-    public String getWeekList(String currSemester) throws MalformedURLException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
+    public String getWeekList(String currSemester) throws MalformedURLException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException, UnsupportedEncodingException {
         Gson gson = new Gson();
 
         return gson.toJson(this.getWeekArr(currSemester));
     }
 
-    public ArrayList<weekResponse> getWeekArr(String currSemester) throws MalformedURLException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
+    public ArrayList<weekResponse> getWeekArr(String currSemester) throws MalformedURLException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException, UnsupportedEncodingException {
 
         WebClient webClient = this.verifyToken();
         WebRequest defaultPage;
@@ -425,9 +423,7 @@ public class browserHelper extends stuffHelper {
                     .getPage(defaultPage);
 
         } catch (Exception e) {
-            //Silent is Golden
             logger.error(e.getMessage());
-            //e.getStackTrace();
         }
 
         DomElement semesterOpt = page.getElementById(definedStr.weekOptId_PRODUCTION());
@@ -488,9 +484,7 @@ public class browserHelper extends stuffHelper {
                     try {
                         _allSWeek.add(new weekResponse(startDate.group(1), endDate.group(1), weekNum.group(1), tempStr));
                     } catch (Exception e) {
-                        //Silent is Golden
                         logger.error(e.getMessage());
-                        //e.getStackTrace();
                     }
                 }
             }
@@ -618,13 +612,13 @@ public class browserHelper extends stuffHelper {
         return fullPointView;
     }
 
-    public ArrayList<PSListResponse> getPointListSemesterArr() throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, MalformedURLException {
+    public ArrayList<PSListResponse> getPointListSemesterArr() throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, MalformedURLException, UnsupportedEncodingException {
         WebClient webClient = this.verifyToken();
         Matcher pointView = null;
 
         WebRequest defaultPage = this.viewAllPoint();
 
-        ArrayList<PSListResponse> fullPointView = new ArrayList<PSListResponse>();
+        ArrayList<PSListResponse> fullPointView = new ArrayList();
 
         defaultPage = this.setAdditionalHeader(defaultPage);
 
@@ -634,7 +628,6 @@ public class browserHelper extends stuffHelper {
                     .getPage(defaultPage);
         } catch (Exception e) {
             logger.error(e.getMessage());
-            //e.getStackTrace();
         }
 
         DomElement stdntPointTbl = page.getElementById(definedStr.studentPSemesterId_PRODUCTION());
@@ -648,7 +641,7 @@ public class browserHelper extends stuffHelper {
         return fullPointView;
     }
 
-    public ArrayList<pointResponse> getPointBySemesterArr(String semesterId) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, MalformedURLException {
+    public ArrayList<pointResponse> getPointBySemesterArr(String semesterId) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, MalformedURLException, UnsupportedEncodingException {
         WebClient webClient = this.verifyToken();
         Matcher pointView;
         ArrayList<pointResponse> _empty = new ArrayList<pointResponse>();
@@ -668,7 +661,6 @@ public class browserHelper extends stuffHelper {
                     .getPage(defaultPage);
         } catch (Exception e) {
             this.logger.error(e.getMessage());
-            //e.getStackTrace();
         }
 
         DomElement stdntPointTbl = page.getElementById(this.definedStr.studentPSemesterId_PRODUCTION());
@@ -686,7 +678,7 @@ public class browserHelper extends stuffHelper {
         return _empty;
     }
 
-    public String getPointListSemester(String semesterId) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, MalformedURLException {
+    public String getPointListSemester(String semesterId) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, MalformedURLException, UnsupportedEncodingException {
         Gson gson = new Gson();
 
         if (semesterId.length() == 0)
@@ -710,12 +702,12 @@ public class browserHelper extends stuffHelper {
         WebRequest page = new WebRequest(actionUrl, HttpMethod.POST);
         page = this.setAdditionalHeader(page);
 
-        page.setRequestBody("__EVENTTARGET=ctl00$ContentPlaceHolder1$ctl00$ddlTuan&__EVENTARGUMENT=&__LASTFOCUS=&__VIEWSTATE=" + URLEncoder.encode(_vs) + "&__VIEWSTATEGENERATOR=" + _vsg + "&ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK=" + URLEncoder.encode(ssm) + "&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&ctl00$ContentPlaceHolder1$ctl00$ddlTuan=" + URLEncoder.encode(sw));
+        page.setRequestBody("__EVENTTARGET=ctl00$ContentPlaceHolder1$ctl00$ddlTuan&__EVENTARGUMENT=&__LASTFOCUS=&__VIEWSTATE=" + URLEncoder.encode(_vs, StandardCharsets.UTF_8.toString()) + "&__VIEWSTATEGENERATOR=" + _vsg + "&ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK=" + URLEncoder.encode(ssm, StandardCharsets.UTF_8.toString()) + "&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&ctl00$ContentPlaceHolder1$ctl00$ddlTuan=" + URLEncoder.encode(sw, StandardCharsets.UTF_8.toString()));
         return (HtmlPage) wc
                 .getPage(page);
     }
 
-    public WebRequest selectSemesterOpt(String selectedOpt) throws MalformedURLException {
+    public WebRequest selectSemesterOpt(String selectedOpt) throws MalformedURLException, UnsupportedEncodingException {
         URL actionUrl = new URL(this.definedStr.schedulePage_PRODUCTION());
         WebRequest schedulePage = new WebRequest(actionUrl, HttpMethod.POST);
         String _VState;
@@ -728,8 +720,8 @@ public class browserHelper extends stuffHelper {
         schedulePage = this.setAdditionalHeader(schedulePage);
 
         schedulePage.setRequestBody(this.definedStr.requestBodySSO_PRODUCTION()
-                .replace("{{VIEWSTATE}}", URLEncoder.encode(_VState))
-                .replace("{{CHON_NHHK}}", URLEncoder.encode(selectedOpt)));
+                .replace("{{VIEWSTATE}}", URLEncoder.encode(_VState, StandardCharsets.UTF_8.toString()))
+                .replace("{{CHON_NHHK}}", URLEncoder.encode(selectedOpt, StandardCharsets.UTF_8.toString())));
 
         return schedulePage;
     }
@@ -759,19 +751,19 @@ public class browserHelper extends stuffHelper {
             _VsGet = this.getVS(_acUrl);
         }
 
-        schedulePage.setRequestBody("__EVENTTARGET=ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK&__EVENTARGUMENT=&__LASTFOCUS=&__VIEWSTATE=" + URLEncoder.encode(_VsGet[0], StandardCharsets.UTF_8.toString()) + "&__VIEWSTATEGENERATOR=" + _VsGet[1] + "&ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK=" + URLEncoder.encode(selectedSemester) + "&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&ctl00$ContentPlaceHolder1$ctl00$ddlTuan=" + URLEncoder.encode(selectedWeek));
+        schedulePage.setRequestBody("__EVENTTARGET=ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK&__EVENTARGUMENT=&__LASTFOCUS=&__VIEWSTATE=" + URLEncoder.encode(_VsGet[0], StandardCharsets.UTF_8.toString()) + "&__VIEWSTATEGENERATOR=" + _VsGet[1] + "&ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK=" + URLEncoder.encode(selectedSemester, StandardCharsets.UTF_8.toString()) + "&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0");
 
         return schedulePage;
     }
 
-    public WebRequest viewAllPoint() throws MalformedURLException {
+    public WebRequest viewAllPoint() throws MalformedURLException, UnsupportedEncodingException {
         URL actionUrl = new URL(this.definedStr.studentPointUrl_PRODUCTION());
         WebRequest schedulePage = new WebRequest(actionUrl, HttpMethod.POST);
 
         schedulePage = this.setAdditionalHeader(schedulePage);
 
         schedulePage.setRequestBody(this.definedStr.requestBodyVAP_PRODUCTION()
-                .replace("{{VIEWSTATE}}", URLEncoder.encode(this.getVS(this.definedStr.studentPointUrl_PRODUCTION())[0])));
+                .replace("{{VIEWSTATE}}", URLEncoder.encode(this.getVS(this.definedStr.studentPointUrl_PRODUCTION())[0], StandardCharsets.UTF_8.toString())));
 
         return schedulePage;
     }
