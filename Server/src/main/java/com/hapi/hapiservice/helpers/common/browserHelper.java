@@ -63,7 +63,7 @@ public class browserHelper extends stuffHelper {
         this(null, null, null);
     }
 
-    public String conAuth(boolean isSaved) throws MalformedURLException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+    public String conAuth(boolean isSaved) throws MalformedURLException {
         Gson gson = new Gson();
         authSuccess response = new authSuccess(true, "", "");
 
@@ -71,6 +71,8 @@ public class browserHelper extends stuffHelper {
             return gson.toJson(new errorResponse(true, "Tài khoản sinh viên không hợp lệ", 404));
 
         ArrayList<String> studntMP = this.getMailAndPhoneNum();
+
+        logger.debug(studntMP.size()+"");
 
         try {
             if (isSaved) {
@@ -98,9 +100,8 @@ public class browserHelper extends stuffHelper {
                 response = new authSuccess(false, this.getSName(), genToken);
             }
         } catch (Exception e) {
-            //Silent is Golden
             logger.error(e.getMessage());
-            //e.getStackTrace();
+            return gson.toJson(new errorResponse(true, "Có lỗi đã xảy ra!", 404));
         } finally {
             return gson.toJson(response);
         }
@@ -120,9 +121,7 @@ public class browserHelper extends stuffHelper {
                 return null;
             }
         } catch (Exception e) {
-            //Silent is Golden
             logger.error(e.getMessage());
-            //e.getStackTrace();
         } finally {
             return this.webClient;
         }
@@ -181,7 +180,6 @@ public class browserHelper extends stuffHelper {
 
             page = page.getHtmlElementById(this.definedStr.loginBtnId_PRODUCTION()).click();
         } catch (Exception e) {
-            //Silent is Golden
             logger.error(e.getMessage());
         } finally {
             return page;
@@ -206,9 +204,7 @@ public class browserHelper extends stuffHelper {
             page = (HtmlPage) this.webClient
                     .getPage(defaultPage);
         } catch (Exception e) {
-            //Silent is Golden
             logger.error(e.getMessage());
-            //e.getStackTrace();
         }
 
         webClient.close();
@@ -233,9 +229,7 @@ public class browserHelper extends stuffHelper {
                 _studntName = defaultMyView.group(1);
             }
         } catch (Exception e) {
-            //Silent is Golden
             logger.error(e.getMessage());
-            //e.getStackTrace();
         } finally {
             return _studntName;
         }
@@ -256,7 +250,6 @@ public class browserHelper extends stuffHelper {
             this.passCredentials(page);
         } catch (IOException e) {
             logger.error(e.getMessage());
-            //e.getStackTrace();
         }
 
         return this.webClient;
@@ -295,9 +288,7 @@ public class browserHelper extends stuffHelper {
                 _infoBack.add(studntSdt2Slct.getAttribute("value"));
             }
         } catch (Exception e) {
-            //Silent is Golden
             logger.error(e.getMessage());
-            //e.getStackTrace();
         } finally {
             return _infoBack;
         }
@@ -332,9 +323,7 @@ public class browserHelper extends stuffHelper {
             semesterMap = this.semesterProcess(semesterOpt);
 
         } catch (Exception e) {
-            //Silent is Golden
             logger.error(e.getMessage());
-            //e.getStackTrace();
         } finally {
             webClient.close();
             return gson.toJson(semesterMap);
@@ -550,7 +539,6 @@ public class browserHelper extends stuffHelper {
                     .getPage(defaultPage);
         } catch (Exception e) {
             logger.error(e.getMessage());
-            //e.getStackTrace();
         }
 
         DomElement stdntPointTbl = page.getElementById(definedStr.studentCPointTblId_PRODUCTION());
@@ -568,29 +556,26 @@ public class browserHelper extends stuffHelper {
 
         URL actionUrl = new URL(this.definedStr.studentPointUrl_PRODUCTION());
         WebRequest defaultPage = new WebRequest(actionUrl);
-        String _result = "";
-        Gson gson = new Gson();
 
         defaultPage = this.setAdditionalHeader(defaultPage);
 
+        HtmlPage page = null;
         try {
-            HtmlPage page = (HtmlPage) webClient
+            page = (HtmlPage) webClient
                     .getPage(defaultPage);
-
-            DomElement stdntPointTbl = page.getElementById(definedStr.studentCPointTblId_PRODUCTION());
-
-            if(stdntPointTbl.getTagName().toLowerCase().equals("div")) {
-                String _xmlPTbl = this.removeTheDEGap(stdntPointTbl);
-
-                return this.showSemesterPoint(_xmlPTbl);
-            }
         } catch (Exception e) {
             logger.error(e.getMessage());
-            //e.getStackTrace();
-        } finally {
-            webClient.close();
-            return _result;
         }
+
+        DomElement stdntPointTbl = page.getElementById(definedStr.studentCPointTblId_PRODUCTION());
+
+        if(stdntPointTbl.getTagName().toLowerCase().equals("div")) {
+            String _xmlPTbl = this.removeTheDEGap(stdntPointTbl);
+
+            return this.showSemesterPoint(_xmlPTbl);
+        }
+        webClient.close();
+        return null;
     }
 
     public String showSemesterPoint(String _xmlPTbl) {
