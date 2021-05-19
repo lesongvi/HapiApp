@@ -16,8 +16,10 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.*;
 import java.net.CookieManager;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -519,7 +521,7 @@ public class browserHelper extends stuffHelper {
         HtmlPage page = (HtmlPage) webClient
                 .getPage(defaultPage);
 
-        if (currSemester != null && currWeek != null) page = this.getScheduleDetailByVS(defaultPage, page.getElementById("__VIEWSTATE").getAttribute("value"), page.getElementById("__VIEWSTATEGENERATOR").getAttribute("value"), currSemester, currWeek);
+        if (currSemester != null && currWeek != null) page = this.getScheduleDetailByVS(webClient, page.getElementById("__VIEWSTATE").getAttribute("value"), page.getElementById("__VIEWSTATEGENERATOR").getAttribute("value"), currSemester, currWeek);
 
         DomElement scheduleTable = page.getElementById(definedStr.scheduleTableId_PRODUCTION());
         if(scheduleTable.getTagName().toLowerCase().equals("table")) {
@@ -702,10 +704,14 @@ public class browserHelper extends stuffHelper {
         return theGap.asXml().replaceAll("\r\n", "");
     }
 
-    public HtmlPage getScheduleDetailByVS(WebRequest page, String _vs, String _vsg, String ssm, String sw) throws IOException {
-        page.setRequestBody("__EVENTTARGET=ctl00$ContentPlaceHolder1$ctl00$ddlTuan&__EVENTARGUMENT=&__LASTFOCUS=&__VIEWSTATE=" + URLEncoder.encode(_vs) + "&__VIEWSTATEGENERATOR=" + _vsg + "&ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK=" + URLEncoder.encode(ssm) + "&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&ctl00$ContentPlaceHolder1$ctl00$ddlTuan=" + URLEncoder.encode(sw));
+    public HtmlPage getScheduleDetailByVS(WebClient wc, String _vs, String _vsg, String ssm, String sw) throws IOException {
+        String _acUrl = this.definedStr.schedulePage_PRODUCTION();
+        URL actionUrl = new URL(_acUrl);
+        WebRequest page = new WebRequest(actionUrl, HttpMethod.POST);
         page = this.setAdditionalHeader(page);
-        return (HtmlPage) webClient
+
+        page.setRequestBody("__EVENTTARGET=ctl00$ContentPlaceHolder1$ctl00$ddlTuan&__EVENTARGUMENT=&__LASTFOCUS=&__VIEWSTATE=" + URLEncoder.encode(_vs) + "&__VIEWSTATEGENERATOR=" + _vsg + "&ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK=" + URLEncoder.encode(ssm) + "&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&ctl00$ContentPlaceHolder1$ctl00$ddlTuan=" + URLEncoder.encode(sw));
+        return (HtmlPage) wc
                 .getPage(page);
     }
 
@@ -728,16 +734,14 @@ public class browserHelper extends stuffHelper {
         return schedulePage;
     }
 
-    public WebRequest selectWeekOpt(String selectedSemester, String selectedWeek) throws MalformedURLException, IllegalBlockSizeException, InvalidKeyException, NoSuchAlgorithmException, BadPaddingException, NoSuchPaddingException, ParseException {
+    public WebRequest selectWeekOpt(String selectedSemester, String selectedWeek) throws MalformedURLException, IllegalBlockSizeException, InvalidKeyException, NoSuchAlgorithmException, BadPaddingException, NoSuchPaddingException, ParseException, UnsupportedEncodingException {
         Object _lock = new Object();
         Object _lock1 = new Object();
         Object _lock2 = new Object();
 
         weekResponse weekRes;
         String _acUrl;
-        String _VState;
         String _VsGet[];
-        String _VStateGen;
 
         synchronized (_lock) {
             weekRes = this.findSelectedWeek();
@@ -747,16 +751,15 @@ public class browserHelper extends stuffHelper {
             _acUrl = weekRes.getTenxacdinh().equals(selectedWeek) ? this.definedStr.schedulePageUrlMode1_PRODUCTION() : this.definedStr.schedulePage_PRODUCTION();
         }
 
+
         URL actionUrl = new URL(_acUrl);
         WebRequest schedulePage = new WebRequest(actionUrl, HttpMethod.POST);
 
         synchronized (_lock2) {
             _VsGet = this.getVS(_acUrl);
-            _VState = _VsGet[0];
-            _VStateGen = _VsGet[1];
         }
 
-        schedulePage.setRequestBody("__EVENTTARGET=ctl00$ContentPlaceHolder1$ctl00$ddlTuan&__EVENTARGUMENT=&__LASTFOCUS=&__VIEWSTATE=" + URLEncoder.encode(_VState) + "&__VIEWSTATEGENERATOR=" + _VStateGen + "&ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK=" + URLEncoder.encode(selectedSemester) + "&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&ctl00$ContentPlaceHolder1$ctl00$ddlTuan=" + URLEncoder.encode(selectedWeek));
+        schedulePage.setRequestBody("__EVENTTARGET=ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK&__EVENTARGUMENT=&__LASTFOCUS=&__VIEWSTATE=" + URLEncoder.encode(_VsGet[0], StandardCharsets.UTF_8.toString()) + "&__VIEWSTATEGENERATOR=" + _VsGet[1] + "&ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK=" + URLEncoder.encode(selectedSemester) + "&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&ctl00$ContentPlaceHolder1$ctl00$ddlTuan=" + URLEncoder.encode(selectedWeek));
 
         return schedulePage;
     }
