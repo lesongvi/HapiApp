@@ -3,14 +3,12 @@ package com.example.scheduleproject;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.example.scheduleproject.Adapter.MainViewPagerAdapter;
 import com.example.scheduleproject.Fragment.AccountFragment;
 import com.example.scheduleproject.Fragment.HomeFragment;
 import com.example.scheduleproject.Fragment.SettingFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -19,16 +17,11 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.ui.AppBarConfiguration;
-import androidx.viewpager.widget.ViewPager;
 
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.ViewFlipper;
 
 public class XemDiem extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final int RLACTIVITY =1;
