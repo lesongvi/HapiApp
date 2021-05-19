@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.hapi.hapiservice.helpers.respository.StudentRepository;
 import com.hapi.hapiservice.models.schedule.*;
 import com.hapi.hapiservice.services.StudentService;
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -535,6 +536,43 @@ public class browserHelper extends stuffHelper {
         return _fullWSchedule;
     }
 
+    public ArrayList<ExamResponse> getExamScheArr() throws IOException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException, ParseException {
+        WebClient webClient = this.verifyToken();
+        WebRequest defaultPage;
+        ArrayList<ExamResponse> _fullESchedule = new ArrayList();
+
+        URL actionUrl = new URL(this.definedStr.examSchePageUrl_PRODUCTION());
+        defaultPage = new WebRequest(actionUrl);
+
+        defaultPage = this.setAdditionalHeader(defaultPage);
+
+        HtmlPage page = (HtmlPage) webClient
+                .getPage(defaultPage);
+
+        DomElement examTable = page.getElementById(definedStr.examTableId_PRODUCTION());
+        if(examTable.getTagName().toLowerCase().equals("table")) {
+            String _xmlExamSche = this.removeTheDEGap(examTable);
+            Matcher examView = this.patternSearch(this.definedStr.examValuPattern_PRODUCTION(), _xmlExamSche);
+
+            int idx = 0;
+            String[] incremental = {};
+            while (examView.find()) {
+                String[] tempStr = examView
+                    .group(1)
+                    .split("\n");
+                incremental = ArrayUtils.addAll(incremental, tempStr[0]);
+                idx++;
+                if (idx == 9)
+                {
+                    _fullESchedule.add(new ExamResponse(incremental[0].trim(), incremental[1].trim(), incremental[2].trim(), incremental[3].trim(), incremental[4].trim(), incremental[5].trim(), incremental[6].trim(), incremental[7].trim(), incremental[8].trim()));
+                    idx = 0;
+                }
+            }
+        }
+
+        return _fullESchedule;
+    }
+
     public ArrayList<pointResponse> getCurrentPointArr() throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, MalformedURLException {
         WebClient webClient = this.verifyToken();
 
@@ -766,5 +804,11 @@ public class browserHelper extends stuffHelper {
                 .replace("{{VIEWSTATE}}", URLEncoder.encode(this.getVS(this.definedStr.studentPointUrl_PRODUCTION())[0], StandardCharsets.UTF_8.toString())));
 
         return schedulePage;
+    }
+
+    public String getExamScheList() throws BadPaddingException, ParseException, NoSuchAlgorithmException, IOException, IllegalBlockSizeException, NoSuchPaddingException, InvalidKeyException {
+        Gson gson = new Gson();
+
+        return gson.toJson(this.getExamScheArr());
     }
 }

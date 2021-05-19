@@ -67,6 +67,9 @@ public class stringHelper {
     final private String studentAuthApi = this.studentApi + "authentication/api/auth/login";
     final private String studentRestList = this.studentApi + "corona/api/nghi-phep-sinh-vien/get-list";
     final private String locationHeader = "/default.aspx?page=thoikhoabieu&sta=0";
+    final private String examSchePageUrl = this.defaultPageWithUppercaseD + "?page=xemlichthi";
+    final private String examTableId = "ctl00_ContentPlaceHolder1_ctl00_gvXem";
+    final private String examValuPattern = "<span [^>]*>(.*?)<\\/span>";
 
     public String defaultPage_PRODUCTION() {
         return this.defaultPage;
@@ -310,5 +313,17 @@ public class stringHelper {
 
     public String reqOrigin_PRODUCTION() {
         return this.reqOrigin;
+    }
+
+    public String examSchePageUrl_PRODUCTION() {
+        return this.examSchePageUrl;
+    }
+
+    public String examTableId_PRODUCTION() {
+        return this.examTableId;
+    }
+
+    public String examValuPattern_PRODUCTION() {
+        return this.examValuPattern;
     }
 }

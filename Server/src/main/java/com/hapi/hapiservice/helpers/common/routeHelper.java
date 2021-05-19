@@ -21,6 +21,8 @@ public class routeHelper {
 
     public final static String getSchedule = schedulePath + "detail";
 
+    public final static String getExamSche = schedulePath + "cexam";
+
     public final static String getCurrentPoint = pointPath + "current";
 
     public final static String getPSemeterList = pointPath + "semester";
