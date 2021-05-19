@@ -54,6 +54,14 @@ Method: POST
 Endpoint CExamView: /api/v1/schedule/cexam
 Method: POST
 ```
+```
+Endpoint cnotification: /api/v1/snapshot/notification
+Method: GET
+```
+```
+Endpoint anotification: /api/v1/snapshot/notifications
+Method: GET
+```
 
 ## Lỗi đã biết
 ### Dữ liệu trả về rỗng sau khi ủy quyền
