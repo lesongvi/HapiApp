@@ -59,12 +59,14 @@ public class stringHelper {
     final private String youNeedToInitialize = "Xin lỗi nhưng đây là lần sử dụng đầu tiên của bạn! Bạn phải nhấp vào *Xem thời khóa biểu* sau đó chọn _học kỳ_ bạn muốn.\nSau đó bạn có thể xem thời khóa biểu tự do theo học kỳ đã chọn ^^";
     final private String acceptLanguage = "en,vi;q=0.9,en-US;q=0.8,tr;q=0.7";
     final private String acceptEncoding = "gzip, deflate";
+    final private String reqOrigin = "http://daotao.hutech.edu.vn";
     final private String acceptDataType = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9";
     final private String studentEvaluateSearchByStudent = this.studentApi + "ren-luyen-sinh-vien/api/phieudanhgia/searchsinhvien";
     final private String studentEvaluateGetTicket = this.studentApi + "ren-luyen-sinh-vien/api/phieudanhgia/searchphieuchitietsinhvien";
     final private String studentTakeaRest = this.studentApi + "corona/api/nghi-phep-sinh-vien";
     final private String studentAuthApi = this.studentApi + "authentication/api/auth/login";
     final private String studentRestList = this.studentApi + "corona/api/nghi-phep-sinh-vien/get-list";
+    final private String locationHeader = "/default.aspx?page=thoikhoabieu&sta=0";
 
     public String defaultPage_PRODUCTION() {
         return this.defaultPage;
@@ -300,5 +302,13 @@ public class stringHelper {
 
     public String studentRestList_PRODUCTION() {
         return this.studentRestList;
+    }
+    
+    public String locationHeader_PRODUCTION() {
+        return this.locationHeader;
+    }
+
+    public String reqOrigin_PRODUCTION() {
+        return this.reqOrigin;
     }
 }

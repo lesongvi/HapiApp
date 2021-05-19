@@ -16,9 +16,8 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
+import java.net.*;
+import java.net.CookieManager;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -195,7 +194,7 @@ public class browserHelper extends stuffHelper {
         return "";
     }
 
-    public String getVS(String initialUrl) throws MalformedURLException {
+    public String[] getVS(String initialUrl) throws MalformedURLException {
         URL actionUrl = new URL(initialUrl);
         WebRequest defaultPage = new WebRequest(actionUrl);
 
@@ -208,7 +207,7 @@ public class browserHelper extends stuffHelper {
         }
 
         webClient.close();
-        return page.getElementById("__VIEWSTATE").getAttribute("value");
+        return new String[]{ page.getElementById("__VIEWSTATE").getAttribute("value"), page.getElementById("__VIEWSTATEGENERATOR").getAttribute("value") };
     }
 
     public String getSName() throws MalformedURLException {
@@ -260,6 +259,7 @@ public class browserHelper extends stuffHelper {
         wr.setAdditionalHeader("Accept-Encoding", this.definedStr.acceptEncoding_PRODUCTION());
         wr.setAdditionalHeader("Accept-Language", this.definedStr.acceptLanguage_PRODUCTION());
         wr.setAdditionalHeader("Accept", this.definedStr.acceptDataType_PRODUCTION());
+        wr.setAdditionalHeader("Origin", this.definedStr.reqOrigin_PRODUCTION());
         return wr;
     }
 
@@ -292,6 +292,19 @@ public class browserHelper extends stuffHelper {
         } finally {
             return _infoBack;
         }
+    }
+
+    public static String showCookies(String websiteURL)  throws IOException {
+        CookieManager cookieManager = new CookieManager();
+        CookieHandler.setDefault(cookieManager);
+
+        URL url = new URL(websiteURL);
+        URLConnection urlConnection = url.openConnection();
+        urlConnection.getContent();
+
+        CookieStore cookieStore = cookieManager.getCookieStore();
+
+        return cookieStore.getCookies().get(0).getValue();
     }
 
     public WebClient verifyToken() throws IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
@@ -436,7 +449,6 @@ public class browserHelper extends stuffHelper {
                     .getPage(defaultPage);
         } catch (Exception e) {
             logger.error(e.getMessage());
-            //e.getStackTrace();
         }
 
         DomElement semesterOpt = page.getElementById(definedStr.weekOptId_PRODUCTION());
@@ -506,6 +518,8 @@ public class browserHelper extends stuffHelper {
 
         HtmlPage page = (HtmlPage) webClient
                 .getPage(defaultPage);
+
+        if (currSemester != null && currWeek != null) page = this.getScheduleDetailByVS(defaultPage, page.getElementById("__VIEWSTATE").getAttribute("value"), page.getElementById("__VIEWSTATEGENERATOR").getAttribute("value"), currSemester, currWeek);
 
         DomElement scheduleTable = page.getElementById(definedStr.scheduleTableId_PRODUCTION());
         if(scheduleTable.getTagName().toLowerCase().equals("table")) {
@@ -688,6 +702,13 @@ public class browserHelper extends stuffHelper {
         return theGap.asXml().replaceAll("\r\n", "");
     }
 
+    public HtmlPage getScheduleDetailByVS(WebRequest page, String _vs, String _vsg, String ssm, String sw) throws IOException {
+        page.setRequestBody("__EVENTTARGET=ctl00$ContentPlaceHolder1$ctl00$ddlTuan&__EVENTARGUMENT=&__LASTFOCUS=&__VIEWSTATE=" + URLEncoder.encode(_vs) + "&__VIEWSTATEGENERATOR=" + _vsg + "&ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK=" + URLEncoder.encode(ssm) + "&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&ctl00$ContentPlaceHolder1$ctl00$ddlTuan=" + URLEncoder.encode(sw));
+        page = this.setAdditionalHeader(page);
+        return (HtmlPage) webClient
+                .getPage(page);
+    }
+
     public WebRequest selectSemesterOpt(String selectedOpt) throws MalformedURLException {
         URL actionUrl = new URL(this.definedStr.schedulePage_PRODUCTION());
         WebRequest schedulePage = new WebRequest(actionUrl, HttpMethod.POST);
@@ -695,7 +716,7 @@ public class browserHelper extends stuffHelper {
         Object _lock2 = new Object();
 
         synchronized (_lock2) {
-            _VState = this.getVS(this.definedStr.schedulePage_PRODUCTION());
+            _VState = this.getVS(this.definedStr.schedulePage_PRODUCTION())[0];
         }
 
         schedulePage = this.setAdditionalHeader(schedulePage);
@@ -715,6 +736,8 @@ public class browserHelper extends stuffHelper {
         weekResponse weekRes;
         String _acUrl;
         String _VState;
+        String _VsGet[];
+        String _VStateGen;
 
         synchronized (_lock) {
             weekRes = this.findSelectedWeek();
@@ -728,10 +751,12 @@ public class browserHelper extends stuffHelper {
         WebRequest schedulePage = new WebRequest(actionUrl, HttpMethod.POST);
 
         synchronized (_lock2) {
-            _VState = this.getVS(_acUrl);
+            _VsGet = this.getVS(_acUrl);
+            _VState = _VsGet[0];
+            _VStateGen = _VsGet[1];
         }
 
-        schedulePage.setRequestBody("__EVENTTARGET=ctl00$ContentPlaceHolder1$ctl00$ddlTuan&__EVENTARGUMENT=&__LASTFOCUS=&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&__VIEWSTATE=" + URLEncoder.encode(_VState) + "&ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK=" + URLEncoder.encode(selectedSemester) + "&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&ctl00$ContentPlaceHolder1$ctl00$ddlTuan=" + URLEncoder.encode(selectedWeek));
+        schedulePage.setRequestBody("__EVENTTARGET=ctl00$ContentPlaceHolder1$ctl00$ddlTuan&__EVENTARGUMENT=&__LASTFOCUS=&__VIEWSTATE=" + URLEncoder.encode(_VState) + "&__VIEWSTATEGENERATOR=" + _VStateGen + "&ctl00$ContentPlaceHolder1$ctl00$ddlChonNHHK=" + URLEncoder.encode(selectedSemester) + "&ctl00$ContentPlaceHolder1$ctl00$ddlLoai=0&ctl00$ContentPlaceHolder1$ctl00$ddlTuan=" + URLEncoder.encode(selectedWeek));
 
         return schedulePage;
     }
@@ -743,7 +768,7 @@ public class browserHelper extends stuffHelper {
         schedulePage = this.setAdditionalHeader(schedulePage);
 
         schedulePage.setRequestBody(this.definedStr.requestBodyVAP_PRODUCTION()
-                .replace("{{VIEWSTATE}}", URLEncoder.encode(this.getVS(this.definedStr.studentPointUrl_PRODUCTION()))));
+                .replace("{{VIEWSTATE}}", URLEncoder.encode(this.getVS(this.definedStr.studentPointUrl_PRODUCTION())[0])));
 
         return schedulePage;
     }

@@ -20,13 +20,19 @@ repositories {
 	mavenCentral()
 }
 
+ext {
+	gsonVersion = '2.8.6'
+	htmlUnitVersion = '2.47.1'
+	mySqlConnectorJavaVersion = '6.0.6'
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'com.google.code.gson:gson:2.8.6'
+	implementation "com.google.code.gson:gson:$gsonVersion"
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
-	compile 'net.sourceforge.htmlunit:htmlunit:2.47.1'
-	compile 'mysql:mysql-connector-java'
+	compile "net.sourceforge.htmlunit:htmlunit:$htmlUnitVersion"
+	compile "mysql:mysql-connector-java:$mySqlConnectorJavaVersion"
 }
 
 test {
