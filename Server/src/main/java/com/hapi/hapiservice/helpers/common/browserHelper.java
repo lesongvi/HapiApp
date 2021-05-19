@@ -67,14 +67,12 @@ public class browserHelper extends stuffHelper {
 
     public String conAuth(boolean isSaved) throws MalformedURLException {
         Gson gson = new Gson();
-        authSuccess response = new authSuccess(true, "", "");
+        authSuccess response = new authSuccess(true, "", "", "", "", "", "");
 
         if ((this.studentId + "").length() != 10)
             return gson.toJson(new errorResponse(true, "Tài khoản sinh viên không hợp lệ", 404));
 
         ArrayList<String> studntMP = this.getMailAndPhoneNum();
-
-        logger.debug(studntMP.size()+"");
 
         try {
             if (isSaved) {
@@ -86,7 +84,7 @@ public class browserHelper extends stuffHelper {
                 stdnt.setSdt(2, studntMP.get(2));
                 Students stdunt = studentService.saveAndGetStudent(stdnt);
 
-                response = new authSuccess(false, stdunt.getName(), stdunt.getToken());
+                response = new authSuccess(false, stdunt.getName(), stdunt.getToken(), stdunt.getEmail(), stdunt.getSid() + "", stdunt.getSdt(1), stdunt.getSdt(2));
             } else {
                 String genToken = this.generateStdntToken();
                 Students stdnt = new Students();
@@ -99,7 +97,7 @@ public class browserHelper extends stuffHelper {
                 stdnt.setToken(genToken);
                 studentRepository.save(stdnt);
 
-                response = new authSuccess(false, this.getSName(), genToken);
+                response = new authSuccess(false, this.getSName(), genToken, studntMP.get(0), "" + this.studentId, studntMP.get(1), studntMP.get(2));
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -562,9 +560,9 @@ public class browserHelper extends stuffHelper {
                     .split("\n");
                 incremental = ArrayUtils.addAll(incremental, tempStr[0]);
                 idx++;
-                if (idx == 9)
+                if (idx == 10)
                 {
-                    _fullESchedule.add(new ExamResponse(incremental[0].trim(), incremental[1].trim(), incremental[2].trim(), incremental[3].trim(), incremental[4].trim(), incremental[5].trim(), incremental[6].trim(), incremental[7].trim(), incremental[8].trim()));
+                    _fullESchedule.add(new ExamResponse(incremental[1].trim(), incremental[2].trim(), incremental[3].trim(), incremental[4].trim(), incremental[5].trim(), incremental[6].trim(), incremental[7].trim(), incremental[8].trim(), incremental[9].trim()));
                     idx = 0;
                 }
             }
