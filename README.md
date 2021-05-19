@@ -51,7 +51,7 @@ Endpoint starestListRequest: /api/v1/student/tarest/list
 Method: POST
 ```
 ```
-Endpoint starestListRequest: /api/v1/schedule/cexam
+Endpoint CExamView: /api/v1/schedule/cexam
 Method: POST
 ```
 
