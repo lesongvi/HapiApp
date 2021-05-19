@@ -516,13 +516,12 @@ public class ChatBotController extends BaseBot {
             @RequestParam(value = "sid", defaultValue = "") int sid,
             @RequestParam(value = "pwd", defaultValue = "") String pwd
 
-    ) throws MalformedURLException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
+    ) throws MalformedURLException {
         if (fid == "" || sid == 0 || pwd == "")
             return ResponseEntity.badRequest().build();
         ScheduleBot scheduleBasic = new ScheduleBot(decryptFid(fid), this.chatbotstudentRepository, this.chatbotstudentService, this.studentRepository, this.studentService);
         browserHelper studentBasicTest = new browserHelper(sid, pwd, this.studentRepository, this.studentService);
         Optional<Students> stdntVerify = this.studentService.findById(sid);
-        Optional<Students> reAuthenticate;
 
         String _back = studentBasicTest.conAuth(stdntVerify.isPresent());
 
