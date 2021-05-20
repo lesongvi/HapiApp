@@ -33,7 +33,7 @@ class ApiClient private constructor(context: Context) {
 
     companion object : SingletonHolder<ApiClient, Context>(::ApiClient)
 
-    private fun getToken(): String {
+    fun getToken(): String {
         return prefs?.getString(PreferenceConstants.token, "") ?: ""
     }
 
@@ -57,6 +57,10 @@ class ApiClient private constructor(context: Context) {
         return prefs?.getString(PreferenceConstants.sdt2, "") ?: ""
     }
 
+    fun isFingerAuth(): Boolean {
+        return prefs?.getBoolean(PreferenceConstants.fingerLoginAccount, false) ?: true
+    }
+
     fun getTheme(): String {
         return prefs?.getString(PreferenceConstants.theme, "") ?: ""
     }
@@ -67,6 +71,10 @@ class ApiClient private constructor(context: Context) {
 
     fun postLogin(sid: String, spd: String): Observable<AuthJson> {
         return restService!!.postLogin(sid, spd)
+    }
+
+    fun requestInfo(token: String): Observable<AuthJson> {
+        return restService!!.requestInfo(token)
     }
 
     // region point view

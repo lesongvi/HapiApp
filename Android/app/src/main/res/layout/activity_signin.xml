@@ -121,8 +121,17 @@
                     style="@style/Widget.AppCompat.Button.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/MMPrimary"
+                    android:backgroundTint="@color/colorDarkGray"
                     android:text="@string/login_btn" />
+
+                <Button
+                    android:id="@+id/button_finger_login"
+                    style="@style/Widget.AppCompat.Button.Small"
+                    android:layout_width="wrap_content"
+                    android:visibility="gone"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/colorDarkGray"
+                    android:text="@string/finger_login" />
             </LinearLayout>
 
         </LinearLayout>

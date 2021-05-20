@@ -16,6 +16,12 @@ interface RestService {
     ): Observable<AuthJson>
 
     @FormUrlEncoded
+    @POST("api/v1/student/info")
+    fun requestInfo(
+        @Field("token") token: String
+    ): Observable<AuthJson>
+
+    @FormUrlEncoded
     @POST("api/v1/point/current")
     fun viewCurrentPoint(
         @Field("token") token: String

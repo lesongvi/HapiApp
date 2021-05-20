@@ -44,6 +44,20 @@
     <string name="support_need_help_body">Bạn cần giúp gì, hãy xóa dòng này và viết mới nội dung cần giúp đỡ nhé!</string>
     <string name="student_disabled_or_some_thing">Tài khoản này có thể đang được bảo lưu hoặc máy chủ đang gặp sự cố</string>
 
+    <string name="login_with_fingerprint">Đăng nhập bằng vân tay</string>
+    <string name="login_with_fingerprint_desc">Dùng vân tay thay mật khẩu cho tài khoản này</string>
+    <string name="finger_login">Sử dụng vân tay</string>
+    <string name="failed_finger_print">Đăng nhập thất bại, vui lòng đăng nhập bằng mật khẩu</string>
+    <string name="finger_2fa_activated">Kích hoạt đăng nhập bằng vân tay thành công cho tài khoản. Lưu ý, chức năng đăng nhập vân tay sẽ tự động vô hiệu hóa nếu có tài khoản khác đăng nhập vì bảo mật!</string>
+    <string name="finger_2fa_deactivated">Hủy kích hoạt đăng nhập bằng dấu vân tay thành công.</string>
+    <string name="finger_string_success">Bạn có thể dùng vân tay để đăng nhập</string>
+    <string name="finger_string_no_hardware">Thiết bị này không hỗ trợ vân tay</string>
+    <string name="finger_string_hw_unavailable">Hệ thống vân tay hiện không hoạt động</string>
+    <string name="finger_string_none_enrolled">Thiết bị của bạn không có dấu vân tay fingerprint_failed_to_loginnào được lưu cả, vui lòng kiểm tra lại!</string>
+    <string name="use_your_fingerprint">Dùng vân tay của bạn để đăng nhập</string>
+    <string name="login_cancel">Hủy</string>
+    <string name="fingerprint_failed_to_login">Đăng nhập bằng vân tay thất bại!</string>
+
     <string name="logout">Logout</string>
     <string name="settings">Settings</string>
     <string name="contacts">Liên hệ</string>

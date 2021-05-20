@@ -3,17 +3,23 @@ package com.g5.hapiappdemo.fragments
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.g5.hapiappdemo.PreferenceConstants
 import com.g5.hapiappdemo.R
+import com.g5.hapiappdemo.api.ApiClient
 import com.g5.hapiappdemo.auth.StudentAuth
 import com.g5.hapiappdemo.auth.set
 import com.g5.hapiappdemo.databinding.FragmentMoreMenuBinding
 import com.g5.hapiappdemo.extensions.PreferenceHelper
+import kotlinx.android.synthetic.main.fragment_more_menu.*
+
 
 class MoreMenuFragment : Fragment() {
 
@@ -41,12 +47,16 @@ class MoreMenuFragment : Fragment() {
         val logoutBtn = binding.logoutBtn
         val facebookBot = binding.facebookBot
         val donateBtn = binding.donateBtn
+        val fingerSwh = binding.sw
 
-        logoutBtn.setOnClickListener{
-            val prefs = PreferenceHelper.securePrefs(activity!!.applicationContext)
+        fingerSwh.isChecked = ApiClient.getInstance(requireContext()).isFingerAuth()
+
+        logoutBtn.setOnClickListener {
+            val prefs = PreferenceHelper.securePrefs(requireActivity().applicationContext)
+            if (!ApiClient.getInstance(requireContext()).isFingerAuth())
+                prefs[PreferenceConstants.token] = null
             prefs[PreferenceConstants.sid] = null
             prefs[PreferenceConstants.sname] = null
-            prefs[PreferenceConstants.token] = null
             prefs[PreferenceConstants.semail] = null
             prefs[PreferenceConstants.sdt1] = null
             prefs[PreferenceConstants.sdt2] = null
@@ -69,6 +79,16 @@ class MoreMenuFragment : Fragment() {
                 val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://donate.rqn9.com"))
                 startActivity(browserIntent)
             }
+        }
+
+        fingerSwh.setOnCheckedChangeListener { _, isChecked ->
+            val prefs = PreferenceHelper.securePrefs(requireContext())
+            if (isChecked) {
+                Toast.makeText(context, resources.getString(R.string.finger_2fa_activated), Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(context, resources.getString(R.string.finger_2fa_deactivated), Toast.LENGTH_SHORT).show()
+            }
+            prefs[PreferenceConstants.fingerLoginAccount] = isChecked
         }
     }
 }
