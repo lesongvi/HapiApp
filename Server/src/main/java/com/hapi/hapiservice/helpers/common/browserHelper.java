@@ -107,6 +107,22 @@ public class browserHelper extends stuffHelper {
         }
     }
 
+    public String reAuth() throws MalformedURLException {
+        Gson gson = new Gson();
+        authSuccess response = new authSuccess(true, "", "", "", "", "", "");
+
+        try {
+            Students stdunt = studentService.getStudentByToken(token);
+
+            response = new authSuccess(false, stdunt.getName(), stdunt.getToken(), stdunt.getEmail(), stdunt.getSid() + "", stdunt.getSdt(1), stdunt.getSdt(2));
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return gson.toJson(new errorResponse(true, "Có lỗi đã xảy ra!", 404));
+        } finally {
+            return gson.toJson(response);
+        }
+    }
+
     public static String generateStdntToken() {
         byte[] randomBytes = new byte[24];
         secureRand.nextBytes(randomBytes);

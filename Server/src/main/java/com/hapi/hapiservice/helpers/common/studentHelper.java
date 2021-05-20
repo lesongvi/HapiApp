@@ -34,7 +34,7 @@ public class studentHelper {
     public studentHelper(
             String token,
             StudentRepository studentRepository,
-            StudentService studentService) throws IllegalBlockSizeException, NoSuchAlgorithmException, IOException, BadPaddingException, NoSuchPaddingException, InvalidKeyException {
+            StudentService studentService) throws IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, NoSuchPaddingException, InvalidKeyException {
         this.token = token;
         this.studentRepository = studentRepository;
         this.studentService = studentService;
