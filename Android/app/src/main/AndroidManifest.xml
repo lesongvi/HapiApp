@@ -1,38 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.scheduleproject">
+    package="com.g5.hapiappdemo">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+    <!--<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />-->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.REAL_GET_TASKS"
+        tools:ignore="ProtectedPermissions" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="Hutech University"
+        android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/Theme.ScheduleProject">
-        <activity android:name=".Login"></activity>
+        android:supportsRtl="false"
+        android:theme="@style/AppTheme"
+        android:hardwareAccelerated="true"
+        android:largeHeap="true">
         <activity
-            android:name=".RLuyen"
-            android:theme="@style/Theme.ScheduleProject.NoActionBar"></activity>
+            android:name=".activities.ForgotPasswordActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/forgot_password" />
         <activity
-            android:name=".LichThi"
-            android:theme="@style/Theme.ScheduleProject.NoActionBar"></activity>
+            android:name=".activities.NotificationActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/ThongTinActivity" />
         <activity
-            android:name=".TKB"
-            android:theme="@style/Theme.ScheduleProject.NoActionBar" />
+            android:name=".activities.StudentEvalute"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/StudentEvalute" />
         <activity
-            android:name=".XemDiem"
-            android:theme="@style/Theme.ScheduleProject.NoActionBar" />
-        <activity android:name=".MainActivity"
-            android:theme="@style/Theme.ScheduleProject.NoActionBar">
+            android:name=".popup.DetailPopup"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/PointDetailPopup" />
+        <activity
+            android:name=".auth.StudentAuth"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/AuthPage" />
+        <activity
+            android:name=".activities.ThoiKhoaBieu"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/schedule_lbl" />
+        <activity
+            android:name=".activities.XemDiem"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/vipoint_lbl" />
+        <activity
+            android:name=".activities.LichThi"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/eschedule_lbl" />
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/mainpage_lbl"/>
+        <activity
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".activities.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-2335307097838267~4978858078"/>
     </application>
 
 </manifest>
