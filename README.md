@@ -35,6 +35,10 @@ Endpoint specificPointView: /api/v1/point/view
 Method: POST
 ```
 ```
+Endpoint reautheticate: /api/v1/student/info
+Method: POST
+```
+```
 Endpoint evaluateStudent: /api/v1/student/evaluate/list
 Method: POST
 ```

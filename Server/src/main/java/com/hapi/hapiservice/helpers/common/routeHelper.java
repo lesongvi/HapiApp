@@ -15,6 +15,8 @@ public class routeHelper {
 
     public final static String studentPath = apiPrefix + "student/";
 
+    public final static String reautheticate = studentPath + "info";
+
     public final static String getSemester = schedulePath + "semester";
 
     public final static String getWeek = schedulePath + "week";

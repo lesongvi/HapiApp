@@ -59,7 +59,7 @@ public class snapshotHelper extends browserHelper {
         Notifications testNotify = this.notificationService.findTopByOrderByIDDesc();
         NotificationResponse response;
 
-        if (init != "" && (testNotify == null && !testNotify.getTHONGBAO().equals(init))) {
+        if (init != "" && (testNotify == null || testNotify != null && !testNotify.getTHONGBAO().equals(init))) {
             response = new NotificationResponse(init, Instant.now().getEpochSecond());
             Notifications ntfcation = new Notifications();
             ntfcation.setID(0);

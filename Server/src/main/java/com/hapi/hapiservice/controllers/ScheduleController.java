@@ -12,6 +12,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
@@ -32,6 +33,13 @@ public class ScheduleController {
         Optional userVerify = this.studentService.findById(sid);
 
         return this.studentBasicTest.conAuth(userVerify.isPresent());
+    }
+
+    @RequestMapping(value = {routeHelper.reautheticate}, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public String reauthenticate (@RequestParam(value = "token", defaultValue = "") String token) throws MalformedURLException {
+        this.studentBasicTest = new browserHelper(token, this.studentRepository, this.studentService);
+
+        return this.studentBasicTest.reAuth();
     }
 
     @RequestMapping(value = {routeHelper.getSemester}, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
