@@ -239,6 +239,7 @@ class XemDiem : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
 
                         binding.empty.visibility = View.GONE
                     } else {
+                        binding.pointListView.visibility = View.GONE
                         hideProgressDialog()
                         binding.empty.visibility = View.VISIBLE
                     }
