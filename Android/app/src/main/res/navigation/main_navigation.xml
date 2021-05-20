@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/home_fragment">
+
+    <fragment
+        android:id="@+id/home_fragment"
+        android:name="com.g5.hapiappdemo.fragments.HomeFragment"
+        android:label="Trang chủ"
+        tools:layout="@layout/fragment_home"/>
+    <fragment
+        android:id="@+id/terms_fragment"
+        android:name="com.g5.hapiappdemo.fragments.TermsConditionFragment"
+        android:label="TermsFragment" />
+    <fragment
+        android:id="@+id/miner_fragment"
+        android:name="com.g5.hapiappdemo.fragments.SupportFragment"
+        android:label="Đào tiền ảo"
+        tools:layout="@layout/fragment_support"/>
+    <fragment
+        android:id="@+id/account_fragment"
+        android:name="com.g5.hapiappdemo.fragments.AccountFragment"
+        android:label="Tài khoản"
+        tools:layout="@layout/fragment_support"/>
+    <fragment
+        android:id="@+id/more_menu_fragment"
+        android:name="com.g5.hapiappdemo.fragments.MoreMenuFragment"
+        android:label="Tài khoản"
+        tools:layout="@layout/fragment_more_menu"/>
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.g5.hapiappdemo.fragments.DetailFragment"
+        android:label="DetailFragment" />
+</navigation>

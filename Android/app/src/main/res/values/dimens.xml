@@ -14,4 +14,6 @@
     <dimen name="meta_label">12dp</dimen>
     <dimen name="dimen_40dp">40dp</dimen>
     <dimen name="ic_plus_width">28dp</dimen>
+    <dimen name="banner_margin">50dp</dimen>
+    <dimen name="widget_margin">8dp</dimen>
 </resources>

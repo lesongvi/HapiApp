@@ -1,161 +1,219 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".Fragment.AccountFragment">
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
 
+    </data>
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/root"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8dp">
+        android:layout_height="match_parent"
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/img_profile"
-            android:layout_width="@dimen/toolbar_profile_width"
-            android:layout_height="@dimen/toolbar_profile_width"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/activity_padding"
-            android:layout_marginBottom="@dimen/activity_padding"
-            android:src="@drawable/ic_account"
-            app:civ_border_color="@android:color/white"
-            app:civ_border_width="2dp" />
+        android:fitsSystemWindows="true">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/img_plus"
-            android:layout_width="@dimen/ic_plus_width"
-            android:layout_height="@dimen/ic_plus_width"
-            android:layout_alignBottom="@id/img_profile"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="161dp"
-            android:layout_marginBottom="0dp"
-            android:src="@drawable/ic_add" />
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/banner_margin">
 
-        <TextView
-            android:id="@+id/txtTen"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/img_plus"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:text="Mã số sinh viên"
-            android:textSize="20dp" />
-        <TextView
-            android:id="@+id/txtEditProfile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/txtTen"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:text="Edit"
-            android:textColor="@color/orange"
-            android:textSize="20dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/CardView.MyStyle"
+                    android:layout_margin="10dp"
+                    card_view:cardBackgroundColor="@android:color/white"
+                    card_view:cardElevation="2dp"
+                    card_view:cardUseCompatPadding="true">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:padding="15dp">
+
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                android:id="@+id/profile_image"
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
+                                android:layout_gravity="center"
+                                android:layout_margin="15dp"
+                                android:transitionName="pImage"
+                                android:src="@drawable/user" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text=""
+                                android:id="@+id/student_name"
+                                android:transitionName="pName"
+                                style="@style/TextAppearance.AppCompat.Title"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/student_id"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:paddingBottom="5dp"
+                                android:text=""
+                                style="@style/TextAppearance.AppCompat.Caption"
+                                android:textStyle="italic" />
 
 
-    </RelativeLayout>
+                            <TextView
+                                android:id="@+id/ac_status"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:textAllCaps="true"
+                                android:text="ONLINE"
+                                android:layout_margin="4dp"
+                                android:paddingTop="3dp"
+                                android:paddingBottom="3dp"
+                                android:paddingLeft="6dp"
+                                android:paddingRight="6dp"
+                                android:transitionName="pStatus"
+                                android:background="@drawable/active_bg" />
+                        </LinearLayout>
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/MMGray"/>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="50dp"
-        android:layout_gravity="center_vertical"
-        android:gravity="center"
-        >
+                    </LinearLayout>
 
-        <TextView
-            android:id="@+id/txtMSSV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Mã số sinh viên"
-            android:paddingLeft="20dp"
-            android:drawableLeft="@drawable/ic_students"
-            android:drawablePadding="10dp"
-            android:textSize="20dp"
-            />
+                </androidx.cardview.widget.CardView>
 
-        <TextView
-            android:id="@+id/MSSV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/txtMSSV"
-            android:paddingLeft="20dp"
-            android:text="Mã số của sv"
-            android:textSize="20dp" />
+                <View
+                    android:layout_width="64dp"
+                    android:layout_height="1dp"
+                    android:layout_gravity="center"
+                    android:alpha="0.5"
+                    android:background="@color/MMGray"/>
 
-        <TextView
-            android:id="@+id/txtEmail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/txtMSSV"
-            android:paddingLeft="20dp"
-            android:paddingTop="10dp"
-            android:text="Email"
-            android:textSize="20dp"
-            android:drawableLeft="@drawable/ic_email"
-            android:drawablePadding="10dp"/>
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:contentPadding="15dp"
+                    style="@style/CardView.MyStyle"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginRight="10dp"
+                    card_view:cardBackgroundColor="@android:color/white"
+                    card_view:cardElevation="2dp"
+                    card_view:cardUseCompatPadding="true"
+                    >
 
-        <TextView
-            android:id="@+id/EditEmail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/txtMSSV"
-            android:layout_toRightOf="@+id/txtEmail"
-            android:paddingLeft="110dp"
-            android:paddingTop="10dp"
-            android:text="Mail của sv"
-            android:textSize="20dp" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:id="@+id/student_email"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            style="@style/TextAppearance.AppCompat.Menu"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
 
-        <TextView
-            android:id="@+id/txtSDT"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/txtEmail"
-            android:paddingLeft="20dp"
-            android:paddingTop="10dp"
-            android:text="Số điện thoại"
-            android:drawableLeft="@drawable/ic_phone"
-            android:drawablePadding="10dp"
-            android:textSize="20dp" />
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:contentPadding="15dp"
+                    style="@style/CardView.MyStyle"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginRight="10dp"
+                    card_view:cardBackgroundColor="@android:color/white"
+                    card_view:cardElevation="2dp"
+                    card_view:cardUseCompatPadding="true"
+                    >
 
-        <TextView
-            android:id="@+id/EditSDT"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/txtEmail"
-            android:layout_toRightOf="@+id/txtSDT"
-            android:paddingLeft="40dp"
-            android:paddingTop="10dp"
-            android:text="SDT của sinh viên"
-            android:textSize="20dp" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:maxLines="1"
+                            android:id="@+id/student_sdt1"
+                            android:gravity="center"
+                            android:ellipsize="end"
+                            style="@style/TextAppearance.AppCompat.Menu"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
 
-        <TextView
-            android:id="@+id/ChangPass"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/txtSDT"
-            android:paddingLeft="20dp"
-            android:paddingTop="10dp"
-            android:text="Đổi mật khẩu"
-            android:drawableLeft="@drawable/ic_key"
-            android:textSize="20dp"
-            android:drawablePadding="10dp"/>
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:contentPadding="15dp"
+                    style="@style/CardView.MyStyle"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginRight="10dp"
+                    card_view:cardBackgroundColor="@android:color/white"
+                    card_view:cardElevation="2dp"
+                    card_view:cardUseCompatPadding="true"
+                    >
 
-        <TextView
-            android:id="@+id/Logout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/ChangPass"
-            android:paddingLeft="20dp"
-            android:paddingTop="10dp"
-            android:drawableLeft="@drawable/ic_log_out"
-            android:text="Đăng xuất"
-            android:drawablePadding="10dp"
-            android:textSize="20dp" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:maxLines="1"
+                            android:id="@+id/student_sdt2"
+                            android:gravity="center"
+                            android:ellipsize="end"
+                            style="@style/TextAppearance.AppCompat.Menu"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
 
-    </RelativeLayout>
+                <View
+                    android:layout_width="64dp"
+                    android:layout_height="1dp"
+                    android:layout_gravity="center"
+                    android:alpha="0.5"
+                    android:background="@color/MMGray"/>
 
-</LinearLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="15dp"
+                    style="@style/TextAppearance.AppCompat.Caption"
+                    android:text="@string/account_note"
+                    />
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

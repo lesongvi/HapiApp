@@ -8,14 +8,43 @@
     <color name="grey">#00000000</color>
 
     <color name="white">#FFFFFFFF</color>
+    <color name="colorPrimary">@color/MMPrimary</color>
+    <color name="colorPrimaryDark">#055da5</color>
+    <color name="colorAccent">@color/MMPrimary</color>
+    <color name="bgBottomNavigation">#ff9500</color>
     <color name="black">#000000</color>
-<!--    <color name="colorPrimary">#5770f3</color>-->
-<!--    <color name="colorPrimaryDark">#5770f3</color>-->
-<!--    <color name="colorAccent">#D81B60</color>-->
-<!--    <color name="gradient_start">#5770f3</color>-->
-<!--    <color name="gradient_end">#8e5aeb</color>-->
-<!--    <color name="profile_desc">#D1D1FF</color>-->
-<!--    <color name="bg_meta_container">#000000</color>-->
-<!--    <color name="profile_default_tint">#e0e0e0</color>-->
+
+    <color name="MMPrimary">@color/MMGray</color>
+    <color name="MMSecondary">#f0b90b</color>
+    <color name="MMGray">#E3E3E3</color>
+
+    <color name="colorSecondary">#b2d8f7</color>
+    <color name="colorPink">#ad2688</color>
+    <color name="colorYellow">#FFEB3B</color>
+    <color name="colorGreen">#7FAE56</color>
+    <color name="colorWindow">#FFFFFF</color>
+    <color name="colorWindowUpper">#FFFFFF</color>
+    <color name="colorTextPrimary">#7db8ea</color>
+    <color name="colorTextSecondary">#5683a8</color>
+
+    <color name="colorIcon">#7db8ea</color>
+    <color name="transparent">#00000000</color>
+    <color name="colorRed">#E53935</color>
+
+    <color name="colorPrimarySplash">#ffffff</color>
+    <color name="colorPrimaryDarkSplash">#ffffff</color>
+    <color name="colorAccentSplash">#ffffff</color>
+
+    <color name="card_background">#134268</color>
+    <color name="card_shadow_1">#d4d4d4</color>
+    <color name="card_shadow_2">#dddddd</color>
+
+    <color name="Spinwell140">#EBBEBDFC</color>
+
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorGray">#bdbdbd</color>
+    <color name="colorLightGray">#e0e0e0</color>
+    <color name="colorDarkGray">#757575</color>
 
 </resources>

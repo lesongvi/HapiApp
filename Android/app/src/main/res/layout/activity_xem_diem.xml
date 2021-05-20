@@ -1,33 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
-    android:id="@+id/drawer_layout_XD"
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingClass">
+<RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".XemDiem">
+    android:layout_height="match_parent">
 
-
-    <include layout="@layout/app_bar_xem_diem"
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"/>
+        android:background="@color/MMPrimary"
+        app:theme="@style/tbStyle"
+        app:elevation="0dp">
+
+        <include
+            android:id="@+id/toolbar_custom"
+            layout="@layout/toolbar_layout" />
 
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/nav_view_XD"
-        android:layout_width="wrap_content"
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/activity_main_drawer" />
+        android:id="@+id/swiperefresh"
+        android:layout_marginTop="?attr/actionBarSize">
 
-</androidx.drawerlayout.widget.DrawerLayout>
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize">
+
+    <LinearLayout
+        android:id="@+id/content_frame_XD"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:orientation="vertical">
+
+        <Spinner
+            android:id="@+id/semester_p"
+            style="@style/Widget.AppCompat.Spinner"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/dropdownListPreferredItemHeight"
+            android:layout_margin="10dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:visibility="gone"
+            android:background="@drawable/spinner_bg"
+            android:dropDownWidth="match_parent"
+            android:dropDownVerticalOffset="?attr/dropdownListPreferredItemHeight"
+            android:popupBackground="@android:color/black"
+            android:popupElevation="3dp"
+            android:stateListAnimator="@drawable/spinner_sla"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/pointListView"
+                >
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:id="@+id/empty"
+            android:padding="30dp"
+            android:gravity="center"
+            android:visibility="gone"
+            android:layout_marginTop="?attr/actionBarSize">
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                app:srcCompat="@drawable/ic_safebox" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/oops_error"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                android:paddingTop="10dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/black"
+                android:text="@string/empty_string" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</RelativeLayout>
+</layout>
