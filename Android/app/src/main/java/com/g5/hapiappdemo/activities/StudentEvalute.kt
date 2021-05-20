@@ -14,10 +14,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.g5.hapiappdemo.R
+import com.g5.hapiappdemo.adapter.examSAdapter
 import com.g5.hapiappdemo.adapter.studentEAdapter
 import com.g5.hapiappdemo.api.ApiClient
 import com.g5.hapiappdemo.databinding.ActivitySevaluateBinding
 import com.g5.hapiappdemo.json.EvaluateList
+import com.g5.hapiappdemo.json.ExamScheDetail
+import com.g5.hapiappdemo.realmobj.evaluateObj
+import com.g5.hapiappdemo.realmobj.examSObj
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -25,6 +29,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
+import io.realm.kotlin.createObject
+import io.realm.kotlin.delete
+import io.realm.kotlin.where
 
 class StudentEvalute : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
     lateinit var realm: Realm
@@ -55,6 +62,7 @@ class StudentEvalute : BaseActivity(), NavigationView.OnNavigationItemSelectedLi
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this)
         mRecyclerView!!.layoutManager = layoutManager
 
+        this.getCacheEvaluate()
         this.initEvaluateList()
 
         val lm = LinearLayoutManager(this)
@@ -75,6 +83,21 @@ class StudentEvalute : BaseActivity(), NavigationView.OnNavigationItemSelectedLi
         window.statusBarColor = ContextCompat.getColor(this@StudentEvalute, R.color.MMPrimary)
     }
 
+    private fun getCacheEvaluate () {
+        val evo = realm.where<evaluateObj>().findAll()
+        if (evo.size != 0)
+        {
+            for (evoi in evo) {
+                mRecyclerViewItems.add(EvaluateList(evoi.diem_ca_nhan, evoi.diem_khoa, evoi.diem_lop, evoi.dot_khao_sat_id, evoi.hienThiDiemTong, evoi.hoc_ky, evoi.nam_hoc, evoi.ngay_bd_sinhvien, evoi.ngay_kt_sinhvien, evoi.phieu_danh_gia_id, evoi.trang_thai_duyet, evoi.xep_loai))
+            }
+
+            adapter = studentEAdapter(this, mRecyclerViewItems)
+            mRecyclerView!!.adapter = adapter
+
+            hideProgressDialog()
+        }
+    }
+
     private fun initEvaluateList () {
         if (ApiClient.getInstance(this).isReady()) {
             disposable = ApiClient.getInstance(this).viewEvaluateList()
@@ -82,12 +105,30 @@ class StudentEvalute : BaseActivity(), NavigationView.OnNavigationItemSelectedLi
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     { result ->
+                        realm.executeTransaction { realm ->
+                            realm.delete<evaluateObj>()
+                        }
                         if (result.isNotEmpty()) {
-                            binding.empty.visibility = View.INVISIBLE
+                            binding.empty.visibility = View.GONE
                             binding.evaluateListView.visibility = View.VISIBLE
                             mRecyclerViewItems.clear()
                             result.forEach { data: EvaluateList ->
                                 mRecyclerViewItems.add(data)
+                                realm.executeTransaction { realm ->
+                                    val evo = realm.createObject<evaluateObj>()
+                                    evo.diem_ca_nhan = data.diem_ca_nhan
+                                    evo.diem_khoa = data.diem_khoa
+                                    evo.diem_lop = data.diem_lop
+                                    evo.dot_khao_sat_id = data.dot_khao_sat_id
+                                    evo.hienThiDiemTong = data.hienThiDiemTong
+                                    evo.hoc_ky = data.hoc_ky
+                                    evo.nam_hoc = data.nam_hoc
+                                    evo.ngay_bd_sinhvien = data.ngay_bd_sinhvien
+                                    evo.ngay_kt_sinhvien = data.ngay_kt_sinhvien
+                                    evo.phieu_danh_gia_id = data.phieu_danh_gia_id
+                                    evo.trang_thai_duyet = data.trang_thai_duyet
+                                    evo.xep_loai = data.xep_loai
+                                }
                             }
 
                             adapter = studentEAdapter(this, mRecyclerViewItems)
@@ -102,13 +143,13 @@ class StudentEvalute : BaseActivity(), NavigationView.OnNavigationItemSelectedLi
                                 Toast.LENGTH_SHORT
                             ).show()
                             binding.empty.visibility = View.VISIBLE
-                            binding.evaluateListView.visibility = View.INVISIBLE
+                            binding.evaluateListView.visibility = View.GONE
                         }
                         swipeRefreshLayout!!.isRefreshing = false;
                     },
                     { _ ->
                         binding.empty.visibility = View.VISIBLE
-                        binding.evaluateListView.visibility = View.INVISIBLE
+                        binding.evaluateListView.visibility = View.GONE
                         hideProgressDialog()
                         Toast.makeText(
                             this@StudentEvalute,
@@ -118,6 +159,11 @@ class StudentEvalute : BaseActivity(), NavigationView.OnNavigationItemSelectedLi
                     }
                 )
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        realm.close()
     }
 
     override fun onNavigationItemSelected(p0: MenuItem): Boolean {

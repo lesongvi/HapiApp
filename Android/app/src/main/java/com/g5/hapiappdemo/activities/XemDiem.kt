@@ -19,11 +19,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.g5.hapiappdemo.R
+import com.g5.hapiappdemo.adapter.NotifyAdapter
 import com.g5.hapiappdemo.adapter.pointViewAdapter
 import com.g5.hapiappdemo.api.ApiClient
 import com.g5.hapiappdemo.databinding.ActivityXemDiemBinding
+import com.g5.hapiappdemo.json.NotificationList
 import com.g5.hapiappdemo.json.PointJson
 import com.g5.hapiappdemo.json.SemesterPoint
+import com.g5.hapiappdemo.realmobj.jsonPObj
+import com.g5.hapiappdemo.realmobj.notificationObj
+import com.g5.hapiappdemo.realmobj.semesterPObj
 import com.g5.hapiappdemo.realmobj.studentPoint
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
@@ -68,6 +73,7 @@ class XemDiem : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this)
         mRecyclerView!!.layoutManager = layoutManager
 
+        this.getCacheData()
         this.initPointData()
 
         val lm = LinearLayoutManager(this)
@@ -88,6 +94,38 @@ class XemDiem : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
         window.statusBarColor = ContextCompat.getColor(this@XemDiem, R.color.MMPrimary)
     }
 
+    private fun getCacheData () {
+        val spoint = realm.where<semesterPObj>().findAll()
+        if (spoint.size != 0)
+        {
+            val selectorAvailable = ArrayList<String>(spoint.size)
+            for (notify in spoint) {
+                selectorAvailable.add("Học kỳ ${notify.hocky}, năm học ${notify.namhoc}")
+            }
+
+            this.initPointSpinner(selectorAvailable, spoint as List<SemesterPoint>, true)
+        }
+    }
+
+    private fun getCacheSPData () {
+        val spdetail = realm.where<jsonPObj>().findAll()
+        if (spdetail.size != 0)
+        {
+            for (notify in spdetail) {
+                mRecyclerViewItems.add(PointJson(notify.mamon, notify.tenmon, notify.tinchi, notify.ptkt, notify.ptthi, notify.diemkt1, notify.diemkt2, notify.thil1, notify.tkch, notify.tk4))
+            }
+
+            binding.pointListView.visibility = View.VISIBLE
+
+            adapter = pointViewAdapter(this, mRecyclerViewItems)
+            mRecyclerView!!.adapter = adapter
+
+            hideProgressDialog()
+
+            binding.empty.visibility = View.GONE
+        }
+    }
+
     private fun initPointData () {
         if (ApiClient.getInstance(this).isReady()) {
             disposable = ApiClient.getInstance(this).viewSemesterPoint()
@@ -95,37 +133,21 @@ class XemDiem : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     { result ->
+                        realm.executeTransaction { realm ->
+                            realm.delete<semesterPObj>()
+                        }
                         if (result.isNotEmpty()) {
                             val selectorAvailable = ArrayList<String>(result.size)
                             result.forEach { data: SemesterPoint ->
                                 selectorAvailable.add("Học kỳ ${data.hocky}, năm học ${data.namhoc}")
-                            }
-                            val adapter: ArrayAdapter<*> =
-                                ArrayAdapter<String>(
-                                    this,
-                                    R.layout.spinner_item_selected,
-                                    selectorAvailable
-                                )
-                            adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
-
-                            binding.semesterP.visibility = View.VISIBLE
-
-                            val spinner = findViewById<Spinner>(R.id.semester_p)
-                            spinner.adapter = adapter
-                            spinner.onItemSelectedListener = object : OnItemSelectedListener {
-                                override fun onItemSelected(
-                                    parent: AdapterView<*>,
-                                    view: View?,
-                                    position: Int,
-                                    id: Long
-                                ) {
-                                    binding.pointListView.visibility = View.INVISIBLE
-                                    showProgressDialog()
-                                    getSemesterPointData(result[position].hocky, result[position].namhoc)
+                                realm.executeTransaction { realm ->
+                                    val spoint = realm.createObject<semesterPObj>()
+                                        spoint.hocky = data.hocky
+                                        spoint.namhoc = data.namhoc
                                 }
-
-                                override fun onNothingSelected(parent: AdapterView<*>?) {}
                             }
+
+                            this.initPointSpinner(selectorAvailable, result, false)
                         } else {
                             hideProgressDialog()
                             Toast.makeText(
@@ -147,6 +169,37 @@ class XemDiem : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
         }
     }
 
+    private fun initPointSpinner(selectorAvailable: ArrayList<String>, result: List<SemesterPoint>, isCache: Boolean) {
+        val adapter: ArrayAdapter<*> =
+            ArrayAdapter<String>(
+                this,
+                R.layout.spinner_item_selected,
+                selectorAvailable
+            )
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
+
+        binding.semesterP.visibility = View.VISIBLE
+
+        val spinner = findViewById<Spinner>(R.id.semester_p)
+        spinner.adapter = adapter
+        spinner.onItemSelectedListener = object : OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                showProgressDialog()
+                if (!isCache)
+                    getSemesterPointData(result[position].hocky, result[position].namhoc)
+                else
+                    getCacheSPData()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+    }
+
     private fun getSemesterPointData (hocky: String?, namhoc: String?) {
         currentSemesterId = hocky;
         currentSemesterYear = namhoc;
@@ -155,10 +208,26 @@ class XemDiem : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { result ->
+                    realm.executeTransaction { realm ->
+                        realm.delete<jsonPObj>()
+                    }
                     if (result.isNotEmpty()) {
-                        mRecyclerViewItems.clear();
+                        mRecyclerViewItems.clear()
                         result.forEach { data: PointJson ->
-                            mRecyclerViewItems.add(data);
+                            mRecyclerViewItems.add(data)
+                            realm.executeTransaction { realm ->
+                                val diem = realm.createObject<jsonPObj>()
+                                diem.mamon = data.mamon
+                                diem.tenmon = data.tenmon
+                                diem.tinchi = data.tinchi
+                                diem.ptkt = data.ptkt
+                                diem.ptthi = data.ptthi
+                                diem.diemkt1 = data.diemkt1
+                                diem.diemkt2 = data.diemkt2
+                                diem.thil1 = data.thil1
+                                diem.tkch = data.tkch
+                                diem.tk4 = data.tk4
+                            }
                         }
 
                         binding.pointListView.visibility = View.VISIBLE
@@ -168,7 +237,7 @@ class XemDiem : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
 
                         hideProgressDialog()
 
-                        binding.empty.visibility = View.INVISIBLE
+                        binding.empty.visibility = View.GONE
                     } else {
                         hideProgressDialog()
                         binding.empty.visibility = View.VISIBLE
@@ -185,6 +254,11 @@ class XemDiem : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
                     swipeRefreshLayout!!.isRefreshing = false;
                 }
             )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        realm.close()
     }
 
     override fun onNavigationItemSelected(p0: MenuItem): Boolean {

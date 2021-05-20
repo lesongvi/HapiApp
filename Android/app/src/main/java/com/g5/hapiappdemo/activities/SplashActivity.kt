@@ -1,6 +1,5 @@
 package com.g5.hapiappdemo.activities
 
-import android.R.color
 import android.animation.ObjectAnimator
 import android.content.Intent
 import android.graphics.BlendMode
@@ -19,6 +18,7 @@ import androidx.core.content.ContextCompat
 import com.g5.hapiappdemo.MainActivity
 import com.g5.hapiappdemo.R
 import com.g5.hapiappdemo.databinding.ActivitySplashBinding
+import io.realm.Realm
 
 
 class SplashActivity : AppCompatActivity() {

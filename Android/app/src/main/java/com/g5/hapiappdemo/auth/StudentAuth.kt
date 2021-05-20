@@ -40,9 +40,6 @@ import org.json.JSONObject
 import java.io.*
 import java.util.*
 import java.util.concurrent.Executor
-import android.provider.MediaStore
-import android.graphics.Bitmap
-import android.util.Log
 
 
 class StudentAuth : BaseActivity() {

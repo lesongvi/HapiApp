@@ -16,12 +16,16 @@ import com.g5.hapiappdemo.adapter.NotifyAdapter
 import com.g5.hapiappdemo.api.ApiClient
 import com.g5.hapiappdemo.databinding.ActivityNotificationBinding
 import com.g5.hapiappdemo.json.NotificationList
+import com.g5.hapiappdemo.realmobj.notificationObj
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayout
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
+import io.realm.kotlin.createObject
+import io.realm.kotlin.delete
+import io.realm.kotlin.where
 import java.util.ArrayList
 
 class NotificationActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -55,6 +59,7 @@ class NotificationActivity : BaseActivity(), NavigationView.OnNavigationItemSele
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this)
         mRecyclerView!!.layoutManager = layoutManager
 
+        this.getCachedNotifications()
         this.getNotifications()
 
         swipeRefreshLayout!!.setOnRefreshListener { this.getNotifications() }
@@ -65,6 +70,21 @@ class NotificationActivity : BaseActivity(), NavigationView.OnNavigationItemSele
         window.statusBarColor = ContextCompat.getColor(this@NotificationActivity, R.color.MMPrimary)
     }
 
+    private fun getCachedNotifications() {
+        val results = realm.where<notificationObj>().findAll()
+        if (results.size != 0)
+        {
+            for (notify in results) {
+                mRecyclerViewItems.add(NotificationList(notify.notification, notify.unixtime))
+            }
+
+            adapter = NotifyAdapter(this, mRecyclerViewItems)
+            mRecyclerView!!.adapter = adapter
+
+            hideProgressDialog()
+        }
+    }
+
     private fun getNotifications () {
         disposable = ApiClient.getInstance(this).viewNotifications()
             .subscribeOn(Schedulers.io())
@@ -72,10 +92,18 @@ class NotificationActivity : BaseActivity(), NavigationView.OnNavigationItemSele
             .subscribe(
                 { result ->
                     swipeRefreshLayout!!.isRefreshing = false;
+                    realm.executeTransaction { realm ->
+                        realm.delete<notificationObj>()
+                    }
                     if (result.isNotEmpty()) {
-                        mRecyclerViewItems.clear();
+                        mRecyclerViewItems.clear()
                         result.forEach { data: NotificationList ->
-                            mRecyclerViewItems.add(data);
+                            mRecyclerViewItems.add(data)
+                            realm.executeTransaction { realm ->
+                                val notify = realm.createObject<notificationObj>()
+                                notify.notification = data.notification
+                                notify.unixtime = data.unixtime
+                            }
                         }
 
                         adapter = NotifyAdapter(this, mRecyclerViewItems)
@@ -99,6 +127,11 @@ class NotificationActivity : BaseActivity(), NavigationView.OnNavigationItemSele
                     swipeRefreshLayout!!.isRefreshing = false;
                 }
             )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        realm.close()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

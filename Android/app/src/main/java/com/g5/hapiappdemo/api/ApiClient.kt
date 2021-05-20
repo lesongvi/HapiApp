@@ -2,13 +2,16 @@ package com.g5.hapiappdemo.api
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
 import com.g5.hapiappdemo.PreferenceConstants
 import com.g5.hapiappdemo.extensions.PreferenceHelper
 import com.g5.hapiappdemo.json.*
 import io.reactivex.Observable
+import okhttp3.Interceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+
 
 /*
  * API Documentation? No

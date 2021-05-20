@@ -18,12 +18,14 @@ import com.g5.hapiappdemo.auth.StudentAuth
 import com.g5.hapiappdemo.auth.set
 import com.g5.hapiappdemo.databinding.FragmentMoreMenuBinding
 import com.g5.hapiappdemo.extensions.PreferenceHelper
+import io.realm.Realm
 import kotlinx.android.synthetic.main.fragment_more_menu.*
 
 
 class MoreMenuFragment : Fragment() {
 
     lateinit var binding: FragmentMoreMenuBinding
+    private lateinit var realm: Realm
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +54,12 @@ class MoreMenuFragment : Fragment() {
         fingerSwh.isChecked = ApiClient.getInstance(requireContext()).isFingerAuth()
 
         logoutBtn.setOnClickListener {
+            realm = Realm.getDefaultInstance()
+
+            realm.executeTransaction { realm ->
+                realm.deleteAll()
+            }
+
             val prefs = PreferenceHelper.securePrefs(requireActivity().applicationContext)
             if (!ApiClient.getInstance(requireContext()).isFingerAuth())
                 prefs[PreferenceConstants.token] = null

@@ -13,15 +13,23 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.g5.hapiappdemo.R
 import com.g5.hapiappdemo.adapter.examSAdapter
+import com.g5.hapiappdemo.adapter.semesterDAdapter
 import com.g5.hapiappdemo.api.ApiClient
 import com.g5.hapiappdemo.databinding.ActivityLichThiBinding
 import com.g5.hapiappdemo.json.ExamScheDetail
+import com.g5.hapiappdemo.json.SemesterScheDetail
+import com.g5.hapiappdemo.realmobj.examSObj
+import com.g5.hapiappdemo.realmobj.semesterSDObj
+import com.g5.hapiappdemo.realmobj.semesterSObj
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayout
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
+import io.realm.kotlin.createObject
+import io.realm.kotlin.delete
+import io.realm.kotlin.where
 import java.util.*
 
 
@@ -51,6 +59,7 @@ class LichThi : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this)
         mRecyclerView!!.layoutManager = layoutManager
 
+        this.getCacheSPData()
         this.getExamSche()
 
         val toolbar: Toolbar = findViewById(R.id.toolbar_custom)
@@ -66,17 +75,47 @@ class LichThi : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
         window.statusBarColor = ContextCompat.getColor(this@LichThi, R.color.MMPrimary)
     }
 
+    private fun getCacheSPData () {
+        val esd = realm.where<examSObj>().findAll()
+        if (esd.size != 0)
+        {
+            for (exsc in esd) {
+                mRecyclerViewItems.add(ExamScheDetail(exsc.mamon, exsc.tenmon, exsc.nhomthi, exsc.tothi, exsc.ngaythi, exsc.giobd, exsc.sophut, exsc.phong, exsc.ghichu))
+            }
+
+            adapter = examSAdapter(this, mRecyclerViewItems)
+            mRecyclerView!!.adapter = adapter
+
+            hideProgressDialog()
+        }
+    }
+
     private fun getExamSche () {
         disposable = ApiClient.getInstance(this).viewExamSche()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { result ->
-                    swipeRefreshLayout!!.isRefreshing = false;
+                    swipeRefreshLayout!!.isRefreshing = false
+                    realm.executeTransaction { realm ->
+                        realm.delete<examSObj>()
+                    }
                     if (result.isNotEmpty()) {
-                        mRecyclerViewItems.clear();
+                        mRecyclerViewItems.clear()
                         result.forEach { data: ExamScheDetail ->
-                            mRecyclerViewItems.add(data);
+                            mRecyclerViewItems.add(data)
+                            realm.executeTransaction { realm ->
+                                val eso = realm.createObject<examSObj>()
+                                eso.mamon = data.mamon
+                                eso.tenmon = data.tenmon
+                                eso.nhomthi = data.nhomthi
+                                eso.tothi = data.tothi
+                                eso.ngaythi = data.ngaythi
+                                eso.giobd = data.giobd
+                                eso.sophut = data.sophut
+                                eso.phong = data.phong
+                                eso.ghichu = data.ghichu
+                            }
                         }
 
                         adapter = examSAdapter(this, mRecyclerViewItems)
@@ -100,6 +139,11 @@ class LichThi : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
                     swipeRefreshLayout!!.isRefreshing = false;
                 }
             )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        realm.close()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

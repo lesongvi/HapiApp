@@ -39,9 +39,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(view)
 
         Realm.init(this)
-        val realmConfiguration = RealmConfiguration.Builder()
+        /*val realmConfiguration = RealmConfiguration.Builder()
             .name("hapi_data.realm").build()
-        Realm.setDefaultConfiguration(realmConfiguration)
+        Realm.setDefaultConfiguration(realmConfiguration)*/
 
         navController = findNavController(R.id.nav_host_fragment)
         binding.bottomNavView.setupWithNavController(navController)
