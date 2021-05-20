@@ -5,6 +5,7 @@ import com.hapi.hapiservice.models.notification.Notifications;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,5 +23,11 @@ public class NotificationService {
 
     public Notifications findTopByOrderByIDDesc() {
         return this.notificationRespository.findTopByOrderByIDDesc();
+    }
+    public List<Notifications> getAllNotify() {
+        return (List<Notifications>) this.notificationRespository.findAll();
+    }
+    public List<Notifications> getAllNotifyButThis(String notify) {
+        return this.notificationRespository.getAllNotifyButThis(notify);
     }
 }

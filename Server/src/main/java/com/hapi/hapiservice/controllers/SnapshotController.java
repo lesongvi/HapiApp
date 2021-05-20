@@ -27,4 +27,11 @@ public class SnapshotController {
 
         return this.studentBasicSnapshot.snapshotNotification();
     }
+
+    @RequestMapping(value = {routeHelper.snapshotAllNotification}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public String snapshotAllNotification () throws IOException {
+        this.studentBasicSnapshot = new snapshotHelper(this.notificationRespository, this.notificationService);
+
+        return this.studentBasicSnapshot.snapshotAllNotification();
+    }
 }

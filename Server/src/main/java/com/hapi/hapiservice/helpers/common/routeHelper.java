@@ -49,6 +49,8 @@ public class routeHelper {
 
     public final static String snapshotNotification = snapshotApiPath + "notification";
 
+    public final static String snapshotAllNotification = snapshotApiPath + "notifications";
+
     public final static String studentEvaluate = studentPath + "evaluate/";
 
     public final static String evaluateList = studentEvaluate + "list";
