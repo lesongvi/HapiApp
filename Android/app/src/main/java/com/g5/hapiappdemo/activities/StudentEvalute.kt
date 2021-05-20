@@ -1,7 +1,9 @@
 package com.g5.hapiappdemo.activities
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
@@ -81,6 +83,8 @@ class StudentEvalute : BaseActivity(), NavigationView.OnNavigationItemSelectedLi
                 .subscribe(
                     { result ->
                         if (result.isNotEmpty()) {
+                            binding.empty.visibility = View.INVISIBLE
+                            binding.evaluateListView.visibility = View.VISIBLE
                             mRecyclerViewItems.clear()
                             result.forEach { data: EvaluateList ->
                                 mRecyclerViewItems.add(data)
@@ -90,8 +94,6 @@ class StudentEvalute : BaseActivity(), NavigationView.OnNavigationItemSelectedLi
                             mRecyclerView!!.adapter = adapter
 
                             hideProgressDialog()
-
-                            swipeRefreshLayout!!.isRefreshing = false;
                         } else {
                             hideProgressDialog()
                             Toast.makeText(
@@ -99,13 +101,18 @@ class StudentEvalute : BaseActivity(), NavigationView.OnNavigationItemSelectedLi
                                 resources.getString(R.string.retrieve_data_failed),
                                 Toast.LENGTH_SHORT
                             ).show()
+                            binding.empty.visibility = View.VISIBLE
+                            binding.evaluateListView.visibility = View.INVISIBLE
                         }
+                        swipeRefreshLayout!!.isRefreshing = false;
                     },
                     { _ ->
+                        binding.empty.visibility = View.VISIBLE
+                        binding.evaluateListView.visibility = View.INVISIBLE
                         hideProgressDialog()
                         Toast.makeText(
                             this@StudentEvalute,
-                            resources.getString(R.string.retrieve_data_failed),
+                            resources.getString(R.string.student_ev_chckpoint),
                             Toast.LENGTH_SHORT
                         ).show()
                     }

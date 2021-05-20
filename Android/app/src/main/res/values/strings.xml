@@ -34,11 +34,15 @@
     <string name="click_here_to_mail">Click vào đây để yêu cầu hỗ trợ mail</string>
     <string name="please_wait_for_load">Vui lòng chờ một lát nữa nha!</string>
 
+    <string name="student_ev_chckpoint">Tài khoản của bạn đang bị khóa tạm thời, vui lòng đăng nhập lại trên https://daotao.hutech.edu.vn</string>
+    <string name="forgot_password_url">http://qlcntt.hutech.edu.vn/forgot-password</string>
+
     <string name="mainpage_lbl">Main Activity</string>
     <string name="ThongTinActivity">Thông tin</string>
 
     <string name="support_need_help">Sinh viên dùng Hapi App cần hỗ trợ!</string>
     <string name="support_need_help_body">Bạn cần giúp gì, hãy xóa dòng này và viết mới nội dung cần giúp đỡ nhé!</string>
+    <string name="student_disabled_or_some_thing">Tài khoản này có thể đang được bảo lưu hoặc máy chủ đang gặp sự cố</string>
 
     <string name="logout">Logout</string>
     <string name="settings">Settings</string>
@@ -55,14 +59,12 @@
     <string name="vipoint_lbl">Xem điểm</string>
     <string name="eschedule_lbl">Lịch thi</string>
 
-    <!-- Login -->
     <string name="loginTxt">Vui lòng nhập MSSV và mật khẩu của bạn! Nếu bạn quên tài khoản, vui lòng gửi yêu cầu cấp mật khẩu tại tại qlcntt.hutech.edu.vn.</string>
     <string name="sid_lbl">Mã số sinh viên</string>
     <string name="pwd_lbl">Mật khẩu</string>
     <string name="login_btn">Đăng nhập</string>
     <string name="forgot_password">Quên mật khẩu?</string>
 
-    <!-- Home -->
     <string name="home_btn_tt">Thông tin</string>
     <string name="home_btn_xd">Xem điểm</string>
     <string name="home_btn_lt">Lịch thi</string>

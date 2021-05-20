@@ -84,11 +84,11 @@ class LichThi : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
 
                         hideProgressDialog()
 
-                        swipeRefreshLayout!!.isRefreshing = false;
                     } else {
                         hideProgressDialog()
                         binding.empty.visibility = View.VISIBLE
                     }
+                    swipeRefreshLayout!!.isRefreshing = false;
                 },
                 { _ ->
                     hideProgressDialog()
@@ -97,6 +97,7 @@ class LichThi : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
                         resources.getString(R.string.retrieve_data_failed),
                         Toast.LENGTH_SHORT
                     ).show()
+                    swipeRefreshLayout!!.isRefreshing = false;
                 }
             )
     }

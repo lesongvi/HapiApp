@@ -83,11 +83,11 @@ class NotificationActivity : BaseActivity(), NavigationView.OnNavigationItemSele
 
                         hideProgressDialog()
 
-                        swipeRefreshLayout!!.isRefreshing = false;
                     } else {
                         hideProgressDialog()
                         binding.empty.visibility = View.VISIBLE
                     }
+                    swipeRefreshLayout!!.isRefreshing = false;
                 },
                 { _ ->
                     hideProgressDialog()
@@ -96,6 +96,7 @@ class NotificationActivity : BaseActivity(), NavigationView.OnNavigationItemSele
                         resources.getString(R.string.retrieve_data_failed),
                         Toast.LENGTH_SHORT
                     ).show()
+                    swipeRefreshLayout!!.isRefreshing = false;
                 }
             )
     }

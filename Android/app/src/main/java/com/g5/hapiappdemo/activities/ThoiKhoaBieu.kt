@@ -90,7 +90,6 @@ class ThoiKhoaBieu : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                             adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
 
                             binding.semester.visibility = View.VISIBLE
-                            result[0].semesterId?.let { this.getSemesterScheW(it) }
 
                             val spinner = findViewById<Spinner>(R.id.semester)
                             spinner.adapter = adapter
@@ -117,7 +116,7 @@ class ThoiKhoaBieu : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                             ).show()
                         }
                     },
-                    { _ ->
+                    { error ->
                         hideProgressDialog()
                         Toast.makeText(
                             this@ThoiKhoaBieu,
@@ -178,7 +177,7 @@ class ThoiKhoaBieu : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                     hideProgressDialog()
                     Toast.makeText(
                         this@ThoiKhoaBieu,
-                        resources.getString(R.string.retrieve_data_failed),
+                        resources.getString(R.string.student_disabled_or_some_thing),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -193,7 +192,6 @@ class ThoiKhoaBieu : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 { result ->
-                    swipeRefreshLayout!!.isRefreshing = false;
                     if (result.isNotEmpty()) {
                         mRecyclerViewItems.clear();
                         result.forEach { data: SemesterScheDetail ->
@@ -210,6 +208,7 @@ class ThoiKhoaBieu : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                         hideProgressDialog()
                         binding.empty.visibility = View.VISIBLE
                     }
+                    swipeRefreshLayout!!.isRefreshing = false;
                 },
                 { _ ->
                     hideProgressDialog()
@@ -218,6 +217,7 @@ class ThoiKhoaBieu : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                         resources.getString(R.string.retrieve_data_failed),
                         Toast.LENGTH_SHORT
                     ).show()
+                    swipeRefreshLayout!!.isRefreshing = false;
                 }
             )
 

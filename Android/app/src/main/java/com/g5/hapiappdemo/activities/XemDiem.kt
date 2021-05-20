@@ -168,12 +168,12 @@ class XemDiem : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
 
                         hideProgressDialog()
 
-                        swipeRefreshLayout?.isRefreshing = false;
                         binding.empty.visibility = View.INVISIBLE
                     } else {
                         hideProgressDialog()
                         binding.empty.visibility = View.VISIBLE
                     }
+                    swipeRefreshLayout!!.isRefreshing = false;
                 },
                 { _ ->
                     hideProgressDialog()
@@ -182,6 +182,7 @@ class XemDiem : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
                         resources.getString(R.string.retrieve_data_failed),
                         Toast.LENGTH_SHORT
                     ).show()
+                    swipeRefreshLayout!!.isRefreshing = false;
                 }
             )
     }

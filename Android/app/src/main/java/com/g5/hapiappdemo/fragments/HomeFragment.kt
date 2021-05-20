@@ -261,10 +261,6 @@ class HomeFragment : Fragment(), RewardedVideoAdListener {
     override fun onRewarded(reward: RewardItem?) {
         spyAction("adreward")
         Toast.makeText(context, resources.getString(R.string.thanks_for_your_support), Toast.LENGTH_SHORT).show()
-        timer1?.cancel()
-        startTimer(MAX_TIME)
-        btn_dnt?.isEnabled = false;
-        timerState = TimerState.RUNNING;
     }
 
     private fun getNow(): Long {

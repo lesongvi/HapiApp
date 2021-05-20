@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy
 import android.telephony.TelephonyManager
-import android.util.Log
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
@@ -21,17 +20,18 @@ import com.g5.hapiappdemo.MainActivity
 import com.g5.hapiappdemo.PreferenceConstants
 import com.g5.hapiappdemo.R
 import com.g5.hapiappdemo.activities.BaseActivity
+import com.g5.hapiappdemo.activities.ForgotPasswordActivity
 import com.g5.hapiappdemo.api.ApiClient
-import com.g5.hapiappdemo.models.StudentAuthModel
-import com.google.android.material.textfield.TextInputEditText
-import kotlinx.android.synthetic.main.activity_signin.*
-import org.json.JSONException
 import com.g5.hapiappdemo.databinding.ActivitySigninBinding
 import com.g5.hapiappdemo.extensions.PreferenceHelper.edit
 import com.g5.hapiappdemo.extensions.PreferenceHelper.securePrefs
+import com.g5.hapiappdemo.models.StudentAuthModel
+import com.google.android.material.textfield.TextInputEditText
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_signin.*
+import org.json.JSONException
 import org.json.JSONObject
 import java.io.*
 import java.util.*
@@ -41,7 +41,7 @@ class StudentAuth : BaseActivity() {
     private var studentIdIpt: TextInputEditText? = null
     private var studentPwdIpt: TextInputEditText? = null
     private var tm: TelephonyManager? = null
-    private var button_to_site: TextView? = null
+    private var btnFpwd: TextView? = null
     private var pref: SharedPreferences? = null
     private var editor: SharedPreferences.Editor? = null
     private var saveButton: Button? = null
@@ -69,7 +69,7 @@ class StudentAuth : BaseActivity() {
         studentIdIpt = binding.studentIdIpt
         studentPwdIpt = binding.studentPwdIpt
         saveButton = button_save
-        button_to_site = button_to_site
+        btnFpwd = btnForgotPassword
 
         val window: Window = this@StudentAuth.window
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
@@ -77,6 +77,10 @@ class StudentAuth : BaseActivity() {
         window.statusBarColor = ContextCompat.getColor(this@StudentAuth, R.color.MMPrimary)
 
         saveButton!!.setOnClickListener { _ -> saveData() }
+
+        btnFpwd!!.setOnClickListener { _ ->
+            startActivity(Intent(this@StudentAuth, ForgotPasswordActivity::class.java))
+        }
     }
 
     private val deviceName: String

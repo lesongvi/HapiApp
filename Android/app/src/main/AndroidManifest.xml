@@ -25,6 +25,12 @@
         android:hardwareAccelerated="true"
         android:largeHeap="true">
         <activity
+            android:name=".activities.ForgotPasswordActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/forgot_password" />
+        <activity
             android:name=".activities.NotificationActivity"
             android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity"

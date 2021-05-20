@@ -8,6 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowActivityTransitions" tools:ignore="NewApi">true</item>
         <item name="android:windowBackground">@color/colorWindow</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
     </style>
 
     <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog">
@@ -46,6 +47,11 @@
 
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/bg_splash</item>
+    </style>
+
+    <style name="WindowAnimationTransition">
+        <item name="android:windowEnterAnimation">@anim/fadein</item>
+        <item name="android:windowExitAnimation">@anim/fadeout</item>
     </style>
 
     <style name="QuickLogin" parent="Theme.AppCompat.NoActionBar">
@@ -96,12 +102,11 @@
     </style>
 
     <style name="Widget.MaterialComponents.TextInputLayout.OutlinedBox" parent="Base.Widget.MaterialComponents.TextInputLayout">
-        <item name="android:theme">
-            @style/ThemeOverlay.MaterialComponents.TextInputEditText.OutlinedBox
+        <item name="android:theme">@style/ThemeOverlay.MaterialComponents.TextInputEditText.OutlinedBox
         </item>
         <item name="boxCollapsedPaddingTop">0dp</item>
         <item name="android:editTextColor">#000</item>
-        <item name="android:textColorHint">@color/MMSecondary</item>
+        <item name="android:textColorHint">@color/MMGray</item>
         <item name="android:textColorHintInverse">@color/MMPrimary</item>
         <item name="colorAccent">@color/MMPrimary</item>
         <item name="colorControlNormal">@color/MMPrimary</item>
