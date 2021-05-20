@@ -171,8 +171,9 @@ class StudentAuth : BaseActivity() {
     }
 
     fun requestStudentInfo () {
+        showProgressDialog()
+        this.inputControl(false)
         val prefs = securePrefs(this)
-        Log.d("LESONGVI", prefs.getString(PreferenceConstants.token, null)!!)
         if (ApiClient.getInstance(this).isReady()) {
             disposable = ApiClient.getInstance(this).requestInfo(prefs.getString(PreferenceConstants.token, null)!!)
                 .subscribeOn(Schedulers.io())
@@ -200,23 +201,30 @@ class StudentAuth : BaseActivity() {
                                 result.error.toString(),
                                 Toast.LENGTH_SHORT
                             ).show()
+                            this.inputControl(true)
                         }
                         hideProgressDialog()
                     },
                     { _ ->
                         hideProgressDialog()
-                        binding.studentIdIpt.isEnabled = true
                         Toast.makeText(
                             this@StudentAuth,
                             resources.getString(R.string.error_fallback_msg),
                             Toast.LENGTH_SHORT
                         ).show()
+                        this.inputControl(true)
                     }
                 )
         }
     }
 
+    private fun inputControl (isEnabled: Boolean) {
+        binding.studentIdIpt.isEnabled = isEnabled
+        binding.studentPwdIpt.isEnabled = isEnabled
+    }
+
     private fun LoginNow(sid: String?, spd: String?) {
+        this.inputControl(false)
         val prefs = securePrefs(this)
         if (ApiClient.getInstance(this).isReady()) {
             disposable = ApiClient.getInstance(this).postLogin(sid!!, spd!!)
@@ -247,17 +255,18 @@ class StudentAuth : BaseActivity() {
                                 msg,
                                 Toast.LENGTH_SHORT
                             ).show()
+                            this.inputControl(true)
                         }
                         hideProgressDialog()
                     },
                     { _ ->
                         hideProgressDialog()
-                        binding.studentIdIpt.isEnabled = true
                         Toast.makeText(
                             this@StudentAuth,
                             resources.getString(R.string.error_fallback_msg),
                             Toast.LENGTH_SHORT
                         ).show()
+                        this.inputControl(true)
                     }
                 )
         }
