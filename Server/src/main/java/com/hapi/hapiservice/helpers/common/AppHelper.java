@@ -54,7 +54,10 @@ public class AppHelper {
         HttpClient httpClient = HttpClientBuilder.create().build();
         HttpPost actionUrl = new HttpPost(req);
 
-        actionUrl.setEntity(new StringEntity(content));
+        StringEntity input =
+                new StringEntity(content);
+        input.setContentType("application/json");
+        actionUrl.setEntity(input);
 
         HttpResponse response = httpClient.execute(actionUrl);
 
