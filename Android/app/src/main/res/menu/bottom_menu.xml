@@ -5,7 +5,7 @@
         android:icon="@drawable/ic_home"
         android:title="Trang chủ" />
     <item
-        android:id="@+id/miner_fragment"
+        android:id="@+id/support_fragment"
         android:icon="@drawable/ic_support_nav"
         android:title="Hỗ trợ" />
     <item

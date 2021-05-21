@@ -18,11 +18,7 @@ import com.g5.hapiappdemo.activities.*
 import com.g5.hapiappdemo.databinding.FragmentHomeBinding
 import com.g5.hapiappdemo.helpers.PrefUtils
 import com.github.guilhe.circularprogressview.CircularProgressView
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.InterstitialAd
-import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.*
 import com.google.android.gms.ads.reward.RewardItem
 import com.google.android.gms.ads.reward.RewardedVideoAd
 import com.google.android.gms.ads.reward.RewardedVideoAdListener
@@ -76,13 +72,13 @@ class HomeFragment : Fragment(), RewardedVideoAdListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val btn_tt = getView()!!.findViewById<CardView>(R.id.btn_thongtin)
-        val btn_xd = getView()!!.findViewById<CardView>(R.id.btn_diem)
-        val btn_lt = getView()!!.findViewById<CardView>(R.id.btn_lichthi)
-        val btn_tkb = getView()!!.findViewById<CardView>(R.id.btn_thoikhoabieu)
-        val btn_dgrl = getView()!!.findViewById<CardView>(R.id.btn_dgrl)
-        btn_dnt = getView()!!.findViewById(R.id.donateBtn)
-        cp = getView()!!.findViewById(R.id.progressBarCircle);
+        val btn_tt = requireView().findViewById<CardView>(R.id.btn_thongtin)
+        val btn_xd = requireView().findViewById<CardView>(R.id.btn_diem)
+        val btn_lt = requireView().findViewById<CardView>(R.id.btn_lichthi)
+        val btn_tkb = requireView().findViewById<CardView>(R.id.btn_thoikhoabieu)
+        val btn_dgrl = requireView().findViewById<CardView>(R.id.btn_dgrl)
+        btn_dnt = requireView().findViewById(R.id.donateBtn)
+        cp = requireView().findViewById(R.id.progressBarCircle);
 
 
         btn_tt?.setOnClickListener{
@@ -283,5 +279,11 @@ class HomeFragment : Fragment(), RewardedVideoAdListener {
 
     private enum class TimerState {
         STOPPED, RUNNING
+    }
+
+    companion object {
+        fun newInstance(): HomeFragment {
+            return HomeFragment()
+        }
     }
 }

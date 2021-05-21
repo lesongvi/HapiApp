@@ -4,12 +4,12 @@ import android.app.FragmentManager
 import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.g5.hapiappdemo.R
 import com.g5.hapiappdemo.databinding.ActivityOutAppBinding
+import com.g5.hapiappdemo.helpers.SiteBrowser
 
 class DonateActivity : BaseActivity() {
     private lateinit var binding: ActivityOutAppBinding
@@ -42,8 +42,10 @@ class DonateActivity : BaseActivity() {
         webSettings.setSupportZoom(true)
         webSettings.defaultTextEncodingName = "utf-8"
 
-        webView.webViewClient = MyBrowser()
+        webView.webViewClient = SiteBrowser()
         webView.loadUrl(getString(R.string.donate_url))
+
+        Toast.makeText(this@DonateActivity, resources.getString(R.string.donate_warning), Toast.LENGTH_SHORT).show()
     }
 
     override fun onBackPressed() {
@@ -52,13 +54,6 @@ class DonateActivity : BaseActivity() {
             fm.popBackStack()
         } else {
             super.onBackPressed()
-        }
-    }
-
-    private class MyBrowser : WebViewClient() {
-        override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-            view.loadUrl(url)
-            return true
         }
     }
 }

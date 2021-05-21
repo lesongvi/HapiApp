@@ -57,4 +57,10 @@ class SupportFragment : Fragment() {
             }
         }
     }
+
+    companion object {
+        fun newInstance(): SupportFragment {
+            return SupportFragment()
+        }
+    }
 }

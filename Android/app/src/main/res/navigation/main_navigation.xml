@@ -15,7 +15,7 @@
         android:name="com.g5.hapiappdemo.fragments.TermsConditionFragment"
         android:label="TermsFragment" />
     <fragment
-        android:id="@+id/miner_fragment"
+        android:id="@+id/support_fragment"
         android:name="com.g5.hapiappdemo.fragments.SupportFragment"
         android:label="Đào tiền ảo"
         tools:layout="@layout/fragment_support"/>

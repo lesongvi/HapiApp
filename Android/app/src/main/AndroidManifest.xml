@@ -54,7 +54,7 @@
             android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:label="@string/PointDetailPopup" />
+            android:label="@string/DetailPopup" />
         <activity
             android:name=".auth.StudentAuth"
             android:screenOrientation="portrait"

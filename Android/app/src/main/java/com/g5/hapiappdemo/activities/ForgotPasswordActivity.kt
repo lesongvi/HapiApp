@@ -3,12 +3,11 @@ package com.g5.hapiappdemo.activities
 import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.g5.hapiappdemo.R
 import com.g5.hapiappdemo.databinding.ActivityOutAppBinding
+import com.g5.hapiappdemo.helpers.SiteBrowser
 
 
 class ForgotPasswordActivity : BaseActivity() {
@@ -42,14 +41,7 @@ class ForgotPasswordActivity : BaseActivity() {
         webSettings.setSupportZoom(true)
         webSettings.defaultTextEncodingName = "utf-8"
 
-        webView.webViewClient = MyBrowser()
+        webView.webViewClient = SiteBrowser()
         webView.loadUrl(getString(R.string.forgot_password_url))
-    }
-
-    private class MyBrowser : WebViewClient() {
-        override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-            view.loadUrl(url)
-            return true
-        }
     }
 }

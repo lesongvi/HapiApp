@@ -32,7 +32,7 @@ class AccountFragment : Fragment() {
     }
 
     private fun initStudentData() {
-        val uData = ApiClient.getInstance(activity!!.applicationContext)
+        val uData = ApiClient.getInstance(requireActivity().applicationContext)
 
         binding.studentName.text = uData.getStudentName()
         binding.studentId.text = uData.getStudentID()
@@ -45,5 +45,11 @@ class AccountFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         this.initStudentData()
+    }
+
+    companion object {
+        fun newInstance(): AccountFragment {
+            return AccountFragment()
+        }
     }
 }

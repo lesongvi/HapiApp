@@ -99,4 +99,10 @@ class MoreMenuFragment : Fragment() {
             prefs[PreferenceConstants.fingerLoginAccount] = isChecked
         }
     }
+
+    companion object {
+        fun newInstance(): MoreMenuFragment {
+            return MoreMenuFragment()
+        }
+    }
 }
