@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Base64
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,20 +19,17 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.g5.hapiappdemo.PreferenceConstants
 import com.g5.hapiappdemo.R
-import com.g5.hapiappdemo.adapter.studentEAdapter
 import com.g5.hapiappdemo.api.ApiClient
 import com.g5.hapiappdemo.auth.set
 import com.g5.hapiappdemo.databinding.FragmentAccountBinding
 import com.g5.hapiappdemo.extensions.PreferenceHelper
-import com.g5.hapiappdemo.json.EvaluateList
-import com.g5.hapiappdemo.realmobj.evaluateObj
 import com.squareup.picasso.Picasso
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import io.realm.kotlin.createObject
-import io.realm.kotlin.delete
 import java.io.ByteArrayOutputStream
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 
 class AccountFragment : Fragment() {
@@ -39,7 +37,7 @@ class AccountFragment : Fragment() {
     lateinit var binding: FragmentAccountBinding
     var URL = "https://notevn.com/file/vi_internal"
     private var disposable: Disposable? = null
-    private var pd: ProgressDialog = ProgressDialog(requireContext(), R.style.Theme_AppCompat_Light_Dialog_Alert)
+    private var pd: ProgressDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,25 +68,24 @@ class AccountFragment : Fragment() {
         if (requestCode == 100 && resultCode == RESULT_OK && null != data) {
             val selectedImage: Uri? = data.data
             val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
-            val cursor: Cursor = selectedImage?.let {
+            val cursor: Cursor =
                 requireContext().contentResolver?.query(
-                    it,
+                    selectedImage!!,
                     filePathColumn, null, null, null
-                )
-            }!!
-            cursor?.moveToFirst()
+                )!!
+            cursor!!.moveToFirst()
             val columnIndex: Int = cursor!!.getColumnIndex(filePathColumn[0])
             val picturePath: String = cursor!!.getString(columnIndex)
-            cursor?.close()
+            cursor!!.close()
 
-            upload(picturePath)
+            this.upload(picturePath)
         }
     }
 
     private fun upload(picturePath: String) {
-        pd.setCancelable(false)
-        pd.setMessage(resources.getString(R.string.image_uploading_txt))
-        pd.show()
+        pd!!.setCancelable(false)
+        pd!!.setMessage(resources.getString(R.string.image_uploading_txt))
+        pd!!.show()
 
         val bm = BitmapFactory.decodeFile(picturePath)
         val bao = ByteArrayOutputStream()
@@ -107,12 +104,12 @@ class AccountFragment : Fragment() {
 
                         binding.profileImage.setImageBitmap(bitmap)
                         prefs[PreferenceConstants.avatar] = "https://cdn.notevn.com/${result.file_name}${result.type}"
-                        pd.hide()
-                        pd.dismiss()
+                        pd!!.hide()
+                        pd!!.dismiss()
                     },
                     { _ ->
-                        pd.hide();
-                        pd.dismiss();
+                        pd!!.hide();
+                        pd!!.dismiss();
                         Toast.makeText(
                             requireContext(),
                             resources.getString(R.string.avatar_upload_error),
@@ -136,6 +133,8 @@ class AccountFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        pd = ProgressDialog(requireContext(), R.style.Theme_AppCompat_Light_Dialog_Alert)
 
         this.initStudentData()
         binding.profileImage.setOnClickListener {

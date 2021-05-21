@@ -11,6 +11,7 @@ import androidx.core.view.GravityCompat
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.*
+import com.g5.hapiappdemo.activities.OnboardingActivity
 import com.g5.hapiappdemo.auth.StudentAuth
 import com.g5.hapiappdemo.databinding.ActivityMainBinding
 import com.g5.hapiappdemo.extensions.PreferenceHelper
@@ -52,6 +53,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         window.statusBarColor = ContextCompat.getColor(this@MainActivity, R.color.MMPrimary)
+
+        val preferences = getSharedPreferences(
+            resources.getString(R.string.sharedprefname),
+            MODE_PRIVATE
+        )
+
+        if (!preferences.getBoolean(resources.getString(R.string.onboarding_value), false)) {
+            val intent = Intent(this, OnboardingActivity::class.java)
+            startActivity(intent)
+            finish()
+            return
+        }
+
 
         this.initialize()
     }

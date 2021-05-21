@@ -26,6 +26,11 @@
         android:usesCleartextTraffic="true"
         android:largeHeap="true">
         <activity
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".activities.OnboardingActivity">
+        </activity>
+        <activity
             android:name=".activities.DonateActivity"
             android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity"

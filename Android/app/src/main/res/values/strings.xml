@@ -15,6 +15,7 @@
     <string name="empty_string">Dữ liệu trống!</string>
     <string name="loading_txt">Chờ một lát! Đang tải...</string>
     <string name="StudentEvalute">Đánh giá rèn luyện</string>
+    <string name="please_allow_permission">Vui lòng gán quyền và thử lại</string>
 
     <string name="image_uploading_txt">Hình ảnh đang được tải lên...</string>
 
@@ -41,6 +42,32 @@
     <string name="student_ev_chckpoint">Tài khoản của bạn đang bị khóa tạm thời, vui lòng đăng nhập lại trên https://daotao.hutech.edu.vn</string>
     <string name="forgot_password_url">http://qlcntt.hutech.edu.vn/forgot-password</string>
     <string name="avatar_upload_error">Có lỗi xảy ra trong quá trình cập nhật ảnh đại diện của bạn</string>
+    <string name="welcome_to_hapiapp">Đây là app demo nên sẽ có sai sót. Nếu phát hiện sai sót thì hãy gửi mail về team.g5@roleplay.vn giúp chúng mình nhé.</string>
+
+    <string name="permission_title">Gán quyền</string>
+    <string name="permission_detail">Vui lòng gán quyền để chúng tôi có thể phục vụ bạn tốt hơn!.</string>
+    <string name="continue_and_learn">Hãy gán quyền để ứng dụng hoạt động tốt hơn</string>
+
+    <string name="sharedprefname">hapi_r</string>
+    <string name="ondisabledpermission">Nếu ứng dụng hoạt động trong khi bị thiếu quyền, sẽ có nhiều chức năng hoạt động không đúng</string>
+    <string name="ondeniedpermission">Hãy cấp quyền cho ứng dụng để được trải nghiệm tốt nhất!</string>
+    <string name="onboarding_value">onboarding_complete</string>
+    <string name="ob_done">Hoàn thành</string>
+    <string name="ob_skip">Bỏ qua</string>
+
+    <string name="ob_support_title">Hỗ trợ</string>
+    <string name="ob_support_desc">Nếu như bạn có ý kiến về ứng dụng như muốn thêm chức năng khác hãy sử dụng trang hỗ trợ để góp ý cũng như báo lỗi cho chúng mình để cải thiện ứng dụng...</string>
+    <string name="ob_evaluate_title">Đánh giá rèn luyện</string>
+    <string name="ob_evaluate_desc">Bạn có thể xem chi tiết đánh giá rèn luyện theo từng năm học của bạn tại trang đánh giá rèn luyện</string>
+    <string name="ob_schedule_title">Thời khóa biểu</string>
+    <string name="ob_schedule_desc">Ở đây bạn có thể xem chi tiết thời khóa biểu theo từng năm học của mình</string>
+    <string name="ob_ev_title">Lịch thi</string>
+    <string name="ob_ev_desc">Bạn có thể xem chi tiết lịch thi theo năm học hiện tại của mình tại trang xem lịch thi của ứng dụng</string>
+    <string name="ob_point_title">Xem điểm</string>
+    <string name="ob_point_desc">Bạn có thể xem chi tiết điểm của tất cả năm học tại trang xem điểm của ứng dụng</string>
+    <string name="ob_announcement_title">Thông báo</string>
+    <string name="ob_announcement_desc">Bạn có thể xem thông báo mới nhất từ trường tại trang thông báo của ứng dụng</string>
+    <string name="ob_first_title">Chào mừng bạn đến với HapiApp</string>
 
     <string name="mainpage_lbl">@string/app_name</string>
     <string name="ThongTinActivity">Thông tin</string>

@@ -1,9 +1,11 @@
 package com.g5.hapiappdemo.auth
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.hardware.biometrics.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import android.os.Build
@@ -11,6 +13,7 @@ import android.os.Bundle
 import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy
 import android.telephony.TelephonyManager
+import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
@@ -19,6 +22,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.g5.hapiappdemo.MainActivity
 import com.g5.hapiappdemo.PreferenceConstants
@@ -231,7 +235,7 @@ class StudentAuth : BaseActivity() {
                 .subscribe(
                     { result ->
                         if (result.error != true) {
-                            if (prefs.getString(PreferenceConstants.token, null)!! != result.token)
+                            if (prefs.getString(PreferenceConstants.token, null) != result.token)
                                 prefs[PreferenceConstants.fingerLoginAccount] = false
                             prefs[PreferenceConstants.sid] = result.sid
                             prefs[PreferenceConstants.sname] = result.tensv
@@ -315,6 +319,25 @@ class StudentAuth : BaseActivity() {
     private fun saveData() {
         if (!validate()) return
 
+        val PERMISSION_ALL = 1
+        val PERMISSIONS = arrayOf(
+            Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.ACCESS_NOTIFICATION_POLICY,
+            Manifest.permission.ACCESS_NETWORK_STATE
+        )
+
+        if (!hasPermissions(this, *PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL)
+            Toast.makeText(
+                this,
+                resources.getString(R.string.please_allow_permission),
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
         showProgressDialog()
 
         val studentId: String = binding.studentIdIpt.text.toString()
@@ -338,6 +361,21 @@ class StudentAuth : BaseActivity() {
                 Toast.LENGTH_SHORT
             ).show()
         }
+    }
+
+    fun hasPermissions(context: Context?, vararg permissions: String?): Boolean {
+        if (context != null && permissions != null) {
+            for (permission in permissions) {
+                if (ActivityCompat.checkSelfPermission(
+                        context,
+                        permission!!
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    return false
+                }
+            }
+        }
+        return true
     }
 
     private fun validate(): Boolean {

@@ -90,6 +90,7 @@ ext {
     playServicesAds = '19.0.1'
     biometricVersion = '1.2.0-alpha03'
     picassoVersion = '2.5.2'
+    appIntroVersion = '6.1.0'
 }
 
 dependencies {
@@ -100,6 +101,7 @@ dependencies {
     })
     implementation "androidx.appcompat:appcompat:$appcompatVersion"
     implementation "androidx.core:core-ktx:$coreKtxVersion"
+
     //noinspection GradleDependency
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayoutVersion"
     implementation "androidx.annotation:annotation:$annotationVersion"
@@ -124,6 +126,7 @@ dependencies {
     implementation "com.google.android.gms:play-services-ads:$playServicesAds"
     implementation "androidx.biometric:biometric:$biometricVersion"
     implementation "com.squareup.picasso:picasso:$picassoVersion"
+    implementation "com.github.AppIntro:AppIntro:$appIntroVersion"
 
     // Kotlin
     implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
