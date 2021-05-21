@@ -6,24 +6,21 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.Window
 import android.view.WindowManager
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import androidx.core.app.NavUtils
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.*
 import com.g5.hapiappdemo.auth.StudentAuth
-import com.g5.hapiappdemo.auth.set
 import com.g5.hapiappdemo.databinding.ActivityMainBinding
-import com.g5.hapiappdemo.databinding.NavHeadermainBinding
 import com.g5.hapiappdemo.extensions.PreferenceHelper
 import com.google.android.material.navigation.NavigationView
 import io.realm.Realm
-import io.realm.RealmConfiguration
 import kotlinx.android.synthetic.main.app_bar_main.view.*
 import java.io.*
+
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 

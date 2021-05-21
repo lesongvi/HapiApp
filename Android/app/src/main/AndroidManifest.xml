@@ -23,7 +23,14 @@
         android:supportsRtl="false"
         android:theme="@style/AppTheme"
         android:hardwareAccelerated="true"
+        android:usesCleartextTraffic="true"
         android:largeHeap="true">
+        <activity
+            android:name=".activities.DonateActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/donate_title" />
         <activity
             android:name=".activities.ForgotPasswordActivity"
             android:screenOrientation="portrait"

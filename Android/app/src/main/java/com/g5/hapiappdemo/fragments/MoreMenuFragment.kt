@@ -13,6 +13,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.g5.hapiappdemo.PreferenceConstants
 import com.g5.hapiappdemo.R
+import com.g5.hapiappdemo.activities.DonateActivity
 import com.g5.hapiappdemo.api.ApiClient
 import com.g5.hapiappdemo.auth.StudentAuth
 import com.g5.hapiappdemo.auth.set
@@ -84,8 +85,7 @@ class MoreMenuFragment : Fragment() {
 
         donateBtn.setOnClickListener{
             this.requireActivity().run{
-                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://donate.rqn9.com"))
-                startActivity(browserIntent)
+                this.startActivity(Intent(this, DonateActivity::class.java))
             }
         }
 

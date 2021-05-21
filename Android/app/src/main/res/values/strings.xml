@@ -84,4 +84,7 @@
     <string name="home_btn_lt">Lịch thi</string>
     <string name="home_btn_tkb">Thời khóa biểu</string>
     <string name="home_btn_dgrl">Đánh giá rèn luyện</string>
+
+    <string name="donate_url">https://donate.error.vn</string>
+    <string name="donate_title">Donate</string>
 </resources>

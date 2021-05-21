@@ -3,6 +3,8 @@
 Usecase 27/03/2021  
   
 ![usecase_diagram.png](https://github.com/lesongvi/HapiApp/raw/main/images/usecase_diagram.png)
+![ERD_diagram.png](https://github.com/lesongvi/HapiApp/raw/main/images/ERD_diagram.png)
+![ContextDiagram.png](https://github.com/lesongvi/HapiApp/raw/main/images/ContextDiagram.png)
 
 ## API Documentation
 API prefix: **/api/v1**
