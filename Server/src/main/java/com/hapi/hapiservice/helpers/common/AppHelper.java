@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 public class AppHelper {
@@ -37,7 +38,7 @@ public class AppHelper {
     public String requestAvatarModify(String base64)  {
         CloudAResponse objResponse = null;
         try {
-            InputStream instream = this.sRequest(this.definedStr.notevnCloudA1_PRODUCTION(), "{\"base64\":\"" + base64 + "\", \"ImageName\": \"hapi_noname\"}");
+            InputStream instream = this.sRequest(this.definedStr.notevnCloudA1_PRODUCTION(), "{\"base64\":\"" + URLEncoder.encode(base64, StandardCharsets.UTF_8.toString()) + "\", \"ImageName\": \"hapi_noname\"}");
             objResponse = new Gson().fromJson(IOUtils.toString(instream, StandardCharsets.UTF_8.name()), CloudAResponse.class);
             if (objResponse != null && objResponse.getType().contains(".png")) {
                 this.studentService.updateStudentAvatar("https://cdn.notevn.com/" + objResponse.getFile_name() + objResponse.getType(), this.token);
