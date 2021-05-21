@@ -1,6 +1,6 @@
 # HapiApp
 ## Phát triển
-Usecase 27/03/2021  
+Usecase diagram, ERD diagram, Context diagram
   
 ![usecase_diagram.png](https://github.com/lesongvi/HapiApp/raw/main/images/usecase_diagram.png)
 ![ERD_diagram.png](https://github.com/lesongvi/HapiApp/raw/main/images/ERD_diagram.png)
@@ -74,3 +74,4 @@ Method: GET
 Trường hợp có thể xảy ra:
 1. Kiểm tra lại thông tin sinh viên có sai sót.
 1. Server chính (server nhà trường) đang bảo trì để cập nhật thông tin sinh viên, thử lại sau 15 phút.
+1. Sinh viên bảo lưu tài khoản hoặc đang bị khóa vì lý do bảo mật
