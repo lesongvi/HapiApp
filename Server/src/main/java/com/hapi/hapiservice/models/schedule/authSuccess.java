@@ -15,6 +15,8 @@ public class authSuccess {
 
     final private String sdt2;
 
+    final private String avatar;
+
     public authSuccess(
             boolean error,
             String tensv,
@@ -22,7 +24,8 @@ public class authSuccess {
             String email,
             String sid,
             String sdt1,
-            String sdt2
+            String sdt2,
+            String avatar
     ) {
         this.error = error;
         this.tensv = tensv;
@@ -31,5 +34,6 @@ public class authSuccess {
         this.sid = sid;
         this.sdt1 = sdt1;
         this.sdt2 = sdt2;
+        this.avatar = avatar;
     }
 }

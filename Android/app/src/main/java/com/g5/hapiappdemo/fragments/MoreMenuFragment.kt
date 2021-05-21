@@ -70,6 +70,7 @@ class MoreMenuFragment : Fragment() {
             prefs[PreferenceConstants.sdt1] = null
             prefs[PreferenceConstants.sdt2] = null
             prefs[PreferenceConstants.loggedIn] = false
+            prefs[PreferenceConstants.avatar] = null
             this.requireActivity().run{
                 this.startActivity(Intent(this, StudentAuth::class.java))
                 finish()

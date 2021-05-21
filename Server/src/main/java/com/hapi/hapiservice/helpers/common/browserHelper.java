@@ -67,7 +67,7 @@ public class browserHelper extends stuffHelper {
 
     public String conAuth(boolean isSaved) throws MalformedURLException {
         Gson gson = new Gson();
-        authSuccess response = new authSuccess(true, "", "", "", "", "", "");
+        authSuccess response = new authSuccess(true, "", "", "", "", "", "", "");
 
         if ((this.studentId + "").length() != 10)
             return gson.toJson(new errorResponse(true, "Tài khoản sinh viên không hợp lệ", 404));
@@ -84,7 +84,7 @@ public class browserHelper extends stuffHelper {
                 stdnt.setSdt(2, studntMP.get(2));
                 Students stdunt = studentService.saveAndGetStudent(stdnt);
 
-                response = new authSuccess(false, stdunt.getName(), stdunt.getToken(), stdunt.getEmail(), stdunt.getSid() + "", stdunt.getSdt(1), stdunt.getSdt(2));
+                response = new authSuccess(false, stdunt.getName(), stdunt.getToken(), stdunt.getEmail(), stdunt.getSid() + "", stdunt.getSdt(1), stdunt.getSdt(2), stdunt.getAvatar());
             } else {
                 String genToken = this.generateStdntToken();
                 Students stdnt = new Students();
@@ -94,10 +94,11 @@ public class browserHelper extends stuffHelper {
                 stdnt.setEmail(studntMP.get(0));
                 stdnt.setSdt(1, studntMP.get(1));
                 stdnt.setSdt(2, studntMP.get(2));
+                stdnt.setAvatar("https://cdn.notevn.com/Lyfq3HJj9.png");
                 stdnt.setToken(genToken);
                 studentRepository.save(stdnt);
 
-                response = new authSuccess(false, this.getSName(), genToken, studntMP.get(0), "" + this.studentId, studntMP.get(1), studntMP.get(2));
+                response = new authSuccess(false, this.getSName(), genToken, studntMP.get(0), "" + this.studentId, studntMP.get(1), studntMP.get(2), "https://cdn.notevn.com/Lyfq3HJj9.png");
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -109,12 +110,12 @@ public class browserHelper extends stuffHelper {
 
     public String reAuth() throws MalformedURLException {
         Gson gson = new Gson();
-        authSuccess response = new authSuccess(true, "", "", "", "", "", "");
+        authSuccess response = new authSuccess(true, "", "", "", "", "", "", "");
 
         try {
             Students stdunt = studentService.getStudentByToken(token);
 
-            response = new authSuccess(false, stdunt.getName(), stdunt.getToken(), stdunt.getEmail(), stdunt.getSid() + "", stdunt.getSdt(1), stdunt.getSdt(2));
+            response = new authSuccess(false, stdunt.getName(), stdunt.getToken(), stdunt.getEmail(), stdunt.getSid() + "", stdunt.getSdt(1), stdunt.getSdt(2), stdunt.getAvatar());
         } catch (Exception e) {
             logger.error(e.getMessage());
             return gson.toJson(new errorResponse(true, "Có lỗi đã xảy ra!", 404));

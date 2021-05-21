@@ -8,5 +8,6 @@ data class AuthJson(
     val email: String?,
     val sdt1: String?,
     val sdt2: String?,
-    val message: String?
+    val message: String?,
+    val avatar: String?
 )

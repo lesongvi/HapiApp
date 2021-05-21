@@ -39,4 +39,12 @@ public class StudentService {
 
         return this.getStudent(stdnt.getSid());
     }
+
+    public Students updateStudentAvatar(String avatar, String token) {
+        Students _stdnt = studentRepository.findByToken(token);
+        _stdnt.setAvatar(avatar);
+        this.save(_stdnt);
+
+        return this.getStudentByToken(token);
+    }
 }

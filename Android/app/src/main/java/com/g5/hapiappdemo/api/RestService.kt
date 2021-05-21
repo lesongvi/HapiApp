@@ -102,4 +102,11 @@ interface RestService {
 
     @GET("api/v1/snapshot/notifications")
     fun viewNotifications(): Observable<List<NotificationList>>
+
+    @FormUrlEncoded
+    @POST("api/v1/app/avatar/modify")
+    fun uploadAvatar(
+        @Field("token") token: String,
+        @Field("base64") base64: String
+    ): Observable<AvatarModify>
 }

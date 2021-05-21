@@ -89,6 +89,7 @@ ext {
     circularProgressView = '1.2.1'
     playServicesAds = '19.0.1'
     biometricVersion = '1.2.0-alpha03'
+    picassoVersion = '2.5.2'
 }
 
 dependencies {
@@ -122,6 +123,7 @@ dependencies {
     implementation "com.github.guilhe:circular-progress-view:$circularProgressView"
     implementation "com.google.android.gms:play-services-ads:$playServicesAds"
     implementation "androidx.biometric:biometric:$biometricVersion"
+    implementation "com.squareup.picasso:picasso:$picassoVersion"
 
     // Kotlin
     implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"

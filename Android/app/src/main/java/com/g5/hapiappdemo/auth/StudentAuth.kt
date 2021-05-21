@@ -184,6 +184,7 @@ class StudentAuth : BaseActivity() {
                             prefs[PreferenceConstants.semail] = result.email
                             prefs[PreferenceConstants.sdt1] = result.sdt1
                             prefs[PreferenceConstants.sdt2] = result.sdt2
+                            prefs[PreferenceConstants.avatar] = result.avatar
                             prefs[PreferenceConstants.loggedIn] = true
 
                             val intent = Intent(this, MainActivity::class.java)
@@ -230,7 +231,7 @@ class StudentAuth : BaseActivity() {
                 .subscribe(
                     { result ->
                         if (result.error != true) {
-                            if (ApiClient.getInstance(this).getToken() != result.token)
+                            if (prefs.getString(PreferenceConstants.token, null)!! != result.token)
                                 prefs[PreferenceConstants.fingerLoginAccount] = false
                             prefs[PreferenceConstants.sid] = result.sid
                             prefs[PreferenceConstants.sname] = result.tensv
@@ -238,6 +239,7 @@ class StudentAuth : BaseActivity() {
                             prefs[PreferenceConstants.semail] = result.email
                             prefs[PreferenceConstants.sdt1] = result.sdt1
                             prefs[PreferenceConstants.sdt2] = result.sdt2
+                            prefs[PreferenceConstants.avatar] = result.avatar
                             prefs[PreferenceConstants.loggedIn] = true
 
                             val intent = Intent(this, MainActivity::class.java)

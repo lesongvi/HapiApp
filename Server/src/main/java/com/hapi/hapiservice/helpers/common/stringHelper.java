@@ -70,6 +70,7 @@ public class stringHelper {
     final private String examSchePageUrl = this.defaultPageWithUppercaseD + "?page=xemlichthi";
     final private String examTableId = "ctl00_ContentPlaceHolder1_ctl00_gvXem";
     final private String examValuPattern = "<span [^>]*>(.*?)<\\/span>";
+    final private String notevnCloudA1 = "https://notevn.com/file/hapi_internal.htm";
 
     public String defaultPage_PRODUCTION() {
         return this.defaultPage;
@@ -325,5 +326,9 @@ public class stringHelper {
 
     public String examValuPattern_PRODUCTION() {
         return this.examValuPattern;
+    }
+
+    public String notevnCloudA1_PRODUCTION() {
+        return this.notevnCloudA1;
     }
 }

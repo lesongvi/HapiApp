@@ -19,6 +19,8 @@ public class Students {
 
     private String token;
 
+    private String avatar;
+
     @Column(nullable = false)
     private String pwd;
 
@@ -65,6 +67,14 @@ public class Students {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public String getPwd() {

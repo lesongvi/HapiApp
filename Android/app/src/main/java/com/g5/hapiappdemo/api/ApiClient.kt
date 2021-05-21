@@ -36,7 +36,7 @@ class ApiClient private constructor(context: Context) {
 
     companion object : SingletonHolder<ApiClient, Context>(::ApiClient)
 
-    fun getToken(): String {
+    private fun getToken(): String {
         return prefs?.getString(PreferenceConstants.token, "") ?: ""
     }
 
@@ -61,7 +61,11 @@ class ApiClient private constructor(context: Context) {
     }
 
     fun isFingerAuth(): Boolean {
-        return prefs?.getBoolean(PreferenceConstants.fingerLoginAccount, false) ?: true
+        return prefs?.getBoolean(PreferenceConstants.fingerLoginAccount, false) ?: false
+    }
+
+    fun getAvatar(): String {
+        return prefs?.getString(PreferenceConstants.avatar, "https://cdn.notevn.com/Lyfq3HJj9.png") ?: "https://cdn.notevn.com/Lyfq3HJj9.png"
     }
 
     fun getTheme(): String {
@@ -143,4 +147,8 @@ class ApiClient private constructor(context: Context) {
         return restService!!.viewNotifications()
     }
     // end region
+
+    fun uploadAvatar(base64: String): Observable<AvatarModify> {
+        return restService!!.uploadAvatar(getToken(), base64)
+    }
 }

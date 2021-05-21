@@ -15,6 +15,8 @@ public class routeHelper {
 
     public final static String studentPath = apiPrefix + "student/";
 
+    public final static String appPath = apiPrefix + "app/";
+
     public final static String reautheticate = studentPath + "info";
 
     public final static String getSemester = schedulePath + "semester";
@@ -64,4 +66,8 @@ public class routeHelper {
     public final static String takeARest = taRest + "request";
 
     public final static String restList = taRest + "list";
+
+    public final static String avatar = appPath + "avatar/";
+
+    public final static String avatarModify = avatar + "modify";
 }

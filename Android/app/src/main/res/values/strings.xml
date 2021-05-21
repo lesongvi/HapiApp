@@ -16,6 +16,8 @@
     <string name="loading_txt">Chờ một lát! Đang tải...</string>
     <string name="StudentEvalute">Đánh giá rèn luyện</string>
 
+    <string name="image_uploading_txt">Hình ảnh đang được tải lên...</string>
+
     <string name="donate_warning">Donate này sử dụng sức tính toán của thiết bị chứ không mất khoản phí nào khác.</string>
 
     <string name="home_btn_tb">Thông báo</string>
@@ -38,6 +40,7 @@
 
     <string name="student_ev_chckpoint">Tài khoản của bạn đang bị khóa tạm thời, vui lòng đăng nhập lại trên https://daotao.hutech.edu.vn</string>
     <string name="forgot_password_url">http://qlcntt.hutech.edu.vn/forgot-password</string>
+    <string name="avatar_upload_error">Có lỗi xảy ra trong quá trình cập nhật ảnh đại diện của bạn</string>
 
     <string name="mainpage_lbl">@string/app_name</string>
     <string name="ThongTinActivity">Thông tin</string>
