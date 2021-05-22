@@ -11,16 +11,13 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.g5.hapiappdemo.R
 import com.g5.hapiappdemo.adapter.examSAdapter
-import com.g5.hapiappdemo.adapter.semesterDAdapter
 import com.g5.hapiappdemo.api.ApiClient
 import com.g5.hapiappdemo.databinding.ActivityLichThiBinding
 import com.g5.hapiappdemo.json.ExamScheDetail
-import com.g5.hapiappdemo.json.SemesterScheDetail
 import com.g5.hapiappdemo.realmobj.examSObj
-import com.g5.hapiappdemo.realmobj.semesterSDObj
-import com.g5.hapiappdemo.realmobj.semesterSObj
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayout
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -42,6 +39,7 @@ class LichThi : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
     private var adapter: RecyclerView.Adapter<*>? = null
     private var mRecyclerViewItems: ArrayList<ExamScheDetail> = ArrayList()
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
+    private var shimmerFrameLayout: ShimmerFrameLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +47,8 @@ class LichThi : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
         val view = binding.root
         setContentView(view)
 
-        showProgressDialog()
+        shimmerFrameLayout = binding.phoderlayout
+        shimmerFrameLayout!!.startShimmer()
 
         realm = Realm.getDefaultInstance()
 
@@ -82,11 +81,14 @@ class LichThi : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
             for (exsc in esd) {
                 mRecyclerViewItems.add(ExamScheDetail(exsc.mamon, exsc.tenmon, exsc.nhomthi, exsc.tothi, exsc.ngaythi, exsc.giobd, exsc.sophut, exsc.phong, exsc.ghichu))
             }
+            shimmerFrameLayout!!.stopShimmer()
+            shimmerFrameLayout!!.visibility = View.GONE
+            binding.empty.visibility = View.INVISIBLE
+            binding.ltListView.visibility = View.VISIBLE
 
             adapter = examSAdapter(this, mRecyclerViewItems)
             mRecyclerView!!.adapter = adapter
 
-            hideProgressDialog()
         }
     }
 
@@ -118,19 +120,25 @@ class LichThi : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
                             }
                         }
 
+                        binding.empty.visibility = View.INVISIBLE
+                        binding.ltListView.visibility = View.VISIBLE
                         adapter = examSAdapter(this, mRecyclerViewItems)
                         mRecyclerView!!.adapter = adapter
 
-                        hideProgressDialog()
+                        shimmerFrameLayout!!.stopShimmer()
+                        shimmerFrameLayout!!.visibility = View.GONE
 
                     } else {
-                        hideProgressDialog()
+                        binding.ltListView.visibility = View.INVISIBLE
+                        shimmerFrameLayout!!.stopShimmer()
+                        shimmerFrameLayout!!.visibility = View.GONE
                         binding.empty.visibility = View.VISIBLE
                     }
                     swipeRefreshLayout!!.isRefreshing = false;
                 },
                 { _ ->
-                    hideProgressDialog()
+                    shimmerFrameLayout!!.stopShimmer()
+                    shimmerFrameLayout!!.visibility = View.GONE
                     Toast.makeText(
                         this@LichThi,
                         resources.getString(R.string.retrieve_data_failed),

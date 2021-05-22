@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.g5.hapiappdemo.R
 import com.g5.hapiappdemo.adapter.NotifyAdapter
 import com.g5.hapiappdemo.api.ApiClient
@@ -37,6 +38,7 @@ class NotificationActivity : BaseActivity(), NavigationView.OnNavigationItemSele
     private var adapter: RecyclerView.Adapter<*>? = null
     private var mRecyclerViewItems: ArrayList<NotificationList> = ArrayList()
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
+    private var shimmerFrameLayout: ShimmerFrameLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +51,8 @@ class NotificationActivity : BaseActivity(), NavigationView.OnNavigationItemSele
         supportActionBar!!.title = resources.getString(R.string.home_btn_tb)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        showProgressDialog()
+        shimmerFrameLayout = binding.phoderlayout
+        shimmerFrameLayout!!.startShimmer()
 
         realm = Realm.getDefaultInstance()
 
@@ -77,11 +80,12 @@ class NotificationActivity : BaseActivity(), NavigationView.OnNavigationItemSele
             for (notify in results) {
                 mRecyclerViewItems.add(NotificationList(notify.notification, notify.unixtime))
             }
+            binding.tbListView.visibility = View.VISIBLE
+            shimmerFrameLayout!!.stopShimmer()
+            shimmerFrameLayout!!.visibility = View.GONE
 
             adapter = NotifyAdapter(this, mRecyclerViewItems)
             mRecyclerView!!.adapter = adapter
-
-            hideProgressDialog()
         }
     }
 
@@ -106,19 +110,24 @@ class NotificationActivity : BaseActivity(), NavigationView.OnNavigationItemSele
                             }
                         }
 
+                        binding.tbListView.visibility = View.VISIBLE
+                        shimmerFrameLayout!!.stopShimmer()
+                        shimmerFrameLayout!!.visibility = View.GONE
+
                         adapter = NotifyAdapter(this, mRecyclerViewItems)
                         mRecyclerView!!.adapter = adapter
 
-                        hideProgressDialog()
-
                     } else {
-                        hideProgressDialog()
+                        binding.tbListView.visibility = View.GONE
+                        shimmerFrameLayout!!.stopShimmer()
+                        shimmerFrameLayout!!.visibility = View.GONE
                         binding.empty.visibility = View.VISIBLE
                     }
                     swipeRefreshLayout!!.isRefreshing = false;
                 },
                 { _ ->
-                    hideProgressDialog()
+                    shimmerFrameLayout!!.stopShimmer()
+                    shimmerFrameLayout!!.visibility = View.GONE
                     Toast.makeText(
                         this@NotificationActivity,
                         resources.getString(R.string.retrieve_data_failed),

@@ -18,6 +18,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.g5.hapiappdemo.R
 import com.g5.hapiappdemo.adapter.NotifyAdapter
 import com.g5.hapiappdemo.adapter.pointViewAdapter
@@ -54,6 +55,7 @@ class XemDiem : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
     private var currentSemesterYear: String? = null
     lateinit var list: Sequence<studentPoint>
     var gson = Gson()
+    private var shimmerFrameLayout: ShimmerFrameLayout? = null
 
     inline fun <reified T> Gson.fromJson(json: String) = fromJson<T>(json, object : TypeToken<T>() {}.type)
 
@@ -63,7 +65,8 @@ class XemDiem : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
         val view = binding.root
         setContentView(view)
 
-        showProgressDialog()
+        shimmerFrameLayout = binding.phoderlayout
+        shimmerFrameLayout!!.startShimmer()
 
         realm = Realm.getDefaultInstance()
 
@@ -115,14 +118,13 @@ class XemDiem : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
                 mRecyclerViewItems.add(PointJson(notify.mamon, notify.tenmon, notify.tinchi, notify.ptkt, notify.ptthi, notify.diemkt1, notify.diemkt2, notify.thil1, notify.tkch, notify.tk4))
             }
 
+            binding.empty.visibility = View.GONE
+            shimmerFrameLayout!!.stopShimmer()
+            shimmerFrameLayout!!.visibility = View.GONE
             binding.pointListView.visibility = View.VISIBLE
 
             adapter = pointViewAdapter(this, mRecyclerViewItems)
             mRecyclerView!!.adapter = adapter
-
-            hideProgressDialog()
-
-            binding.empty.visibility = View.GONE
         }
     }
 
@@ -149,7 +151,6 @@ class XemDiem : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
 
                             this.initPointSpinner(selectorAvailable, result, false)
                         } else {
-                            hideProgressDialog()
                             Toast.makeText(
                                 this@XemDiem,
                                 resources.getString(R.string.retrieve_data_failed),
@@ -158,7 +159,6 @@ class XemDiem : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
                         }
                     },
                     { _ ->
-                        hideProgressDialog()
                         Toast.makeText(
                             this@XemDiem,
                             resources.getString(R.string.retrieve_data_failed),
@@ -189,7 +189,10 @@ class XemDiem : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
                 position: Int,
                 id: Long
             ) {
-                showProgressDialog()
+                binding.pointListView.visibility = View.GONE
+                binding.phoderlayout.visibility = View.VISIBLE
+                shimmerFrameLayout = binding.phoderlayout
+                shimmerFrameLayout!!.startShimmer()
                 if (!isCache)
                     getSemesterPointData(result[position].hocky, result[position].namhoc)
                 else
@@ -230,23 +233,25 @@ class XemDiem : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
                             }
                         }
 
+                        binding.empty.visibility = View.GONE
+                        shimmerFrameLayout!!.stopShimmer()
+                        shimmerFrameLayout!!.visibility = View.GONE
                         binding.pointListView.visibility = View.VISIBLE
 
                         adapter = pointViewAdapter(this, mRecyclerViewItems)
                         mRecyclerView!!.adapter = adapter
 
-                        hideProgressDialog()
-
-                        binding.empty.visibility = View.GONE
                     } else {
                         binding.pointListView.visibility = View.GONE
-                        hideProgressDialog()
+                        shimmerFrameLayout!!.stopShimmer()
+                        shimmerFrameLayout!!.visibility = View.GONE
                         binding.empty.visibility = View.VISIBLE
                     }
                     swipeRefreshLayout!!.isRefreshing = false;
                 },
                 { _ ->
-                    hideProgressDialog()
+                    shimmerFrameLayout!!.stopShimmer()
+                    shimmerFrameLayout!!.visibility = View.GONE
                     Toast.makeText(
                         this@XemDiem,
                         resources.getString(R.string.retrieve_data_failed),

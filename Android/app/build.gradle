@@ -91,6 +91,7 @@ ext {
     biometricVersion = '1.2.0-alpha03'
     picassoVersion = '2.5.2'
     appIntroVersion = '6.1.0'
+    shimmerVersion = '0.5.0'
 }
 
 dependencies {
@@ -127,6 +128,7 @@ dependencies {
     implementation "androidx.biometric:biometric:$biometricVersion"
     implementation "com.squareup.picasso:picasso:$picassoVersion"
     implementation "com.github.AppIntro:AppIntro:$appIntroVersion"
+    implementation "com.facebook.shimmer:shimmer:$shimmerVersion"
 
     // Kotlin
     implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"

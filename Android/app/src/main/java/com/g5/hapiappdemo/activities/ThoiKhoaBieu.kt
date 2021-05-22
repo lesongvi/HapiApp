@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.g5.hapiappdemo.R
 import com.g5.hapiappdemo.adapter.pointViewAdapter
 import com.g5.hapiappdemo.adapter.semesterDAdapter
@@ -42,6 +43,7 @@ class ThoiKhoaBieu : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var currentSemesterId: String? = null;
     private var currentsemesterWeek: String? = null;
+    private var shimmerFrameLayout: ShimmerFrameLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +51,8 @@ class ThoiKhoaBieu : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         val view = binding.root
         setContentView(view)
 
-        showProgressDialog()
+        shimmerFrameLayout = binding.phoderlayout
+        shimmerFrameLayout!!.startShimmer()
 
         realm = Realm.getDefaultInstance()
 
@@ -113,7 +116,8 @@ class ThoiKhoaBieu : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
                             this.initSemesterSpinner(selectorAvailable, result, false)
                         } else {
-                            hideProgressDialog()
+                            shimmerFrameLayout!!.stopShimmer()
+                            shimmerFrameLayout!!.visibility = View.GONE
                             Toast.makeText(
                                 this@ThoiKhoaBieu,
                                 resources.getString(R.string.retrieve_data_failed),
@@ -121,8 +125,9 @@ class ThoiKhoaBieu : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                             ).show()
                         }
                     },
-                    { error ->
-                        hideProgressDialog()
+                    { _ ->
+                        shimmerFrameLayout!!.stopShimmer()
+                        shimmerFrameLayout!!.visibility = View.GONE
                         Toast.makeText(
                             this@ThoiKhoaBieu,
                             resources.getString(R.string.retrieve_data_failed),
@@ -153,7 +158,11 @@ class ThoiKhoaBieu : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 position: Int,
                 id: Long
             ) {
-                showProgressDialog()
+                binding.tkbListView.visibility = View.GONE
+                binding.empty.visibility = View.GONE
+                shimmerFrameLayout = binding.phoderlayout
+                shimmerFrameLayout!!.visibility = View.VISIBLE
+                shimmerFrameLayout!!.startShimmer()
                 if (!isCache)
                 {
                     result[position].semesterId?.let { getSemesterScheW(it) }
@@ -185,7 +194,6 @@ class ThoiKhoaBieu : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             )
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
         binding.daydetail.visibility = View.VISIBLE
-        binding.empty.visibility = View.GONE
 
         val spinner = findViewById<Spinner>(R.id.daydetail)
         spinner.adapter = adapter
@@ -196,7 +204,11 @@ class ThoiKhoaBieu : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 position: Int,
                 id: Long
             ) {
-                showProgressDialog()
+                binding.tkbListView.visibility = View.GONE
+                binding.empty.visibility = View.GONE
+                shimmerFrameLayout = binding.phoderlayout
+                shimmerFrameLayout!!.visibility = View.VISIBLE
+                shimmerFrameLayout!!.startShimmer()
                 if (!isCache) {
                     getSemesterScheDetail(semesterId, result[position].tenxacdinh!!)
                 }
@@ -235,7 +247,9 @@ class ThoiKhoaBieu : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
                         this.getSemesterScheWCache(selectorAvailable, result, false, semesterId)
                     } else {
-                        hideProgressDialog()
+                        binding.tkbListView.visibility = View.GONE
+                        shimmerFrameLayout!!.stopShimmer()
+                        shimmerFrameLayout!!.visibility = View.GONE
                         Toast.makeText(
                             this@ThoiKhoaBieu,
                             resources.getString(R.string.retrieve_data_failed),
@@ -262,11 +276,13 @@ class ThoiKhoaBieu : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 mRecyclerViewItems.add(SemesterScheDetail(sdetail.lop, sdetail.mon, sdetail.ngaybd, sdetail.ngaykt, sdetail.nhom, sdetail.phong, sdetail.sotiet, sdetail.thu, sdetail.tietbatdau, sdetail.tinchi, sdetail.giangvien, sdetail.un_c1, sdetail.un_c2))
             }
 
+            shimmerFrameLayout!!.stopShimmer()
+            shimmerFrameLayout!!.visibility = View.GONE
+            binding.empty.visibility = View.GONE
+            binding.tkbListView.visibility = View.VISIBLE
+
             adapter = semesterDAdapter(this, mRecyclerViewItems)
             mRecyclerView!!.adapter = adapter
-
-            hideProgressDialog()
-            binding.tkbListView.visibility = View.VISIBLE
         }
     }
 
@@ -303,15 +319,17 @@ class ThoiKhoaBieu : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                             }
                         }
 
+                        shimmerFrameLayout!!.stopShimmer()
+                        shimmerFrameLayout!!.visibility = View.GONE
+                        binding.empty.visibility = View.GONE
+                        binding.tkbListView.visibility = View.VISIBLE
+
                         adapter = semesterDAdapter(this, mRecyclerViewItems)
                         mRecyclerView!!.adapter = adapter
-
-                        hideProgressDialog()
-                        binding.tkbListView.visibility = View.VISIBLE
-                        binding.empty.visibility = View.GONE
                     } else {
                         binding.tkbListView.visibility = View.GONE
-                        hideProgressDialog()
+                        shimmerFrameLayout!!.stopShimmer()
+                        shimmerFrameLayout!!.visibility = View.GONE
                         binding.empty.visibility = View.VISIBLE
                     }
                     swipeRefreshLayout!!.isRefreshing = false;

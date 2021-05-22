@@ -108,8 +108,8 @@ class AccountFragment : Fragment() {
                         pd!!.dismiss()
                     },
                     { _ ->
-                        pd!!.hide();
-                        pd!!.dismiss();
+                        pd!!.hide()
+                        pd!!.dismiss()
                         Toast.makeText(
                             requireContext(),
                             resources.getString(R.string.avatar_upload_error),

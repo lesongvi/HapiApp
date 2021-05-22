@@ -16,6 +16,7 @@
     <string name="loading_txt">Chờ một lát! Đang tải...</string>
     <string name="StudentEvalute">Đánh giá rèn luyện</string>
     <string name="please_allow_permission">Vui lòng gán quyền và thử lại</string>
+    <string name="logout_loading">Đang đăng xuất khỏi ứng dụng...</string>
 
     <string name="image_uploading_txt">Hình ảnh đang được tải lên...</string>
 

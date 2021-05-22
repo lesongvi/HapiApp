@@ -1,5 +1,6 @@
 package com.g5.hapiappdemo.fragments
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -27,6 +28,7 @@ class MoreMenuFragment : Fragment() {
 
     lateinit var binding: FragmentMoreMenuBinding
     private lateinit var realm: Realm
+    private var pd: ProgressDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +43,8 @@ class MoreMenuFragment : Fragment() {
             inflater,
             R.layout.fragment_more_menu, container, false
         )
+        pd = ProgressDialog(requireContext(), R.style.Theme_AppCompat_Light_Dialog_Alert)
+
         return binding.root
     }
 
@@ -55,6 +59,10 @@ class MoreMenuFragment : Fragment() {
         fingerSwh.isChecked = ApiClient.getInstance(requireContext()).isFingerAuth()
 
         logoutBtn.setOnClickListener {
+            pd!!.setCancelable(false)
+            pd!!.setMessage(resources.getString(R.string.logout_loading))
+            pd!!.show()
+
             realm = Realm.getDefaultInstance()
 
             realm.executeTransaction { realm ->
@@ -72,6 +80,8 @@ class MoreMenuFragment : Fragment() {
             prefs[PreferenceConstants.loggedIn] = false
             prefs[PreferenceConstants.avatar] = null
             this.requireActivity().run{
+                pd!!.hide()
+                pd!!.dismiss()
                 this.startActivity(Intent(this, StudentAuth::class.java))
                 finish()
             }

@@ -9,19 +9,16 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.g5.hapiappdemo.R
-import com.g5.hapiappdemo.adapter.examSAdapter
 import com.g5.hapiappdemo.adapter.studentEAdapter
 import com.g5.hapiappdemo.api.ApiClient
 import com.g5.hapiappdemo.databinding.ActivitySevaluateBinding
 import com.g5.hapiappdemo.json.EvaluateList
-import com.g5.hapiappdemo.json.ExamScheDetail
 import com.g5.hapiappdemo.realmobj.evaluateObj
-import com.g5.hapiappdemo.realmobj.examSObj
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -43,6 +40,7 @@ class StudentEvalute : BaseActivity(), NavigationView.OnNavigationItemSelectedLi
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     lateinit var list: Sequence<EvaluateList>
     var gson = Gson()
+    private var shimmerFrameLayout: ShimmerFrameLayout? = null
 
     inline fun <reified T> Gson.fromJson(json: String) = fromJson<T>(json, object : TypeToken<T>() {}.type)
 
@@ -52,7 +50,8 @@ class StudentEvalute : BaseActivity(), NavigationView.OnNavigationItemSelectedLi
         val view = binding.root
         setContentView(view)
 
-        showProgressDialog()
+        shimmerFrameLayout = binding.phoderlayout
+        shimmerFrameLayout!!.startShimmer()
 
         realm = Realm.getDefaultInstance()
 
@@ -90,11 +89,13 @@ class StudentEvalute : BaseActivity(), NavigationView.OnNavigationItemSelectedLi
             for (evoi in evo) {
                 mRecyclerViewItems.add(EvaluateList(evoi.diem_ca_nhan, evoi.diem_khoa, evoi.diem_lop, evoi.dot_khao_sat_id, evoi.hienThiDiemTong, evoi.hoc_ky, evoi.nam_hoc, evoi.ngay_bd_sinhvien, evoi.ngay_kt_sinhvien, evoi.phieu_danh_gia_id, evoi.trang_thai_duyet, evoi.xep_loai))
             }
+            shimmerFrameLayout!!.stopShimmer()
+            shimmerFrameLayout!!.visibility = View.GONE
+            binding.evaluateListView.visibility = View.VISIBLE
 
             adapter = studentEAdapter(this, mRecyclerViewItems)
             mRecyclerView!!.adapter = adapter
 
-            hideProgressDialog()
         }
     }
 
@@ -130,27 +131,31 @@ class StudentEvalute : BaseActivity(), NavigationView.OnNavigationItemSelectedLi
                                     evo.xep_loai = data.xep_loai
                                 }
                             }
+                            shimmerFrameLayout!!.stopShimmer()
+                            shimmerFrameLayout!!.visibility = View.GONE
+                            binding.evaluateListView.visibility = View.VISIBLE
 
                             adapter = studentEAdapter(this, mRecyclerViewItems)
                             mRecyclerView!!.adapter = adapter
-
-                            hideProgressDialog()
                         } else {
-                            hideProgressDialog()
+                            binding.evaluateListView.visibility = View.GONE
+                            shimmerFrameLayout!!.stopShimmer()
+                            shimmerFrameLayout!!.visibility = View.GONE
+                            binding.empty.visibility = View.VISIBLE
                             Toast.makeText(
                                 this@StudentEvalute,
                                 resources.getString(R.string.retrieve_data_failed),
                                 Toast.LENGTH_SHORT
                             ).show()
-                            binding.empty.visibility = View.VISIBLE
-                            binding.evaluateListView.visibility = View.GONE
                         }
                         swipeRefreshLayout!!.isRefreshing = false;
                     },
-                    { _ ->
+                    { error ->
                         binding.empty.visibility = View.VISIBLE
                         binding.evaluateListView.visibility = View.GONE
-                        hideProgressDialog()
+                        shimmerFrameLayout!!.stopShimmer()
+                        shimmerFrameLayout!!.visibility = View.GONE
+                        Log.d("LESONGVI", error.message)
                         Toast.makeText(
                             this@StudentEvalute,
                             resources.getString(R.string.student_ev_chckpoint),
