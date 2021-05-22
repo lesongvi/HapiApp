@@ -67,6 +67,12 @@ public class routeHelper {
 
     public final static String restList = taRest + "list";
 
+    public final static String usData = studentPath + "data/";
+
+    public final static String usDetailData = usData + "detail";
+
+    public final static String routeNationData = usData + "routenation";
+
     public final static String avatar = appPath + "avatar/";
 
     public final static String avatarModify = avatar + "modify";

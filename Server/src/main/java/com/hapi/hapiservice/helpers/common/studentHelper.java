@@ -8,6 +8,7 @@ import com.hapi.hapiservice.services.StudentService;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -19,6 +20,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -82,6 +84,17 @@ public class studentHelper {
         return response.getEntity().getContent();
     }
 
+    private InputStream gRequest(String req) throws IOException {
+        HttpClient httpClient = HttpClientBuilder.create().build();
+        HttpGet actionUrl = new HttpGet(req);
+
+        actionUrl = this.gInitialAction(actionUrl);
+
+        HttpResponse response = httpClient.execute(actionUrl);
+
+        return response.getEntity().getContent();
+    }
+
     public String takeARestByParams(RestForm rest) {
         evaluateTicketResultItem[] qlist = null;
         try {
@@ -118,6 +131,24 @@ public class studentHelper {
         }
     }
 
+    public String getStudentDetail() throws IOException {
+        studentDetailResponse rndata;
+        InputStream instream = this.gRequest(this.definedStr.studentDetailUrl_PRODUCTION());
+        rndata = new Gson().fromJson(IOUtils.toString(instream, StandardCharsets.UTF_8.name()), studentDetailGResponse.class).getResult();
+        return new Gson().toJson(rndata);
+    }
+
+    public String getRouteNation() throws IOException {
+        return this.gsonAction(this.definedStr.routeNationUrl_PRODUCTION(), routeNationResponse.class, false);
+    }
+
+    private <T> String gsonAction (String url, Class<T> model, Boolean isPost) throws IOException {
+        Object rndata = null;
+        InputStream instream = isPost ? this.sRequest(url, null) : this.gRequest(url);
+        rndata = new Gson().fromJson(IOUtils.toString(instream, StandardCharsets.UTF_8.name()), model);
+        return new Gson().toJson(rndata);
+    }
+
     public HttpPost initialAction(StringEntity input, HttpPost actionUrl) {
         input.setContentType("application/json");
         actionUrl.setHeader("access-control-allow-headers", "Content-Type, Authorization, Content-Length, X-Requested-With, app-key");
@@ -128,6 +159,18 @@ public class studentHelper {
         actionUrl.setHeader("Content-Type", "application/json");
         actionUrl.setHeader("Accept", "application/json");
         actionUrl.setEntity(input);
+
+        return actionUrl;
+    }
+
+    public HttpGet gInitialAction(HttpGet actionUrl) {
+        actionUrl.setHeader("access-control-allow-headers", "Content-Type, Authorization, Content-Length, X-Requested-With, app-key");
+        actionUrl.setHeader("access-control-allow-methods", "GET,PUT,POST,DELETE,OPTIONS");
+        actionUrl.setHeader("access-control-allow-origin", "*");
+        if (this.token.length() != 0)
+            actionUrl.setHeader("authorization", "JWT "+ this.token);
+        actionUrl.setHeader("Content-Type", "application/json");
+        actionUrl.setHeader("Accept", "application/json");
 
         return actionUrl;
     }

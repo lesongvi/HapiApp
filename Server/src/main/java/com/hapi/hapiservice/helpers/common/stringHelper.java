@@ -71,6 +71,8 @@ public class stringHelper {
     final private String examTableId = "ctl00_ContentPlaceHolder1_ctl00_gvXem";
     final private String examValuPattern = "<span [^>]*>(.*?)<\\/span>";
     final private String notevnCloudA1 = "https://notevn.com/file/hapi_internal.htm";
+    final private String studentDetailUrl = this.studentApi + "ren-luyen-sinh-vien/api/sinh-vien/get-by-mssv";
+    final private String routeNationUrl = this.studentApi + "cau-hinh-chung/api/cauhinhchung/get-all-tinh-huyen-dan-toc-ton-giao";
 
     public String defaultPage_PRODUCTION() {
         return this.defaultPage;
@@ -330,5 +332,13 @@ public class stringHelper {
 
     public String notevnCloudA1_PRODUCTION() {
         return this.notevnCloudA1;
+    }
+
+    public String studentDetailUrl_PRODUCTION() {
+        return this.studentDetailUrl;
+    }
+
+    public String routeNationUrl_PRODUCTION() {
+        return this.routeNationUrl;
     }
 }

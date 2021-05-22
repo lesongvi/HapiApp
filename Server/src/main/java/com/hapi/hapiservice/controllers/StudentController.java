@@ -43,7 +43,7 @@ public class StudentController {
     }
 
     @RequestMapping(value = {routeHelper.restList}, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String studentTARestList (@RequestParam(value = "token", defaultValue = "") String token) throws IOException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+    public String studentTARestList (@RequestParam(value = "token", defaultValue = "") String token) throws IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         this.studentEngine = new studentHelper(token, this.studentRepository, this.studentService);
 
         return this.studentEngine.getRestList();
@@ -56,4 +56,18 @@ public class StudentController {
 
         return this.studentEngine.takeARestByParams(rest);
     }*/
+
+    @RequestMapping(value = {routeHelper.usDetailData}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public String studentDetail (@RequestParam(value = "token", defaultValue = "") String token) throws IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException, IOException {
+        this.studentEngine = new studentHelper(token, this.studentRepository, this.studentService);
+
+        return this.studentEngine.getStudentDetail();
+    }
+
+    @RequestMapping(value = {routeHelper.routeNationData}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public String routeNationData (@RequestParam(value = "token", defaultValue = "") String token) throws IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException, IOException {
+        this.studentEngine = new studentHelper(token, this.studentRepository, this.studentService);
+
+        return this.studentEngine.getRouteNation();
+    }
 }
