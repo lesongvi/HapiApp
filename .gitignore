@@ -21,3 +21,4 @@ application.properties
 helper/SpringCLI
 helper/ngrok.exe
 .mvn*
+*.tmp

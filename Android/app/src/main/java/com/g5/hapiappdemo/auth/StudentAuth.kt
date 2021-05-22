@@ -13,7 +13,6 @@ import android.os.Bundle
 import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy
 import android.telephony.TelephonyManager
-import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
@@ -333,7 +332,7 @@ class StudentAuth : BaseActivity() {
             Toast.makeText(
                 this,
                 resources.getString(R.string.please_allow_permission),
-                Toast.LENGTH_SHORT
+                Toast.LENGTH_LONG
             ).show()
             return
         }
