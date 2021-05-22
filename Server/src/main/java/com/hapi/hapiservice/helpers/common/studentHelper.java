@@ -86,7 +86,6 @@ public class studentHelper {
         evaluateTicketResultItem[] qlist = null;
         try {
             InputStream instream = this.sRequest(this.definedStr.studentTakeaRest_PRODUCTION(), "{\"mon_hoc\": " + rest.getMonHoc() + ", \"giang_vien\": " + rest.getGiangVien() + ", \"ngay_nghi\": " + rest.getNgayNghi() + ", \"ly_do\": " + rest.getLyDo() + ", \"ca\": " + rest.getCaHoc() + "}");
-            System.out.println(IOUtils.toString(instream, StandardCharsets.UTF_8.name()));
             qlist = new Gson().fromJson(IOUtils.toString(instream, StandardCharsets.UTF_8.name()), evaluateTicket.class).getResult();
         } catch (Exception e) {
             logger.error(e.getMessage());
