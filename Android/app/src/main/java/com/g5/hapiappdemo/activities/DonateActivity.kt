@@ -2,6 +2,7 @@ package com.g5.hapiappdemo.activities
 
 import android.app.FragmentManager
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
@@ -48,12 +49,16 @@ class DonateActivity : BaseActivity() {
         Toast.makeText(this@DonateActivity, resources.getString(R.string.donate_warning), Toast.LENGTH_SHORT).show()
     }
 
-    override fun onBackPressed() {
-        val fm: FragmentManager = fragmentManager
-        if (fm.getBackStackEntryCount() > 0) {
-            fm.popBackStack()
-        } else {
-            super.onBackPressed()
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home ->
+                onBackPressed()
         }
+        return true
+    }
+
+
+    override fun onBackPressed() {
+        finish()
     }
 }

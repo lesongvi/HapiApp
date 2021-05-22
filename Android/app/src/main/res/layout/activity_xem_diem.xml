@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/MMPrimary"
-        app:theme="@style/tbStyle"
+        android:theme="@style/tbStyle"
         app:elevation="0dp">
 
         <include

@@ -8,6 +8,8 @@ Usecase diagram, ERD diagram, Context diagram, level 0 DFD
 ![0.png](https://github.com/lesongvi/HapiApp/raw/main/images/0.png)
 
 ## API Documentation
+  
+**Internal API**  
 API prefix: **/api/v1**
 ```
 Endpoint authenticate: /api/v1/auth
@@ -77,6 +79,12 @@ Method: GET
 Endpoint anotification: /api/v1/snapshot/notifications
 Method: GET
 ```
+  
+**External API**
+```
+Endpoint appVersion: https://api.rqn9.com/data/1.0/dapp/_/182230003154962/version
+Method: GET
+```
 
 ## Lỗi đã biết
 ### Dữ liệu trả về rỗng sau khi ủy quyền
@@ -84,3 +92,6 @@ Trường hợp có thể xảy ra:
 1. Kiểm tra lại thông tin sinh viên có sai sót.
 1. Server chính (server nhà trường) đang bảo trì để cập nhật thông tin sinh viên, thử lại sau 15 phút.
 1. Sinh viên bảo lưu tài khoản hoặc đang bị khóa vì lý do bảo mật
+
+## Lưu ý
+- Sau mỗi lần cập nhật phải thay đổi giá trị versionCode, versionName của build.gradle dự án và trong file [android.json](https://github.com/lesongvi/HapiApp/blob/main/helper/appVersion/android.json) - Bắt buộc nếu không ứng dụng sẽ không được cập nhật.

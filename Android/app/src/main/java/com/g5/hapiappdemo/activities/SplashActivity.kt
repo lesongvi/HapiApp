@@ -19,6 +19,7 @@ import com.g5.hapiappdemo.MainActivity
 import com.g5.hapiappdemo.R
 import com.g5.hapiappdemo.databinding.ActivitySplashBinding
 import io.realm.Realm
+import io.realm.RealmConfiguration
 
 
 class SplashActivity : AppCompatActivity() {
@@ -53,6 +54,11 @@ class SplashActivity : AppCompatActivity() {
             startActivity(mySuperIntent)
             finish()
         }, SPLASH_TIME.toLong())
+
+        Realm.init(this)
+        val realmConfiguration = RealmConfiguration.Builder()
+            .name("hapi_data.realm").build()
+        Realm.setDefaultConfiguration(realmConfiguration)
     }
 
     private fun playProgress() {

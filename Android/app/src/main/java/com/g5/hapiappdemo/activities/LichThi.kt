@@ -74,6 +74,19 @@ class LichThi : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
         window.statusBarColor = ContextCompat.getColor(this@LichThi, R.color.MMPrimary)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home ->
+                onBackPressed()
+        }
+        return true
+    }
+
+
+    override fun onBackPressed() {
+        finish()
+    }
+
     private fun getCacheSPData () {
         val esd = realm.where<examSObj>().findAll()
         if (esd.size != 0)

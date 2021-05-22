@@ -166,6 +166,19 @@ class StudentEvalute : BaseActivity(), NavigationView.OnNavigationItemSelectedLi
         }
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home ->
+                onBackPressed()
+        }
+        return true
+    }
+
+
+    override fun onBackPressed() {
+        finish()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         realm.close()

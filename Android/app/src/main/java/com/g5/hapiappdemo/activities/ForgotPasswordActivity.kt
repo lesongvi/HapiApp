@@ -1,6 +1,7 @@
 package com.g5.hapiappdemo.activities
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.widget.Toolbar
@@ -43,5 +44,18 @@ class ForgotPasswordActivity : BaseActivity() {
 
         webView.webViewClient = SiteBrowser()
         webView.loadUrl(getString(R.string.forgot_password_url))
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home ->
+                onBackPressed()
+        }
+        return true
+    }
+
+
+    override fun onBackPressed() {
+        finish()
     }
 }

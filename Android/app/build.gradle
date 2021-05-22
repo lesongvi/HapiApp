@@ -92,6 +92,7 @@ ext {
     picassoVersion = '2.5.2'
     appIntroVersion = '6.1.0'
     shimmerVersion = '0.5.0'
+    volleyVersion = '1.1.1'
 }
 
 dependencies {
@@ -129,6 +130,7 @@ dependencies {
     implementation "com.squareup.picasso:picasso:$picassoVersion"
     implementation "com.github.AppIntro:AppIntro:$appIntroVersion"
     implementation "com.facebook.shimmer:shimmer:$shimmerVersion"
+    implementation "com.android.volley:volley:$volleyVersion"
 
     // Kotlin
     implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"

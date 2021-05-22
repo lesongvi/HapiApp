@@ -1,25 +1,37 @@
 package com.g5.hapiappdemo
 
+import android.app.Dialog
 import android.content.Intent
+import android.content.pm.PackageInfo
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.Window
 import android.view.WindowManager
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.*
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.g5.hapiappdemo.activities.OnboardingActivity
 import com.g5.hapiappdemo.auth.StudentAuth
 import com.g5.hapiappdemo.databinding.ActivityMainBinding
 import com.g5.hapiappdemo.extensions.PreferenceHelper
 import com.google.android.material.navigation.NavigationView
-import io.realm.Realm
-import io.realm.RealmConfiguration
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.view.*
+import kotlinx.android.synthetic.main.dialog_update.*
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.*
 
 
@@ -29,6 +41,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit var navController: NavController
     lateinit var appBarConfiguration: AppBarConfiguration
     private var lastNavigationItemId: Int? = null
+    private var currentCode = 0
+    private var DialogOpened: Boolean = false
+    private var dialog: Dialog? = null
+    private var text_view_go_pro: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,18 +52,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val view = binding.root
         setContentView(view)
 
-        Realm.init(this)
-        val realmConfiguration = RealmConfiguration.Builder()
-            .name("hapi_data.realm").build()
-        Realm.setDefaultConfiguration(realmConfiguration)
-
         navController = findNavController(R.id.nav_host_fragment)
         binding.bottomNavView.setupWithNavController(navController)
 
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.home_fragment, R.id.support_fragment, R.id.account_fragment, R.id.more_menu_fragment),
+            setOf(R.id.more_menu_fragment),
             binding.drawerLayout
         )
+
+        this.checkVersionUpdate()
 
         val window: Window = this@MainActivity.window
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
@@ -65,7 +78,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             finish()
             return
         }
-
 
         this.initialize()
     }
@@ -92,6 +104,58 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             startActivity(intent)
             finish()
         }
+    }
+
+    // BE CAREFUL!! External API request!
+    private fun checkVersionUpdate () {
+        val queue: com.android.volley.RequestQueue? = Volley.newRequestQueue(this)
+        var pInfo: PackageInfo = packageManager.getPackageInfo(applicationContext.packageName, 0)
+        var fupdate: String?
+        var nupdate: String?
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            currentCode = pInfo.longVersionCode.toInt()
+        } else {
+            currentCode = pInfo.versionCode
+        }
+        val stringRequest =
+            StringRequest(
+                Request.Method.GET, "https://api.rqn9.com/data/1.0/dapp/_/182230003154962/version",
+                Response.Listener<String?> { response ->
+                    try {
+                        val jsonObj = JSONObject(response)
+                        if (jsonObj.has("version")) {
+                            fupdate = jsonObj.getString("versionCode")
+                            nupdate = jsonObj.getString("version")
+                            if (fupdate != null && fupdate!!.toInt() > currentCode && !DialogOpened) {
+                                showUpdateDialog(nupdate!!)
+                            }
+                        }
+                    } catch (e: JSONException) {
+                        //Silent is Golden
+                    }
+                }, Response.ErrorListener {
+                    //Silent is Golden
+                })
+        queue!!.add(stringRequest)
+    }
+
+    private fun showUpdateDialog(newVersionName: String) {
+        this.dialog = Dialog(this)
+        dialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog!!.setCancelable(false)
+        dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog!!.setContentView(R.layout.dialog_update)
+        text_view_go_pro = dialog!!.findViewById(R.id.text_view_go_pro) as TextView
+        text_view_go_pro!!.setOnClickListener {
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("http://files.maxmines.com/songvi/_______/hapiappdemo-$newVersionName.apk")
+                )
+            )
+        }
+        dialog!!.show()
+        DialogOpened = true
     }
 
     public override fun onSaveInstanceState(outState: Bundle) {

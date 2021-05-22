@@ -72,6 +72,8 @@
 
     <string name="mainpage_lbl">@string/app_name</string>
     <string name="ThongTinActivity">Thông tin</string>
+    <string name="force_update">Để có thể tiếp tục sử dụng ứng dụng này vui lòng cập nhật phiên bản mới nhất.</string>
+    <string name="update_str">CẬP NHẬT</string>
 
     <string name="support_need_help">Sinh viên dùng Hapi App cần hỗ trợ!</string>
     <string name="support_need_help_body">Bạn cần giúp gì, hãy xóa dòng này và viết mới nội dung cần giúp đỡ nhé!</string>
