@@ -1,7 +1,6 @@
 package com.g5.hapiappdemo.activities
 
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.Window
@@ -155,12 +154,13 @@ class StudentEvalute : BaseActivity(), NavigationView.OnNavigationItemSelectedLi
                         binding.evaluateListView.visibility = View.GONE
                         shimmerFrameLayout!!.stopShimmer()
                         shimmerFrameLayout!!.visibility = View.GONE
-                        Log.d("LESONGVI", error.message)
-                        Toast.makeText(
-                            this@StudentEvalute,
-                            resources.getString(R.string.student_ev_chckpoint),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        if(!realm.isClosed) {
+                            Toast.makeText(
+                                this@StudentEvalute,
+                                resources.getString(R.string.student_ev_chckpoint),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 )
         }

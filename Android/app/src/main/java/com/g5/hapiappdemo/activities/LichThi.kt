@@ -139,11 +139,13 @@ class LichThi : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
                 { _ ->
                     shimmerFrameLayout!!.stopShimmer()
                     shimmerFrameLayout!!.visibility = View.GONE
-                    Toast.makeText(
-                        this@LichThi,
-                        resources.getString(R.string.retrieve_data_failed),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    if(!realm.isClosed) {
+                        Toast.makeText(
+                            this@LichThi,
+                            resources.getString(R.string.retrieve_data_failed),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                     swipeRefreshLayout!!.isRefreshing = false;
                 }
             )

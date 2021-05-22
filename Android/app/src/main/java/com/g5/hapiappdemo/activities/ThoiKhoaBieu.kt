@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.g5.hapiappdemo.R
-import com.g5.hapiappdemo.adapter.pointViewAdapter
 import com.g5.hapiappdemo.adapter.semesterDAdapter
 import com.g5.hapiappdemo.api.ApiClient
 import com.g5.hapiappdemo.databinding.ActivityTkbBinding
@@ -128,11 +127,13 @@ class ThoiKhoaBieu : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                     { _ ->
                         shimmerFrameLayout!!.stopShimmer()
                         shimmerFrameLayout!!.visibility = View.GONE
-                        Toast.makeText(
-                            this@ThoiKhoaBieu,
-                            resources.getString(R.string.retrieve_data_failed),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        if(!realm.isClosed) {
+                            Toast.makeText(
+                                this@ThoiKhoaBieu,
+                                resources.getString(R.string.retrieve_data_failed),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 )
         }
@@ -250,11 +251,13 @@ class ThoiKhoaBieu : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                         binding.tkbListView.visibility = View.GONE
                         shimmerFrameLayout!!.stopShimmer()
                         shimmerFrameLayout!!.visibility = View.GONE
-                        Toast.makeText(
-                            this@ThoiKhoaBieu,
-                            resources.getString(R.string.retrieve_data_failed),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        if(!realm.isClosed) {
+                            Toast.makeText(
+                                this@ThoiKhoaBieu,
+                                resources.getString(R.string.retrieve_data_failed),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 },
                 { _ ->
@@ -336,12 +339,15 @@ class ThoiKhoaBieu : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 },
                 { _ ->
                     binding.tkbListView.visibility = View.GONE
-                    hideProgressDialog()
-                    Toast.makeText(
-                        this@ThoiKhoaBieu,
-                        resources.getString(R.string.retrieve_data_failed),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    shimmerFrameLayout!!.stopShimmer()
+                    shimmerFrameLayout!!.visibility = View.GONE
+                    if(!realm.isClosed) {
+                        Toast.makeText(
+                            this@ThoiKhoaBieu,
+                            resources.getString(R.string.retrieve_data_failed),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                     swipeRefreshLayout!!.isRefreshing = false;
                 }
             )

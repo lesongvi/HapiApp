@@ -1,7 +1,6 @@
 package com.g5.hapiappdemo.activities
 
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.Window
@@ -11,24 +10,19 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.g5.hapiappdemo.R
-import com.g5.hapiappdemo.adapter.NotifyAdapter
 import com.g5.hapiappdemo.adapter.pointViewAdapter
 import com.g5.hapiappdemo.api.ApiClient
 import com.g5.hapiappdemo.databinding.ActivityXemDiemBinding
-import com.g5.hapiappdemo.json.NotificationList
 import com.g5.hapiappdemo.json.PointJson
 import com.g5.hapiappdemo.json.SemesterPoint
 import com.g5.hapiappdemo.realmobj.jsonPObj
-import com.g5.hapiappdemo.realmobj.notificationObj
 import com.g5.hapiappdemo.realmobj.semesterPObj
 import com.g5.hapiappdemo.realmobj.studentPoint
 import com.google.android.material.navigation.NavigationView
@@ -151,19 +145,23 @@ class XemDiem : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
 
                             this.initPointSpinner(selectorAvailable, result, false)
                         } else {
+                            if(!realm.isClosed) {
+                                Toast.makeText(
+                                    this@XemDiem,
+                                    resources.getString(R.string.retrieve_data_failed),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    },
+                    { _ ->
+                        if(!realm.isClosed) {
                             Toast.makeText(
                                 this@XemDiem,
                                 resources.getString(R.string.retrieve_data_failed),
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
-                    },
-                    { _ ->
-                        Toast.makeText(
-                            this@XemDiem,
-                            resources.getString(R.string.retrieve_data_failed),
-                            Toast.LENGTH_SHORT
-                        ).show()
                     }
                 )
         }
@@ -252,11 +250,13 @@ class XemDiem : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
                 { _ ->
                     shimmerFrameLayout!!.stopShimmer()
                     shimmerFrameLayout!!.visibility = View.GONE
-                    Toast.makeText(
-                        this@XemDiem,
-                        resources.getString(R.string.retrieve_data_failed),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    if(!realm.isClosed) {
+                        Toast.makeText(
+                            this@XemDiem,
+                            resources.getString(R.string.retrieve_data_failed),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                     swipeRefreshLayout!!.isRefreshing = false;
                 }
             )

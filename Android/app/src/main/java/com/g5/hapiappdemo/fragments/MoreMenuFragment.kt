@@ -4,11 +4,9 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -21,7 +19,6 @@ import com.g5.hapiappdemo.auth.set
 import com.g5.hapiappdemo.databinding.FragmentMoreMenuBinding
 import com.g5.hapiappdemo.extensions.PreferenceHelper
 import io.realm.Realm
-import kotlinx.android.synthetic.main.fragment_more_menu.*
 
 
 class MoreMenuFragment : Fragment() {
