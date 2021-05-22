@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         binding.bottomNavView.setupWithNavController(navController)
 
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.more_menu_fragment),
+            setOf(R.id.home_fragment, R.id.support_fragment, R.id.account_fragment, R.id.more_menu_fragment),
             binding.drawerLayout
         )
 
@@ -119,7 +119,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         val stringRequest =
             StringRequest(
-                Request.Method.GET, "https://api.rqn9.com/data/1.0/dapp/_/182230003154962/version",
+                Request.Method.GET, resources.getString(R.string.vcheck_api_url),
                 Response.Listener<String?> { response ->
                     try {
                         val jsonObj = JSONObject(response)
