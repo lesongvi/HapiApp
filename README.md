@@ -58,6 +58,14 @@ Endpoint starestListRequest: /api/v1/student/tarest/list
 Method: POST
 ```
 ```
+Endpoint studentDetailData: /api/v1/student/data/detail
+Method: GET
+```
+```
+Endpoint routeNationData: /api/v1/student/data/routenation
+Method: GET
+```
+```
 Endpoint CExamView: /api/v1/schedule/cexam
 Method: POST
 ```
