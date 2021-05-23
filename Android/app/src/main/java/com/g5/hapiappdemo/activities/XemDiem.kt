@@ -35,6 +35,7 @@ import io.realm.Realm
 import io.realm.kotlin.createObject
 import io.realm.kotlin.delete
 import io.realm.kotlin.where
+import java.text.DecimalFormat
 
 
 class XemDiem : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -91,6 +92,16 @@ class XemDiem : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
         window.statusBarColor = ContextCompat.getColor(this@XemDiem, R.color.MMPrimary)
     }
 
+    class RankingLine(rank: String, encourage: String) {
+        var rank: String? = null;
+        var encourage: String? = null
+
+        init {
+            this.rank = rank
+            this.encourage = encourage
+        }
+    }
+
     private fun getCacheData () {
         val spoint = realm.where<semesterPObj>().findAll()
         if (spoint.size != 0)
@@ -112,6 +123,8 @@ class XemDiem : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
                 mRecyclerViewItems.add(PointJson(notify.mamon, notify.tenmon, notify.tinchi, notify.ptkt, notify.ptthi, notify.diemkt1, notify.diemkt2, notify.thil1, notify.tkch, notify.tk4))
             }
 
+            this.pointCalculate(mRecyclerViewItems)
+
             binding.empty.visibility = View.GONE
             shimmerFrameLayout!!.stopShimmer()
             shimmerFrameLayout!!.visibility = View.GONE
@@ -119,6 +132,37 @@ class XemDiem : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
 
             adapter = pointViewAdapter(this, mRecyclerViewItems)
             mRecyclerView!!.adapter = adapter
+        }
+    }
+
+    private fun pointCalculate(plist: ArrayList<PointJson>) {
+        if (plist.size != 0)
+        {
+            var e4 = .0
+            var cr = .0
+            for (pitem in plist) {
+                e4 += pitem.tk4?.toDouble()?: .0
+                cr += pitem.tinchi?.toDouble() ?: .0
+            }
+            e4 /= plist.size
+            val rank: RankingLine = this.ranking(e4)
+            binding.semesterTotalCV.visibility = View.VISIBLE
+            binding.semesterTotal.text = "Điểm TBHK hệ 4: ${toFixed(e4)}\nSố tín chỉ đạt: ${cr}\nXếp loại: ${rank.rank}\n${rank.encourage}"
+        }
+    }
+
+    private fun toFixed (toBeFixed: Double): String {
+        val dec = DecimalFormat("#0.00")
+        return dec.format(toBeFixed)
+    }
+
+    private fun ranking (estimate4: Double): RankingLine {
+        return when {
+            estimate4 < 2 -> RankingLine(resources.getString(R.string.rank_minus1_title), resources.getString(R.string.rank_minus1_desc))
+            estimate4 >= 2 && estimate4 < 2.49 -> RankingLine(resources.getString(R.string.rank_0_title), resources.getString(R.string.rank_0_desc))
+            estimate4 >= 2.5 && estimate4 < 3.19 -> RankingLine(resources.getString(R.string.rank_1_title), resources.getString(R.string.rank_1_desc))
+            estimate4 >= 3.2 && estimate4 < 3.59 -> RankingLine(resources.getString(R.string.rank_2_title), resources.getString(R.string.rank_2_desc))
+            else -> RankingLine(resources.getString(R.string.rank_3_title), resources.getString(R.string.rank_3_desc))
         }
     }
 
@@ -187,6 +231,7 @@ class XemDiem : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
                 position: Int,
                 id: Long
             ) {
+                binding.semesterTotalCV.visibility = View.GONE
                 binding.pointListView.visibility = View.GONE
                 binding.phoderlayout.visibility = View.VISIBLE
                 shimmerFrameLayout = binding.phoderlayout
@@ -212,6 +257,7 @@ class XemDiem : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
                     realm.executeTransaction { realm ->
                         realm.delete<jsonPObj>()
                     }
+
                     if (result.isNotEmpty()) {
                         mRecyclerViewItems.clear()
                         result.forEach { data: PointJson ->
@@ -231,6 +277,7 @@ class XemDiem : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
                             }
                         }
 
+                        this.pointCalculate(mRecyclerViewItems)
                         binding.empty.visibility = View.GONE
                         shimmerFrameLayout!!.stopShimmer()
                         shimmerFrameLayout!!.visibility = View.GONE
@@ -240,11 +287,13 @@ class XemDiem : BaseActivity(), NavigationView.OnNavigationItemSelectedListener 
                         mRecyclerView!!.adapter = adapter
 
                     } else {
+                        binding.semesterTotalCV.visibility = View.GONE
                         binding.pointListView.visibility = View.GONE
                         shimmerFrameLayout!!.stopShimmer()
                         shimmerFrameLayout!!.visibility = View.GONE
                         binding.empty.visibility = View.VISIBLE
                     }
+
                     swipeRefreshLayout!!.isRefreshing = false;
                 },
                 { _ ->

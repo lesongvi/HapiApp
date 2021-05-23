@@ -81,6 +81,62 @@
 
             </androidx.recyclerview.widget.RecyclerView>
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/semesterTotalCV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:contentPadding="15dp"
+                style="@style/CardView.MyStyle"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardElevation="2dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_gravity="center"
+                app:cardUseCompatPadding="true">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/pointTitle"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                style="@style/TextAppearance.AppCompat.Title"
+                                android:maxLines="1"
+                                android:textSize="16sp"
+                                android:textColor="@color/black"
+                                android:text="@string/p_total_box_title"/>
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/semesterTotal"
+                            android:layout_width="wrap_content"
+                            android:ellipsize="end"
+                            android:layout_height="wrap_content"
+                            style="@style/TextAppearance.AppCompat.Caption"
+                            android:layout_marginTop="4dp" />
+                    </LinearLayout>
+
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
         </LinearLayout>
 
         <com.facebook.shimmer.ShimmerFrameLayout

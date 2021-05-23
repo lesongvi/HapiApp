@@ -75,6 +75,18 @@
     <string name="force_update">Để có thể tiếp tục sử dụng ứng dụng này vui lòng cập nhật phiên bản mới nhất.</string>
     <string name="update_str">CẬP NHẬT</string>
     <string name="vcheck_api_url">https://api.rqn9.com/data/1.0/dapp/_/182230003154962/version</string>
+    <string name="p_total_box_title">Tổng kết học kỳ</string>
+
+    <string name="rank_0_title">Trung bình</string>
+    <string name="rank_0_desc">Cố gắng nhiều hơn bạn nhé!</string>
+    <string name="rank_1_title">Khá</string>
+    <string name="rank_1_desc">Làm tốt lắm! Hãy cố gắng hơn!</string>
+    <string name="rank_2_title">Giỏi</string>
+    <string name="rank_2_desc">Tuyệt vời! Chỉ 1 chút nữa thôi!</string>
+    <string name="rank_3_title">Xuất sắc</string>
+    <string name="rank_3_desc">Quá tuyệt vời bạn ơi!</string>
+    <string name="rank_minus1_title">Khá</string>
+    <string name="rank_minus1_desc">Thật tệ, hãy cố gắng hơn bạn nhé!</string>
 
     <string name="support_need_help">Sinh viên dùng Hapi App cần hỗ trợ!</string>
     <string name="support_need_help_body">Bạn cần giúp gì, hãy xóa dòng này và viết mới nội dung cần giúp đỡ nhé!</string>

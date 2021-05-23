@@ -23,7 +23,7 @@
                 android:id="@+id/tkbDay"
                 android:layout_width="36dp"
                 android:layout_marginRight="10dp"
-                android:layout_height="36dp"
+                android:layout_height="wrap_content"
                 android:ellipsize="end"
                 style="@style/TextAppearance.AppCompat.Title"
                 android:maxLines="2"
