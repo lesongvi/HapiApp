@@ -79,6 +79,18 @@ Method: GET
 Endpoint anotification: /api/v1/snapshot/notifications
 Method: GET
 ```
+```
+Endpoint surveyList: /api/v1/student/survey/list
+Method: GET
+```
+```
+Endpoint surveyDetail: /api/v1/student/survey/detail
+Method: POST
+```
+```
+Endpoint surveyRequest: /api/v1/student/survey/request
+Method: POST
+```
   
 **External API**
 ```
