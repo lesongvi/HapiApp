@@ -3,6 +3,7 @@ package com.hapi.hapiservice.helpers.common;
 import com.google.gson.Gson;
 import com.hapi.hapiservice.helpers.respository.StudentRepository;
 import com.hapi.hapiservice.models.schedule.Students;
+import com.hapi.hapiservice.models.schedule.errorResponse;
 import com.hapi.hapiservice.models.student.*;
 import com.hapi.hapiservice.services.StudentService;
 import org.apache.commons.io.IOUtils;
@@ -117,6 +118,23 @@ public class studentHelper {
         } finally {
             return new Gson().toJson(rlist);
         }
+    }
+
+    public String getSurveyList() throws IOException {
+        return this.gsonAction(this.definedStr.surveyListUrl_PRODUCTION(), surveyListResponse[].class, false);
+    }
+
+    public String getSurveyDetail(String isDangLam, String phieuDanhGiaId) throws IOException {
+        Object qlist = null;
+        InputStream instream = this.sRequest(this.definedStr.surveyDetailUrl_PRODUCTION(), "{\"is_dang_lam\": \"" + isDangLam + "\", \"phieu_danh_gia_id\": \"" + phieuDanhGiaId + "\"}");
+        qlist = new Gson().fromJson(IOUtils.toString(instream, StandardCharsets.UTF_8.name()), surveyDetailResponse.class).getResult();
+        System.out.println(IOUtils.toString(instream, StandardCharsets.UTF_8.name()));
+        return new Gson().toJson(qlist);
+    }
+
+    public String takeSurvey(String maPhieuId, String option) throws IOException {
+        this.sRequest(this.definedStr.takeSurveyUrl_PRODUCTION(), "{\"ma_phieu_id\": \"" + maPhieuId + "\", \"option\": " + option + "}");
+        return new Gson().toJson(new errorResponse(false, null, 200));
     }
 
     public String getEvaluateTicket(String ticketId) {

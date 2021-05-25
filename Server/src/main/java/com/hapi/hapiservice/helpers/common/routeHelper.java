@@ -76,4 +76,12 @@ public class routeHelper {
     public final static String avatar = appPath + "avatar/";
 
     public final static String avatarModify = avatar + "modify";
+
+    public final static String surveyPath = studentPath + "survey/";
+
+    public final static String surveyList = surveyPath + "list";
+
+    public final static String surveyDetail = surveyPath + "detail";
+
+    public final static String surveyRequest = surveyPath + "request";
 }

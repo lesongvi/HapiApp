@@ -623,11 +623,18 @@ public class browserHelper extends stuffHelper {
         defaultPage = this.setAdditionalHeader(defaultPage);
 
         HtmlPage page = null;
+        Gson gson = new Gson();
+
         try {
             page = (HtmlPage) webClient
                     .getPage(defaultPage);
         } catch (Exception e) {
             logger.error(e.getMessage());
+        }
+
+        Matcher CheckMessInterrupt = this.patternSearch(this.definedStr.getMessInterrupt_PRODUCTION(), page.asXml());
+        if (CheckMessInterrupt.find()) {
+            return gson.toJson(new errorResponse(true, CheckMessInterrupt.group(1).trim(), 503));
         }
 
         DomElement stdntPointTbl = page.getElementById(definedStr.studentCPointTblId_PRODUCTION());

@@ -70,4 +70,25 @@ public class StudentController {
 
         return this.studentEngine.getRouteNation();
     }
+
+    @RequestMapping(value = {routeHelper.surveyList}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public String studentSurveyList (@RequestParam(value = "token", defaultValue = "") String token) throws IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException, IOException {
+        this.studentEngine = new studentHelper(token, this.studentRepository, this.studentService);
+
+        return this.studentEngine.getSurveyList();
+    }
+
+    @RequestMapping(value = {routeHelper.surveyDetail}, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public String studentSurveyDetail (@RequestParam(value = "token", defaultValue = "") String token, @RequestParam(value = "is_dang_lam", defaultValue = "true") String isDangLam, @RequestParam(value = "phieu_danh_gia_id", defaultValue = "") String phieuDanhGiaId) throws IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException, IOException {
+        this.studentEngine = new studentHelper(token, this.studentRepository, this.studentService);
+
+        return this.studentEngine.getSurveyDetail(isDangLam, phieuDanhGiaId);
+    }
+
+    @RequestMapping(value = {routeHelper.surveyRequest}, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public String studentSurveyRequest (@RequestParam(value = "token", defaultValue = "") String token, @RequestParam(value = "ma_phieu_id", defaultValue = "") String maPhieuId, @RequestParam(value = "option", defaultValue = "") String option) throws IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException, IOException {
+        this.studentEngine = new studentHelper(token, this.studentRepository, this.studentService);
+
+        return this.studentEngine.takeSurvey(maPhieuId, option);
+    }
 }

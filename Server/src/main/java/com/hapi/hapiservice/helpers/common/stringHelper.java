@@ -73,6 +73,10 @@ public class stringHelper {
     final private String notevnCloudA1 = "https://notevn.com/file/hapi_internal.htm";
     final private String studentDetailUrl = this.studentApi + "ren-luyen-sinh-vien/api/sinh-vien/get-by-mssv";
     final private String routeNationUrl = this.studentApi + "cau-hinh-chung/api/cauhinhchung/get-all-tinh-huyen-dan-toc-ton-giao";
+    final private String getMessInterrupt = "MessUpdate\\('(.*?)'\\)";
+    final private String surveyListUrl = this.studentApi + "khao-sat-sinh-vien/api/khao-sat-sinh-vien/get-list-active";
+    final private String surveyDetailUrl = this.studentApi + "khao-sat-sinh-vien/api/khao-sat-sinh-vien/chi-tiet-phieu-danh-gia";
+    final private String takeSurveyUrl = this.studentApi + "khao-sat-sinh-vien/api/khao-sat-sinh-vien/update-phieu-danh-gia";
 
     public String defaultPage_PRODUCTION() {
         return this.defaultPage;
@@ -340,5 +344,21 @@ public class stringHelper {
 
     public String routeNationUrl_PRODUCTION() {
         return this.routeNationUrl;
+    }
+
+    public String getMessInterrupt_PRODUCTION() {
+        return this.getMessInterrupt;
+    }
+
+    public String surveyListUrl_PRODUCTION() {
+        return this.surveyListUrl;
+    }
+
+    public String surveyDetailUrl_PRODUCTION() {
+        return this.surveyDetailUrl;
+    }
+
+    public String takeSurveyUrl_PRODUCTION() {
+        return this.takeSurveyUrl;
     }
 }
