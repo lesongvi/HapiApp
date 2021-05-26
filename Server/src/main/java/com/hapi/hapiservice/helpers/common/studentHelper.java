@@ -21,7 +21,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -78,9 +77,6 @@ public class studentHelper {
         actionUrl = this.initialAction(input, actionUrl);
 
         HttpResponse response = httpClient.execute(actionUrl);
-
-        //if (response.getStatusLine().getStatusCode() != 200)
-            //throw new NullPointerException("Máy chủ trả lại lỗi!");
 
         return response.getEntity().getContent();
     }

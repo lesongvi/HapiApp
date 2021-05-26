@@ -1,29 +1,16 @@
 package com.hapi.hapiservice.helpers.common;
 
-import com.gargoylesoftware.htmlunit.WebClient;
 import com.google.gson.Gson;
 import com.hapi.hapiservice.helpers.respository.NotificationRespository;
 import com.hapi.hapiservice.models.notification.NotificationResponse;
 import com.hapi.hapiservice.models.notification.Notifications;
 import com.hapi.hapiservice.services.NotificationService;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.IOException;
 import java.time.Instant;
 import java.util.*;
-import java.util.function.Function;
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
 
 
-class ASCByUnixtime implements Comparator<NotificationResponse>
-{
-    public int compare(NotificationResponse a, NotificationResponse b)
-    {
-        return (int) (a.getUnixtime() - b.getUnixtime());
-    }
-}
 
 public class snapshotHelper extends browserHelper {
     private NotificationRespository notificationRespository;
@@ -33,7 +20,7 @@ public class snapshotHelper extends browserHelper {
             NotificationRespository notificationRespository,
             NotificationService notificationService
     ) {
-        super(1811061712, "Lesongvi123321", null, null);
+        super(0, null, null, null);
         this.notificationRespository = notificationRespository;
         this.notificationService = notificationService;
     }
@@ -44,7 +31,7 @@ public class snapshotHelper extends browserHelper {
         return gson.toJson(this.snapshotNotificationNotify());
     }
 
-    public String snapshotAllNotification() throws IOException {
+    public String snapshotAllNotification() {
         Gson gson = new Gson();
 
         return gson.toJson(this.snapshotAllNotificationNotify());

@@ -3,7 +3,7 @@
     <string name="terms_amp_condition">Điều khoản sử dụng</string>
     <string name="hapi_server_addr">https://f7e960290b34.ngrok.io</string>
     <string name="auth_file_name">studentcre.dat</string>
-    <string name="error_fallback_msg">Lỗi: Vui lòng gửi mail tới bug.collection@roleplay.vn về lỗi này</string>
+    <string name="error_fallback_msg">Lỗi: Vui lòng gửi mail tới {{SUPPORT_MAIL}} về lỗi này</string>
     <string name="error_invalid_credentials_msg">Lỗi: Thông tin đăng nhập không hợp lệ</string>
     <string name="sid_required">MSSV là bắt buộc</string>
     <string name="spwd_required">Mật khẩu sinh viên là bắt buộc</string>

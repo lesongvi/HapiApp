@@ -28,7 +28,7 @@ class ApiClient private constructor(context: Context) {
         prefs = PreferenceHelper.securePrefs(context)
 
         val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl("https://f7e960290b34.ngrok.io")
+            .baseUrl("") // server address
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()
